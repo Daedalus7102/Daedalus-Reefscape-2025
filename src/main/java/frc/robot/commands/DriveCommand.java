@@ -13,7 +13,10 @@ public class DriveCommand extends Command{
     private final PIDController xPID, yPID, zPID;
     private boolean robotRelative = false;
 
-    public DriveCommand( Supplier<Double> xSpeed, Supplier<Double> ySpeed, Supplier<Double> zSpeed, boolean robotRelative){
+    public DriveCommand(Swerve swerve, Supplier<Double> xSpeed, Supplier<Double> ySpeed, Supplier<Double> zSpeed, boolean robotRelative){
+        addRequirements(swerve);
+        this.swerve =swerve;
+        
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
         this.zSpeed = zSpeed;

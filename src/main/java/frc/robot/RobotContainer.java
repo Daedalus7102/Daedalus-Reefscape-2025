@@ -16,7 +16,7 @@ import frc.robot.subsystems.Drive.Swerve;
 
 public class RobotContainer {
   // Subsystems
-  public Swerve swerve;
+  public Swerve swerve = new Swerve();
 
   // Controllers
   public static final CommandPS4Controller driverController = new CommandPS4Controller(0);
@@ -35,6 +35,7 @@ public class RobotContainer {
     
     swerve.setDefaultCommand(
       new DriveCommand(
+        swerve,
         () -> (driverController.getLeftY()),
         () -> (-driverController.getLeftX()),
         () -> (driverController.getRightX()),
@@ -44,6 +45,7 @@ public class RobotContainer {
 
     driverController.L1().whileTrue(
       new DriveCommand(
+        swerve,
         () -> (driverController.getLeftY()),
         () -> (-driverController.getLeftX()),
         () -> (driverController.getRightX()),
