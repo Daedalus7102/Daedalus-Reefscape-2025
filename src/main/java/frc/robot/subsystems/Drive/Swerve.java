@@ -60,10 +60,10 @@ public class Swerve extends SubsystemBase {
     
     
     // "x" and "y" values ​​that represent the location of each module in the chassis
-    Translation2d frontLeftTranslation = new Translation2d(Math.toRadians(-11.5), Math.toRadians(11.5)); //Units in Meters
-    Translation2d frontRightTranslation = new Translation2d(Math.toRadians(11.5), Math.toRadians(11.5)); //Units in Meters
-    Translation2d backLeftTranslation = new Translation2d(Math.toRadians(-11.5), Math.toRadians(-11.5)); //Units in Meters
-    Translation2d backRightTranslation = new Translation2d(Math.toRadians(11.5), Math.toRadians(-11.5)); //Units in Meters
+    Translation2d frontLeftTranslation = new Translation2d(-0.35, 0.35); //Units in Meters
+    Translation2d frontRightTranslation = new Translation2d(0.35, 0.35); //Units in Meters
+    Translation2d backLeftTranslation = new Translation2d(-0.35, -0.35); //Units in Meters
+    Translation2d backRightTranslation = new Translation2d(0.35, -0.35); //Units in Meters
     // Declare Gyroscope Pigeon 2
     final Pigeon2 gyro = new Pigeon2(0, "Drivetrain");
 
@@ -79,7 +79,6 @@ public class Swerve extends SubsystemBase {
     // Method that would be used if we did not want the robot to have court orientation (this way does not implement the gyroscope)
     public void setRobotRelativeSpeeds(double xSpeed, double ySpeed, double zSpeed){
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(new ChassisSpeeds(xSpeed, ySpeed, zSpeed));
-    
         setModuleStates(states);
     }
 

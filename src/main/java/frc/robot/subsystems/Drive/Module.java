@@ -3,10 +3,6 @@ package frc.robot.subsystems.Drive;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -18,8 +14,6 @@ import frc.robot.Constants.SwerveDriveConstants;
 public class Module extends SubsystemBase{
     private final SparkMax driveMotor;
     private final SparkMax turnMotor;
-    private final SparkMaxConfig brakeConfig = new SparkMaxConfig();
-    private final SparkMaxConfig coastConfig = new SparkMaxConfig();
 
     private double realAngle = 0;
     private double desiredAngle = 0;
@@ -37,16 +31,6 @@ public class Module extends SubsystemBase{
 
         this.driveMotor = new SparkMax(driveMotorID, MotorType.kBrushless);
         this.turnMotor = new SparkMax(turnMotorID, MotorType.kBrushless);
-
-        this.driveMotor.configure(brakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        this.turnMotor.configure(coastConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-        this.brakeConfig
-            .inverted(false)
-            .idleMode(IdleMode.kBrake);
-        this.coastConfig
-            .inverted(false)
-            .idleMode(IdleMode.kCoast);
         
         this.turnEncoder = new CANcoder(CANcoderID, "Drivetrain");
         this.turnPID = new PIDController(kP, kI, kD);
@@ -61,7 +45,7 @@ public class Module extends SubsystemBase{
       }
 
     public void setDesiredState(SwerveModuleState desiredState, String moduleName){
-        desiredState =  SwerveModuleState.optimize(desiredState, getAngle());
+        // desiredState =  SwerveModuleState.optimize(desiredState, getAngle()); 
 
         if (Math.abs(desiredState.speedMetersPerSecond) < 0.05){
             stop();
@@ -117,5 +101,6 @@ public class Module extends SubsystemBase{
     }
 
     @Override
-    public void periodic(){}
+    public void periodic(){
+    }
 }

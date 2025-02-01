@@ -4,10 +4,7 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
@@ -15,24 +12,24 @@ import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.Drive.Swerve;
 
 public class RobotContainer {
+
   // Subsystems
   public Swerve swerve = new Swerve();
 
   // Controllers
   public static final CommandPS4Controller driverController = new CommandPS4Controller(0);
   public static final CommandPS4Controller operatorController = new CommandPS4Controller(1);
-  private final SendableChooser<Command> autoChooser;
+  // private final SendableChooser<Command> autoChooser;
   
   public RobotContainer() {
-    autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Mode", autoChooser);
+    // autoChooser = AutoBuilder.buildAutoChooser();
+    // SmartDashboard.putData("Auto Chooser", autoChooser);
 
     configureBindings();
   }
 
   private void configureBindings() {
     // ----------- Driver Controller -----------
-    
     swerve.setDefaultCommand(
       new DriveCommand(
         swerve,
@@ -61,7 +58,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // Reads the information sent from the auto chooser
-    return autoChooser.getSelected();
+    return null; // autoChooser.getSelected();
   }
 
   public Swerve getChasisSubsystem() {

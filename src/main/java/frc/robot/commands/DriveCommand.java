@@ -33,7 +33,7 @@ public class DriveCommand extends Command{
         // 1. Get real-time joystick inputs
         double xNeed = this.xSpeed.get();
         double yNeed = this.ySpeed.get();
-        double zNeed = -this.zSpeed.get();
+        double zNeed = this.zSpeed.get();
 
         // 2. Apply deadband
         xNeed = Math.abs(xNeed) > SwerveDriveConstants.kDeadband ? xNeed : 0.0;
