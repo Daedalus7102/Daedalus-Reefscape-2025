@@ -4,6 +4,7 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.config.PIDConstants;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -23,7 +24,7 @@ import frc.robot.Constants.SwerveDriveConstants;
 
 public class Swerve extends SubsystemBase {
 
-    private final Field2d field;
+    private final Field2d field = new Field2d();
         // Specific and fixed values ​​that each module will have, such as the ID of its motors, its PID value, etc. The data is stored in the
         // class "Constants" and are being accessed from the nomenclature Constants.'variable name'
         private Module frontLeft = new Module(SwerveDriveConstants.driveMotorIDfrontLeft, 
@@ -60,10 +61,10 @@ public class Swerve extends SubsystemBase {
     
     
     // "x" and "y" values ​​that represent the location of each module in the chassis
-    Translation2d frontLeftTranslation = new Translation2d(-0.35, 0.35); //Units in Meters
-    Translation2d frontRightTranslation = new Translation2d(0.35, 0.35); //Units in Meters
-    Translation2d backLeftTranslation = new Translation2d(-0.35, -0.35); //Units in Meters
-    Translation2d backRightTranslation = new Translation2d(0.35, -0.35); //Units in Meters
+    Translation2d frontLeftTranslation = new Translation2d(-0.285, 0.285); //Units in Meters
+    Translation2d frontRightTranslation = new Translation2d(0.285, 0.285); //Units in Meters
+    Translation2d backLeftTranslation = new Translation2d(-0.285, -0.285); //Units in Meters
+    Translation2d backRightTranslation = new Translation2d(0.285, -0.285); //Units in Meters
     // Declare Gyroscope Pigeon 2
     final Pigeon2 gyro = new Pigeon2(0, "Drivetrain");
 
@@ -156,8 +157,8 @@ public class Swerve extends SubsystemBase {
                     this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                     (speeds, feedforwards) -> runVelcAuto(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
                     new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                            new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                            new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+                            new PIDConstants(2.7, 0.0, 0.005), // Translation PID constants
+                            new PIDConstants(0.02, 0.0, 0.0) // Rotation PID constants
                     ),
                     config, // The robot configuration
                     () -> {
@@ -178,7 +179,7 @@ public class Swerve extends SubsystemBase {
             DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", e.getStackTrace());
             e.printStackTrace();
         }
-        field = new Field2d();
+        SmartDashboard.putData("Field", field);
     }
 
     public void updateShuffle(){
@@ -195,6 +196,7 @@ public class Swerve extends SubsystemBase {
     public void periodic() {
         odometry.update(getRotation2d(), positions);
         poseEstimator.update(getRotation2d(), positions);
+        field.setRobotPose(getPose2d());
         
         SmartDashboard.putNumber("TurnMotor frontLeft angle", this.frontLeft.getTurnEncoder());
         SmartDashboard.putNumber("TurnMotor frontRigh anglet", this.frontRight.getTurnEncoder());
@@ -206,8 +208,6 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("DriveMotor backLeft output", this.backLeft.getDriveVelocity());
         SmartDashboard.putNumber("DriveMotor backright output", this.backRight.getDriveVelocity());
         SmartDashboard.putNumber("Gyro value", getAngle());
-
-        SmartDashboard.putData("Field", field);
 
         DataLogManager.start();
         DriverStation.startDataLog(DataLogManager.getLog());

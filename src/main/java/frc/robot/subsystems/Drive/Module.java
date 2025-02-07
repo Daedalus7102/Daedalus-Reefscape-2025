@@ -45,7 +45,7 @@ public class Module extends SubsystemBase{
       }
 
     public void setDesiredState(SwerveModuleState desiredState, String moduleName){
-        // desiredState =  SwerveModuleState.optimize(desiredState, getAngle()); 
+        desiredState =  SwerveModuleState.optimize(desiredState, getAngle()); 
 
         if (Math.abs(desiredState.speedMetersPerSecond) < 0.05){
             stop();
