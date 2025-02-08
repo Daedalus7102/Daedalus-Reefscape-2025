@@ -5,13 +5,13 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
+import frc.robot.Constants.SwerveDriveConstants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.Drive.Swerve;
 
@@ -39,8 +39,9 @@ public class RobotContainer {
         swerve,
         () -> (driverController.getLeftY()),
         () -> (-driverController.getLeftX()),
-        () -> (driverController.getRightX()),
-        false
+        () -> (-driverController.getRightX()),
+        false,
+        SwerveDriveConstants.chassisHighMaxOutput
       )
     );
 
@@ -49,8 +50,9 @@ public class RobotContainer {
         swerve,
         () -> (driverController.getLeftY()),
         () -> (-driverController.getLeftX()),
-        () -> (driverController.getRightX()),
-        true
+        () -> (-driverController.getRightX()),
+        true,
+        SwerveDriveConstants.chassisLowMaxOutput
       )
     );
 

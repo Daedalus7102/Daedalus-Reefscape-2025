@@ -29,7 +29,7 @@ public class Constants {
         public static final double BACK_RIGHT_MODULE_STEER_OFFSET = 180;
 
         //PID values [We will assume that we have to use the same value for all 4 modules] (Used in "Chassis" class)
-        public static final double genericModulekP = 0.007;
+        public static final double genericModulekP = 0.005;
         public static final double genericModulekI = 0.0;
         public static final double genericModulekD = 0.0;
 
@@ -38,10 +38,11 @@ public class Constants {
         public static final double driveRPS2MPS = driveRevsToMeters;
 
         //Variable setting the maximum speed of the modules (Used in "Chassi" class)
-        public static final double chassisMaxOutput = 0.9;
+        public static final double chassisHighMaxOutput = 0.9;
+        public static final double chassisLowMaxOutput = 0.2;
 
-        public static final double chassisXYAccelerationkP = 0.7;
-        public static final double chassisZAccelerationkP = 0.8;
+        public static final double chassisXYAccelerationkP = 0.9;
+        public static final double chassisZAccelerationkP = 1.2;
         public static final double kDeadband = 0.10;
 
         public static final PIDConstants translationConstants = new PIDConstants(5.0, 0.0, 0.0);

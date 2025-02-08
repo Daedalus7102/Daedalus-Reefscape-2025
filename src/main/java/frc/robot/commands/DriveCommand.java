@@ -12,8 +12,10 @@ public class DriveCommand extends Command{
     Supplier<Double> xSpeed, ySpeed, zSpeed;
     private final PIDController xPID, yPID, zPID;
     private boolean robotRelative = false;
+    private double chassisMaxOutput;
 
-    public DriveCommand(Swerve swerve, Supplier<Double> xSpeed, Supplier<Double> ySpeed, Supplier<Double> zSpeed, boolean robotRelative){
+    public DriveCommand(Swerve swerve, Supplier<Double> xSpeed, Supplier<Double> ySpeed, Supplier<Double> zSpeed, 
+                        boolean robotRelative, double chassisMaxOutput){
         addRequirements(swerve);
         this.swerve =swerve;
         
@@ -21,6 +23,7 @@ public class DriveCommand extends Command{
         this.ySpeed = ySpeed;
         this.zSpeed = zSpeed;
         this.robotRelative = robotRelative;
+        this.chassisMaxOutput = chassisMaxOutput;
         
         this.xPID = new PIDController(SwerveDriveConstants.chassisXYAccelerationkP, 0, 0);
         this.yPID = new PIDController(SwerveDriveConstants.chassisXYAccelerationkP, 0, 0);
@@ -45,7 +48,7 @@ public class DriveCommand extends Command{
         yNeed = yPID.calculate(yNeed);
         zNeed = zPID.calculate(zNeed);
         
-        swerve.setChassisSpeeds(xNeed, yNeed, zNeed, robotRelative);
+        swerve.setChassisSpeeds(xNeed, yNeed, zNeed, robotRelative, chassisMaxOutput);
     }
 
     @Override

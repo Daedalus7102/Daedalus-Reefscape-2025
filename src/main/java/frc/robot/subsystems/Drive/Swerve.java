@@ -4,7 +4,6 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.config.PIDConstants;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -61,10 +60,10 @@ public class Swerve extends SubsystemBase {
     
     
     // "x" and "y" values ​​that represent the location of each module in the chassis
-    Translation2d frontLeftTranslation = new Translation2d(-0.285, 0.285); //Units in Meters
-    Translation2d frontRightTranslation = new Translation2d(0.285, 0.285); //Units in Meters
-    Translation2d backLeftTranslation = new Translation2d(-0.285, -0.285); //Units in Meters
-    Translation2d backRightTranslation = new Translation2d(0.285, -0.285); //Units in Meters
+    Translation2d frontLeftTranslation = new Translation2d(-0.28, 0.28); //Units in Meters
+    Translation2d frontRightTranslation = new Translation2d(0.28, 0.28); //Units in Meters
+    Translation2d backLeftTranslation = new Translation2d(-0.28, -0.28); //Units in Meters
+    Translation2d backRightTranslation = new Translation2d(0.28, -0.28); //Units in Meters
     // Declare Gyroscope Pigeon 2
     final Pigeon2 gyro = new Pigeon2(0, "Drivetrain");
 
@@ -78,25 +77,26 @@ public class Swerve extends SubsystemBase {
     SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(kinematics, getRotation2d(), positions, new Pose2d(0, 0, getRotation2d()));
 
     // Method that would be used if we did not want the robot to have court orientation (this way does not implement the gyroscope)
-    public void setRobotRelativeSpeeds(double xSpeed, double ySpeed, double zSpeed){
+    public void setRobotRelativeSpeeds(double xSpeed, double ySpeed, double zSpeed, double chassisMaxOutput){
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(new ChassisSpeeds(xSpeed, ySpeed, zSpeed));
+        SwerveDriveKinematics.desaturateWheelSpeeds(states, chassisMaxOutput);
         setModuleStates(states);
     }
 
-    public void setFieldOrientedSpeed(double xSpeed, double ySpeed, double zSpeed){
+    public void setFieldOrientedSpeed(double xSpeed, double ySpeed, double zSpeed, double chassisMaxOutput){
         ChassisSpeeds chassisSpeedsFieldOriented = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, zSpeed, getRotation2d());    
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeedsFieldOriented);
         
         // Method that limits all modules proportionally to maintain the desired behavior when moving the robot
-        SwerveDriveKinematics.desaturateWheelSpeeds(states, SwerveDriveConstants.chassisMaxOutput);
+        SwerveDriveKinematics.desaturateWheelSpeeds(states, chassisMaxOutput);
         setModuleStates(states);
     }
 
-    public void setChassisSpeeds(double xSpeed, double ySpeed, double zSpeed, boolean robotRelative) {
+    public void setChassisSpeeds(double xSpeed, double ySpeed, double zSpeed, boolean robotRelative, double chassisMaxOutput) {
         if (robotRelative == false) {
-            setFieldOrientedSpeed(xSpeed, ySpeed, zSpeed);
+            setFieldOrientedSpeed(xSpeed, ySpeed, zSpeed, chassisMaxOutput);
         } else {
-            setRobotRelativeSpeeds(xSpeed, ySpeed, zSpeed);
+            setRobotRelativeSpeeds(xSpeed, ySpeed, zSpeed, chassisMaxOutput);
         }
     }
 
@@ -115,16 +115,18 @@ public class Swerve extends SubsystemBase {
     }
 
     private ChassisSpeeds getChassisSpeeds() {
-    return new ChassisSpeeds(0, 0, 0);
+    return kinematics.toChassisSpeeds(
+        frontLeft.getSwerveState(),
+        frontRight.getSwerveState(),
+        backLeft.getSwerveState(),
+        backRight.getSwerveState()
+    );
+    //new ChassisSpeeds(0, 0, 0);
     }
 
     private void runVelcAuto(ChassisSpeeds speeds){
         setModuleStates(kinematics.toSwerveModuleStates(speeds));
     }
-
-    // public ChassisSpeeds getFieldOrienteSpeeds(){
-    //     return ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getRotation2d());
-    // }
 
     private Rotation2d getRotation2d(){
         return new Rotation2d(Math.toRadians(getAngle()));
@@ -135,10 +137,10 @@ public class Swerve extends SubsystemBase {
     }
 
     private void setOdoPose(Pose2d pose){
-        positions[0] = frontLeft.getPosition();
-        positions[1] = frontRight.getPosition();
-        positions[2] = backLeft.getPosition();
-        positions[3] = backRight.getPosition();
+        // positions[0] = frontLeft.getPosition();
+        // positions[1] = frontRight.getPosition();
+        // positions[2] = backLeft.getPosition();
+        // positions[3] = backRight.getPosition();
 
         odometry.resetPosition(getRotation2d(), positions, pose);
         poseEstimator.resetPosition(getRotation2d(), positions, pose);
@@ -157,9 +159,9 @@ public class Swerve extends SubsystemBase {
                     this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                     (speeds, feedforwards) -> runVelcAuto(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
                     new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                            new PIDConstants(2.7, 0.0, 0.005), // Translation PID constants
-                            new PIDConstants(0.02, 0.0, 0.0) // Rotation PID constants
-                    ),
+                            new PIDConstants(2.8, 0.0, 0.0), // Translation PID constants
+                            new PIDConstants(3.387, 0.0, 0.002) // Rotation PID constants
+                    ), //3.032
                     config, // The robot configuration
                     () -> {
                     // Boolean supplier that controls when the path will be mirrored for the red alliance
