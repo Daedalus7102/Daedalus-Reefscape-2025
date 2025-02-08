@@ -48,6 +48,7 @@ public class Constants {
         public static final PIDConstants translationConstants = new PIDConstants(5.0, 0.0, 0.0);
         public static final PIDConstants rotationConstants = new PIDConstants(5.0, 0.0, 0.0);
 
+        public static final double autoRotationkDeadband = 0.10;
     }
 
 }

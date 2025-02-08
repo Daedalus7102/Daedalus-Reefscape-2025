@@ -65,7 +65,7 @@ public class Swerve extends SubsystemBase {
     Translation2d backLeftTranslation = new Translation2d(-0.28, -0.28); //Units in Meters
     Translation2d backRightTranslation = new Translation2d(0.28, -0.28); //Units in Meters
     // Declare Gyroscope Pigeon 2
-    final Pigeon2 gyro = new Pigeon2(0, "Drivetrain");
+    public final Pigeon2 gyro = new Pigeon2(0, "Drivetrain");
 
     final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(frontLeftTranslation, backLeftTranslation, frontRightTranslation, backRightTranslation);
 
@@ -109,7 +109,7 @@ public class Swerve extends SubsystemBase {
         backRight.setDesiredState(states[3], "Back Right");
     }
 
-    private double getAngle(){
+    public double getAngle(){
         // Function to ask Pigeon the angle it is measuring
         return (this.gyro.getAngle())%360;
     }
