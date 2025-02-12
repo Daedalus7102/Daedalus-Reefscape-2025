@@ -109,9 +109,17 @@ public class Swerve extends SubsystemBase {
         backRight.setDesiredState(states[3], "Back Right");
     }
 
-    public double getAngle(){
+    private double getAngle(){
         // Function to ask Pigeon the angle it is measuring
         return (this.gyro.getAngle()%360);
+    }
+
+    public double getNormalizedGyroAngle(){
+        double angle = gyro.getAngle() % 360;
+        if (angle < 0){
+            angle = angle + 360;
+        }
+        return angle;
     }
 
     private ChassisSpeeds getChassisSpeeds() {

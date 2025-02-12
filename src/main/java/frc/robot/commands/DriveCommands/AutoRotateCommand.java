@@ -9,26 +9,17 @@ public class AutoRotateCommand extends Command {
     private final Swerve swerve;
     private double angleError;
     private boolean needsCalibration;
-    private boolean rotate180Deg;
 
     public AutoRotateCommand(Swerve swerve, boolean rotate180Deg) {
         this.swerve = swerve;
         addRequirements(swerve);
     }
 
-    private double getGyroValue(){
-        double angle = swerve.gyro.getAngle() % 360;
-        if (angle < 0){
-            angle = angle + 360;
-        }
-        return angle;
-    }
-
     private int desiredAngle(){
         int setPoints[] = {0, 60, 120, 180, 240, 300};
         
         // Returns from 0 - 5 the array position to get the desired angle
-        int angleArrayPosition = (int) Math.round(getGyroValue() / 60);
+        int angleArrayPosition = (int) Math.round(swerve.getNormalizedGyroAngle() / 60);
         if(angleArrayPosition == 6){
             angleArrayPosition = 0;
         }
@@ -36,12 +27,12 @@ public class AutoRotateCommand extends Command {
     }
 
     private double calibrateZ(int setPoint){
-        needsCalibration = Math.abs(getGyroValue() - setPoint) > AutoRotateConstants.autoRotationkDeadband;
+        needsCalibration = Math.abs(swerve.getNormalizedGyroAngle() - setPoint) > AutoRotateConstants.autoRotationkDeadband;
         
         if(needsCalibration){
-            angleError = setPoint - getGyroValue();
-            if(setPoint == 0 && getGyroValue() > 300){
-                angleError = 360 - getGyroValue();
+            angleError = setPoint - swerve.getNormalizedGyroAngle();
+            if(setPoint == 0 && swerve.getNormalizedGyroAngle() > 300){
+                angleError = 360 - swerve.getNormalizedGyroAngle();
             }
             double speed = angleError * AutoRotateConstants.chassisZAutoRotationkP;
             return speed;
@@ -55,7 +46,7 @@ public class AutoRotateCommand extends Command {
     @Override
     public void execute() {
         SmartDashboard.putNumber("array position", desiredAngle());
-        SmartDashboard.putNumber("array position without rounding", getGyroValue());
+        SmartDashboard.putNumber("array position without rounding", swerve.getNormalizedGyroAngle());
         SmartDashboard.putNumber("angle error", angleError);
         double zSpeed = calibrateZ(desiredAngle());
         swerve.setChassisSpeeds(0, 0, zSpeed, true, AutoRotateConstants.autoRotationMaxOutput);
