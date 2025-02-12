@@ -1,9 +1,9 @@
-package frc.robot.commands;
+package frc.robot.commands.DriveCommands;
 
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.SwerveDriveConstants;
+import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.Drive.Swerve;
 import edu.wpi.first.math.controller.PIDController;
 
@@ -25,9 +25,9 @@ public class DriveCommand extends Command{
         this.robotRelative = robotRelative;
         this.chassisMaxOutput = chassisMaxOutput;
         
-        this.xPID = new PIDController(SwerveDriveConstants.chassisXYAccelerationkP, 0, 0);
-        this.yPID = new PIDController(SwerveDriveConstants.chassisXYAccelerationkP, 0, 0);
-        this.zPID = new PIDController(SwerveDriveConstants.chassisZAccelerationkP, 0, 0);
+        this.xPID = new PIDController(SwerveConstants.chassisXYAccelerationkP, 0, 0);
+        this.yPID = new PIDController(SwerveConstants.chassisXYAccelerationkP, 0, 0);
+        this.zPID = new PIDController(SwerveConstants.chassisZAccelerationkP, 0, 0);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -39,9 +39,9 @@ public class DriveCommand extends Command{
         double zNeed = this.zSpeed.get();
 
         // 2. Apply deadband
-        xNeed = Math.abs(xNeed) > SwerveDriveConstants.kDeadband ? xNeed : 0.0;
-        yNeed = Math.abs(yNeed) > SwerveDriveConstants.kDeadband ? yNeed : 0.0;
-        zNeed = Math.abs(zNeed) > SwerveDriveConstants.kDeadband ? zNeed : 0.0;
+        xNeed = Math.abs(xNeed) > SwerveConstants.kDeadband ? xNeed : 0.0;
+        yNeed = Math.abs(yNeed) > SwerveConstants.kDeadband ? yNeed : 0.0;
+        zNeed = Math.abs(zNeed) > SwerveConstants.kDeadband ? zNeed : 0.0;
 
         // 3. Make the driving smoother
         xNeed = xPID.calculate(xNeed);

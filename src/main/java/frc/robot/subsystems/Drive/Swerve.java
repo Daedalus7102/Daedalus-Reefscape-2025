@@ -19,44 +19,44 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.SwerveDriveConstants;
+import frc.robot.Constants.SwerveConstants;
 
 public class Swerve extends SubsystemBase {
 
     private final Field2d field = new Field2d();
         // Specific and fixed values ​​that each module will have, such as the ID of its motors, its PID value, etc. The data is stored in the
         // class "Constants" and are being accessed from the nomenclature Constants.'variable name'
-        private Module frontLeft = new Module(SwerveDriveConstants.driveMotorIDfrontLeft, 
-                                    SwerveDriveConstants.turnMotorIDfrontLeft, 
-                                    SwerveDriveConstants.cancoderIDfrontLeft, 
-                                    SwerveDriveConstants.genericModulekP, 
-                                    SwerveDriveConstants.genericModulekI, 
-                                    SwerveDriveConstants.genericModulekD, 
-                                    SwerveDriveConstants.FRONT_LEFT_MODULE_STEER_OFFSET, "Front Left");
+        private Module frontLeft = new Module(SwerveConstants.driveMotorIDfrontLeft, 
+                                    SwerveConstants.turnMotorIDfrontLeft, 
+                                    SwerveConstants.cancoderIDfrontLeft, 
+                                    SwerveConstants.genericModulekP, 
+                                    SwerveConstants.genericModulekI, 
+                                    SwerveConstants.genericModulekD, 
+                                    SwerveConstants.FRONT_LEFT_MODULE_STEER_OFFSET, "Front Left");
 
-        private Module frontRight = new Module(SwerveDriveConstants.driveMotorIDfrontRight, 
-                                    SwerveDriveConstants.turnMotorIDfrontRight, 
-                                    SwerveDriveConstants.cancoderIDfrontRight, 
-                                    SwerveDriveConstants.genericModulekP, 
-                                    SwerveDriveConstants.genericModulekI, 
-                                    SwerveDriveConstants.genericModulekD,
-                                    SwerveDriveConstants.FRONT_RIGHT_MODULE_STEER_OFFSET, "Front Right");
+        private Module frontRight = new Module(SwerveConstants.driveMotorIDfrontRight, 
+                                    SwerveConstants.turnMotorIDfrontRight, 
+                                    SwerveConstants.cancoderIDfrontRight, 
+                                    SwerveConstants.genericModulekP, 
+                                    SwerveConstants.genericModulekI, 
+                                    SwerveConstants.genericModulekD,
+                                    SwerveConstants.FRONT_RIGHT_MODULE_STEER_OFFSET, "Front Right");
 
-        private Module backLeft = new Module(SwerveDriveConstants.driveMotorIDbackLeft, 
-                                    SwerveDriveConstants.turnMotorIDbackLeft, 
-                                    SwerveDriveConstants.cancoderIDbackLeft, 
-                                    SwerveDriveConstants.genericModulekP, 
-                                    SwerveDriveConstants.genericModulekI, 
-                                    SwerveDriveConstants.genericModulekD,
-                                    SwerveDriveConstants.BACK_LEFT_MODULE_STEER_OFFSET, "Back Left");
+        private Module backLeft = new Module(SwerveConstants.driveMotorIDbackLeft, 
+                                    SwerveConstants.turnMotorIDbackLeft, 
+                                    SwerveConstants.cancoderIDbackLeft, 
+                                    SwerveConstants.genericModulekP, 
+                                    SwerveConstants.genericModulekI, 
+                                    SwerveConstants.genericModulekD,
+                                    SwerveConstants.BACK_LEFT_MODULE_STEER_OFFSET, "Back Left");
 
-        private Module backRight = new Module(SwerveDriveConstants.driveMotorIDbackRight, 
-                                    SwerveDriveConstants.turnMotorIDbackRight, 
-                                    SwerveDriveConstants.cancoderIDbackRight, 
-                                    SwerveDriveConstants.genericModulekP, 
-                                    SwerveDriveConstants.genericModulekI, 
-                                    SwerveDriveConstants.genericModulekD,
-                                    SwerveDriveConstants.BACK_RIGHT_MODULE_STEER_OFFSET, "Back Right");
+        private Module backRight = new Module(SwerveConstants.driveMotorIDbackRight, 
+                                    SwerveConstants.turnMotorIDbackRight, 
+                                    SwerveConstants.cancoderIDbackRight, 
+                                    SwerveConstants.genericModulekP, 
+                                    SwerveConstants.genericModulekI, 
+                                    SwerveConstants.genericModulekD,
+                                    SwerveConstants.BACK_RIGHT_MODULE_STEER_OFFSET, "Back Right");
     
     
     // "x" and "y" values ​​that represent the location of each module in the chassis
@@ -111,7 +111,7 @@ public class Swerve extends SubsystemBase {
 
     public double getAngle(){
         // Function to ask Pigeon the angle it is measuring
-        return (this.gyro.getAngle())%360;
+        return (this.gyro.getAngle()%360);
     }
 
     private ChassisSpeeds getChassisSpeeds() {

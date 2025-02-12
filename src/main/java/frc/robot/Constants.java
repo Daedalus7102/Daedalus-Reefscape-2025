@@ -3,7 +3,7 @@ package frc.robot;
 import com.pathplanner.lib.config.PIDConstants;
 
 public class Constants {
-    public static final class SwerveDriveConstants {
+    public static final class SwerveConstants {
         //Front Left Module Information (Used in the "Chassi" class)
         public static final int driveMotorIDfrontLeft = 3;
         public static final int turnMotorIDfrontLeft = 4;
@@ -47,8 +47,12 @@ public class Constants {
 
         public static final PIDConstants translationConstants = new PIDConstants(5.0, 0.0, 0.0);
         public static final PIDConstants rotationConstants = new PIDConstants(5.0, 0.0, 0.0);
+    }
 
+    public static final class AutoRotateConstants {
+        public static final double chassisZAutoRotationkP = 0.04;
         public static final double autoRotationkDeadband = 0.10;
+        public static final double autoRotationMaxOutput = 0.15;
     }
 
 }

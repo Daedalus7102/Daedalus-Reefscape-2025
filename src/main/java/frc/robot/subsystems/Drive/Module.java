@@ -9,7 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.SwerveDriveConstants;
+import frc.robot.Constants.SwerveConstants;
 
 public class Module extends SubsystemBase{
     private final SparkMax driveMotor;
@@ -86,13 +86,13 @@ public class Module extends SubsystemBase{
     }
 
      public double getDriveVelocity(){
-        return driveMotor.getEncoder().getVelocity() * SwerveDriveConstants.driveRPS2MPS;
+        return driveMotor.getEncoder().getVelocity() * SwerveConstants.driveRPS2MPS;
     }
 
     public double getDrivePosition(){
         double position;
         position = driveMotor.getEncoder().getPosition();
-        position *= SwerveDriveConstants.driveRevsToMeters;
+        position *= SwerveConstants.driveRevsToMeters;
         return position;
     }
 

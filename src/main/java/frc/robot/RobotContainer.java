@@ -11,8 +11,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
-import frc.robot.Constants.SwerveDriveConstants;
-import frc.robot.commands.DriveCommand;
+import frc.robot.Constants.SwerveConstants;
+import frc.robot.commands.DriveCommands.AutoRotateCommand;
+import frc.robot.commands.DriveCommands.DriveCommand;
 import frc.robot.subsystems.Drive.Swerve;
 
 public class RobotContainer {
@@ -41,7 +42,7 @@ public class RobotContainer {
         () -> (-driverController.getLeftX()),
         () -> (-driverController.getRightX()),
         false,
-        SwerveDriveConstants.chassisHighMaxOutput
+        SwerveConstants.chassisHighMaxOutput
       )
     );
 
@@ -52,12 +53,13 @@ public class RobotContainer {
         () -> (-driverController.getLeftX()),
         () -> (-driverController.getRightX()),
         true,
-        SwerveDriveConstants.chassisLowMaxOutput
+        SwerveConstants.chassisLowMaxOutput
       )
     );
 
     // ------------ Driver Controller ------------
     driverController.triangle().whileTrue(new InstantCommand(() -> swerve.zeroHeading()));
+    driverController.square().toggleOnTrue(new AutoRotateCommand(swerve, false));
 
     // ----------- Operator Controller -----------
 
