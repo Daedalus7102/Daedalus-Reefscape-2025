@@ -51,8 +51,8 @@ public class Constants {
 
     public static final class AutoRotateConstants {
         public static final double chassisZAutoRotationkP = 0.04;
-        public static final double autoRotationkDeadband = 0.10;
-        public static final double autoRotationMaxOutput = 0.15;
+        public static final double autoRotationkDeadband = 0.30;
+        public static final double autoRotationMaxOutput = 0.2;
     }
 
 }

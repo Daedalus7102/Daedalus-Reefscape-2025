@@ -25,7 +25,7 @@ public class AutoRotateCommand extends Command {
     }
 
     private int desiredAngle(){
-        int setPoints[] = {0, 60, 120, 180, 240, 320};
+        int setPoints[] = {0, 60, 120, 180, 240, 300};
         
         // Returns from 0 - 5 the array position to get the desired angle
         int angleArrayPosition = (int) Math.round(getGyroValue() / 60);
@@ -40,6 +40,9 @@ public class AutoRotateCommand extends Command {
         
         if(needsCalibration){
             angleError = setPoint - getGyroValue();
+            if(setPoint == 0 && getGyroValue() > 300){
+                angleError = 360 - getGyroValue();
+            }
             double speed = angleError * AutoRotateConstants.chassisZAutoRotationkP;
             return speed;
         }
@@ -56,7 +59,7 @@ public class AutoRotateCommand extends Command {
         SmartDashboard.putNumber("angle error", angleError);
         double zSpeed = calibrateZ(desiredAngle());
         swerve.setChassisSpeeds(0, 0, zSpeed, true, AutoRotateConstants.autoRotationMaxOutput);
-
+        SmartDashboard.putNumber("speed", zSpeed);
     }
 
     @Override
@@ -65,7 +68,7 @@ public class AutoRotateCommand extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-    return false;
+    return !needsCalibration;
     }
 
 }

@@ -59,7 +59,7 @@ public class RobotContainer {
 
     // ------------ Driver Controller ------------
     driverController.triangle().whileTrue(new InstantCommand(() -> swerve.zeroHeading()));
-    driverController.square().toggleOnTrue(new AutoRotateCommand(swerve, false));
+    driverController.square().whileTrue(new AutoRotateCommand(swerve, false));
 
     // ----------- Operator Controller -----------
 
