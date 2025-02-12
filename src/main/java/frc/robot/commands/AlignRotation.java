@@ -1,16 +1,16 @@
-package frc.robot.commands.DriveCommands;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.AutoRotateConstants;
+import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.Drive.Swerve;
 
-public class AutoRotateCommand extends Command {
+public class AlignRotation extends Command {
     private final Swerve swerve;
     private double angleError;
     private boolean needsCalibration;
 
-    public AutoRotateCommand(Swerve swerve, boolean rotate180Deg) {
+    public AlignRotation(Swerve swerve) {
         this.swerve = swerve;
         addRequirements(swerve);
     }
@@ -27,14 +27,14 @@ public class AutoRotateCommand extends Command {
     }
 
     private double calibrateZ(int setPoint){
-        needsCalibration = Math.abs(swerve.getNormalizedGyroAngle() - setPoint) > AutoRotateConstants.autoRotationkDeadband;
+        needsCalibration = Math.abs(swerve.getNormalizedGyroAngle() - setPoint) > SwerveConstants.AutoRotateConstants.autoRotationkDeadband;
         
         if(needsCalibration){
             angleError = setPoint - swerve.getNormalizedGyroAngle();
-            if(setPoint == 0 && swerve.getNormalizedGyroAngle() > 300){
+            if(setPoint == 0 && swerve.getNormalizedGyroAngle() > 330){
                 angleError = 360 - swerve.getNormalizedGyroAngle();
             }
-            double speed = angleError * AutoRotateConstants.chassisZAutoRotationkP;
+            double speed = angleError * SwerveConstants.AutoRotateConstants.chassisZAutoRotationkP;
             return speed;
         }
         return 0.0;
@@ -49,7 +49,7 @@ public class AutoRotateCommand extends Command {
         SmartDashboard.putNumber("array position without rounding", swerve.getNormalizedGyroAngle());
         SmartDashboard.putNumber("angle error", angleError);
         double zSpeed = calibrateZ(desiredAngle());
-        swerve.setChassisSpeeds(0, 0, zSpeed, true, AutoRotateConstants.autoRotationMaxOutput);
+        swerve.setChassisSpeeds(0, 0, zSpeed, true, SwerveConstants.AutoRotateConstants.autoRotationMaxOutput);
         SmartDashboard.putNumber("speed", zSpeed);
     }
 

@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.commands.DriveCommands.AutoRotateCommand;
-import frc.robot.commands.DriveCommands.DriveCommand;
+import frc.robot.commands.AlignRotation;
+import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.Drive.Swerve;
 
 public class RobotContainer {
@@ -38,8 +38,8 @@ public class RobotContainer {
     swerve.setDefaultCommand(
       new DriveCommand(
         swerve,
-        () -> (driverController.getLeftY()),
-        () -> (-driverController.getLeftX()),
+        () -> (-driverController.getLeftY()),
+        () -> (driverController.getLeftX()),
         () -> (-driverController.getRightX()),
         false,
         SwerveConstants.chassisHighMaxOutput
@@ -49,8 +49,8 @@ public class RobotContainer {
     driverController.L1().whileTrue(
       new DriveCommand(
         swerve,
-        () -> (driverController.getLeftY()),
-        () -> (-driverController.getLeftX()),
+        () -> (-driverController.getLeftY()),
+        () -> (driverController.getLeftX()),
         () -> (-driverController.getRightX()),
         true,
         SwerveConstants.chassisLowMaxOutput
@@ -59,7 +59,7 @@ public class RobotContainer {
 
     // ------------ Driver Controller ------------
     driverController.triangle().whileTrue(new InstantCommand(() -> swerve.zeroHeading()));
-    driverController.square().whileTrue(new AutoRotateCommand(swerve, false));
+    driverController.square().whileTrue(new AlignRotation(swerve));
 
     // ----------- Operator Controller -----------
 

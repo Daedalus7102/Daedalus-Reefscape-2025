@@ -5,28 +5,28 @@ import com.pathplanner.lib.config.PIDConstants;
 public class Constants {
     public static final class SwerveConstants {
         //Front Left Module Information (Used in the "Chassi" class)
-        public static final int driveMotorIDfrontLeft = 3;
-        public static final int turnMotorIDfrontLeft = 4;
-        public static final int cancoderIDfrontLeft = 3;
-        public static final double FRONT_LEFT_MODULE_STEER_OFFSET = 180;
+        public static final int driveMotorIDfrontLeft = 1;
+        public static final int turnMotorIDfrontLeft = 2;
+        public static final int cancoderIDfrontLeft = 1;
+        public static final double FRONT_LEFT_MODULE_STEER_OFFSET = 0;
 
         //Front Right Module Information (Used in the "Chassi" class)
-        public static final int driveMotorIDfrontRight = 1;
-        public static final int turnMotorIDfrontRight = 2;
-        public static final int cancoderIDfrontRight = 1;
-        public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = 180;
+        public static final int driveMotorIDfrontRight = 3;
+        public static final int turnMotorIDfrontRight = 4;
+        public static final int cancoderIDfrontRight = 2;
+        public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = 0;
 
         //Back Left Module Information (Used in the "Chassi" class)
-        public static final int driveMotorIDbackLeft = 7;
-        public static final int turnMotorIDbackLeft = 8;
-        public static final int cancoderIDbackLeft = 4;
-        public static final double BACK_LEFT_MODULE_STEER_OFFSET = 180;
+        public static final int driveMotorIDbackLeft = 5;
+        public static final int turnMotorIDbackLeft = 6;
+        public static final int cancoderIDbackLeft = 3;
+        public static final double BACK_LEFT_MODULE_STEER_OFFSET = 0;
 
         //Back Right Module Information (Used in the "Chassi" class)
-        public static final int driveMotorIDbackRight = 5;
-        public static final int turnMotorIDbackRight = 6;
-        public static final int cancoderIDbackRight = 2;
-        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = 180;
+        public static final int driveMotorIDbackRight = 7;
+        public static final int turnMotorIDbackRight = 8;
+        public static final int cancoderIDbackRight = 4;
+        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = 0;
 
         //PID values [We will assume that we have to use the same value for all 4 modules] (Used in "Chassis" class)
         public static final double genericModulekP = 0.005;
@@ -45,14 +45,17 @@ public class Constants {
         public static final double chassisZAccelerationkP = 1.2;
         public static final double kDeadband = 0.10;
 
-        public static final PIDConstants translationConstants = new PIDConstants(5.0, 0.0, 0.0);
-        public static final PIDConstants rotationConstants = new PIDConstants(5.0, 0.0, 0.0);
+        public static final class AutoRotateConstants {
+            public static final double chassisZAutoRotationkP = 0.04;
+            public static final double autoRotationkDeadband = 0.30;
+            public static final double autoRotationMaxOutput = 0.2;
+        }
     }
+    public static final class ElevatorConstants{
+        public static final double elevatorkP = 0.0001;
+        public static final double elevatorkI = 0;
+        public static final double elevatorkD = 0;
 
-    public static final class AutoRotateConstants {
-        public static final double chassisZAutoRotationkP = 0.04;
-        public static final double autoRotationkDeadband = 0.30;
-        public static final double autoRotationMaxOutput = 0.2;
+        public static final double elevatorMotorsMaxOutput = 0.1;
     }
-
 }
