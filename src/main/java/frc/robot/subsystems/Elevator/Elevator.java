@@ -38,7 +38,7 @@ public class Elevator {
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
     }
 
-    private enum elevatorPosition{
+    public enum ElevatorPosition{
         L1,
         L2,
         L3,
@@ -84,12 +84,18 @@ public class Elevator {
         return PID_value;
     }
 
-    public void moveElevatorMotors(){
-        elevatorLeftMotor.set(0.1);
-        elevatorRightMotor.set(0.1);
+    public void moveElevatorMotorsUp(){
+        elevatorLeftMotor.set(0.9);
+        elevatorRightMotor.set(0.9);
+    }
+    
+    public void moveElevatorMotorsDown(){
+        elevatorLeftMotor.set(-0.9);
+        elevatorRightMotor.set(-0.9);
     }
 
     public void periodic(){
-        SmartDashboard.putNumber("Encoder value", getElevatorPosition());
+        SmartDashboard.putBoolean("Lower limit switch", getLowerLimitSwitch());
+        SmartDashboard.putNumber("null", 1);
     }
 }

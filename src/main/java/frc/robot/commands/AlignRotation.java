@@ -45,12 +45,8 @@ public class AlignRotation extends Command {
 
     @Override
     public void execute() {
-        SmartDashboard.putNumber("array position", desiredAngle());
-        SmartDashboard.putNumber("array position without rounding", swerve.getNormalizedGyroAngle());
-        SmartDashboard.putNumber("angle error", angleError);
         double zSpeed = calibrateZ(desiredAngle());
         swerve.setChassisSpeeds(0, 0, zSpeed, true, SwerveConstants.AutoRotateConstants.autoRotationMaxOutput);
-        SmartDashboard.putNumber("speed", zSpeed);
     }
 
     @Override

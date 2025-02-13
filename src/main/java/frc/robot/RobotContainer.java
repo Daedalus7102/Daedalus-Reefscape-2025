@@ -14,12 +14,14 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.commands.AlignRotation;
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.MoveElevator;
 import frc.robot.subsystems.Drive.Swerve;
+import frc.robot.subsystems.Elevator.Elevator;
 
 public class RobotContainer {
-
   // Subsystems
   public Swerve swerve = new Swerve();
+  public Elevator elevator = new Elevator();
 
   // Controllers
   public static final CommandPS5Controller driverController = new CommandPS5Controller(0);
@@ -60,6 +62,8 @@ public class RobotContainer {
     // ------------ Driver Controller ------------
     driverController.triangle().whileTrue(new InstantCommand(() -> swerve.zeroHeading()));
     driverController.square().whileTrue(new AlignRotation(swerve));
+
+    driverController.cross().whileTrue(new MoveElevator(elevator, null));
 
     // ----------- Operator Controller -----------
 

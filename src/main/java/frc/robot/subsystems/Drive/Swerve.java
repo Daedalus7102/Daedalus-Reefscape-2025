@@ -209,7 +209,7 @@ public class Swerve extends SubsystemBase {
         field.setRobotPose(getPose2d());
         
         SmartDashboard.putNumber("TurnMotor frontLeft angle", this.frontLeft.getTurnEncoder());
-        SmartDashboard.putNumber("TurnMotor frontRigh anglet", this.frontRight.getTurnEncoder());
+        SmartDashboard.putNumber("TurnMotor frontRigh angle", this.frontRight.getTurnEncoder());
         SmartDashboard.putNumber("TurnMotor backLeft angle", this.backLeft.getTurnEncoder());
         SmartDashboard.putNumber("TurnMotor backright angle", this.backRight.getTurnEncoder());
 
