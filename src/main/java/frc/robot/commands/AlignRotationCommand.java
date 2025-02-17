@@ -1,16 +1,15 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.Drive.Swerve;
 
-public class AlignRotation extends Command {
+public class AlignRotationCommand extends Command {
     private final Swerve swerve;
     private double angleError;
     private boolean needsCalibration;
 
-    public AlignRotation(Swerve swerve) {
+    public AlignRotationCommand(Swerve swerve) {
         this.swerve = swerve;
         addRequirements(swerve);
     }

@@ -1,11 +1,8 @@
 package frc.robot.subsystems.Drive;
 
 import com.ctre.phoenix6.hardware.CANcoder;
-import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -18,7 +15,6 @@ import frc.robot.Constants.SwerveConstants;
 public class Module extends SubsystemBase{
     private final SparkMax driveMotor;
     private final SparkMax turnMotor;
-    private final SparkMaxConfig kBrakeConfig = new SparkMaxConfig();
 
     private double realAngle = 0;
     private double desiredAngle = 0;
@@ -36,15 +32,6 @@ public class Module extends SubsystemBase{
 
         this.driveMotor = new SparkMax(driveMotorID, MotorType.kBrushless);
         this.turnMotor = new SparkMax(turnMotorID, MotorType.kBrushless);
-
-        kBrakeConfig
-            .inverted(false)
-            .idleMode(IdleMode.kBrake);
-        kBrakeConfig.closedLoop
-            .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
-
-        driveMotor.configure(kBrakeConfig, null, PersistMode.kPersistParameters);
-        turnMotor.configure(kBrakeConfig, null, PersistMode.kPersistParameters);
 
         this.turnEncoder = new CANcoder(CANcoderID, "Drivetrain");
         this.turnPID = new PIDController(kP, kI, kD);

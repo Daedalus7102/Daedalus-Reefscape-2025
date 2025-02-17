@@ -12,16 +12,24 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.commands.AlignRotation;
+import frc.robot.commands.AlgaeCommand;
+import frc.robot.commands.AlignRotationCommand;
+import frc.robot.commands.CoralScoreCommand;
 import frc.robot.commands.DriveCommand;
-import frc.robot.commands.MoveElevator;
+import frc.robot.commands.MoveElevatorCommand;
 import frc.robot.subsystems.Drive.Swerve;
 import frc.robot.subsystems.Elevator.Elevator;
+import frc.robot.subsystems.Intakes.AlgaeIntake;
+import frc.robot.subsystems.Intakes.AlgaeIntake.AlgaeIntakeMode;
+import frc.robot.subsystems.Intakes.CoralIntake;
+import frc.robot.subsystems.Intakes.CoralIntake.CoralIntakeMode;
 
 public class RobotContainer {
   // Subsystems
   public Swerve swerve = new Swerve();
   public Elevator elevator = new Elevator();
+  public CoralIntake coralIntake = new CoralIntake();
+  public AlgaeIntake algaeIntake = new AlgaeIntake();
 
   // Controllers
   public static final CommandPS5Controller driverController = new CommandPS5Controller(0);
@@ -61,12 +69,17 @@ public class RobotContainer {
 
     // ------------ Driver Controller ------------
     driverController.triangle().whileTrue(new InstantCommand(() -> swerve.zeroHeading()));
-    driverController.square().whileTrue(new AlignRotation(swerve));
-
-    driverController.cross().whileTrue(new MoveElevator(elevator, null));
+    driverController.square().whileTrue(new AlignRotationCommand(swerve));
 
     // ----------- Operator Controller -----------
+    operatorController.povUp().whileTrue(new MoveElevatorCommand(elevator, null, 0.2));
+    operatorController.povDown().whileTrue(new MoveElevatorCommand(elevator, null, -0.2));
 
+    operatorController.triangle().whileTrue(new CoralScoreCommand(coralIntake, CoralIntakeMode.EJECT));
+    operatorController.cross().whileTrue(new CoralScoreCommand(coralIntake, CoralIntakeMode.INTAKE));
+
+    operatorController.L1().whileTrue(new AlgaeCommand(algaeIntake, AlgaeIntakeMode.INTAKE));
+    operatorController.R1().whileTrue(new AlgaeCommand(algaeIntake, AlgaeIntakeMode.EJECT));
   }
 
   public Command getAutonomousCommand() {
@@ -76,5 +89,9 @@ public class RobotContainer {
 
   public Swerve getChasisSubsystem() {
     return swerve;
+  }
+
+  public Elevator getElevatorSubsystem() {
+    return elevator;
   }
 }

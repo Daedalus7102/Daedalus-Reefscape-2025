@@ -1,6 +1,7 @@
 package frc.robot.subsystems.Elevator;
 
 import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
@@ -10,32 +11,45 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
 
-public class Elevator {
-    private final SparkMax elevatorLeftMotor = new SparkMax(9, MotorType.kBrushless);
-    private final SparkMax elevatorRightMotor = new SparkMax(10, MotorType.kBrushless);
+public class Elevator extends SubsystemBase{
+    // Left motor MUST be inverted because of how the robot is configured
+    private final SparkMax elevatorLeftMotor = new SparkMax(ElevatorConstants.elevatorLeftMotorID, MotorType.kBrushless);
+    // Right motor MUST NOT be inverted
+    private final SparkMax elevatorRightMotor = new SparkMax(ElevatorConstants.elevatorRightMotorID, MotorType.kBrushless);
 
-    private final DigitalInput upperLimitSwitch = new DigitalInput(1);
-    private final DigitalInput lowerLimitSwitch = new DigitalInput(0);
+    DigitalInput upperLimitSwitch = new DigitalInput(ElevatorConstants.upperLimitSwitchID);
+    DigitalInput lowerLimitSwitch = new DigitalInput(ElevatorConstants.lowerLimitSwitchID);
 
-    private final SparkMaxConfig kBrakeConfig = new SparkMaxConfig();
-    private final SparkMaxConfig kCoastConfig = new SparkMaxConfig();
-
+    private final SparkMaxConfig kBrakeGeneralConfig = new SparkMaxConfig();
+    private final SparkMaxConfig kCoastGeneralConfig = new SparkMaxConfig();
+    
     private final PIDController elevatorPID = new PIDController(ElevatorConstants.elevatorkP, ElevatorConstants.elevatorkI, ElevatorConstants.elevatorkD);
 
     public Elevator(){
-        kBrakeConfig
-            .inverted(false)
+        kBrakeGeneralConfig
             .idleMode(IdleMode.kBrake);
-        kBrakeConfig.closedLoop
+        kBrakeGeneralConfig.encoder
+            .positionConversionFactor(1.7262435)
+            .velocityConversionFactor(1.7262435);
+        kBrakeGeneralConfig.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+        kBrakeGeneralConfig.signals
+            .primaryEncoderPositionPeriodMs(5);
 
-        kCoastConfig
-            .inverted(false)
+        kCoastGeneralConfig
             .idleMode(IdleMode.kCoast);
-        kCoastConfig.closedLoop
+        kCoastGeneralConfig.encoder
+            .positionConversionFactor(0)
+            .velocityConversionFactor(0);
+        kCoastGeneralConfig.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+        kCoastGeneralConfig.signals
+            .primaryEncoderPositionPeriodMs(5);
+
+        elevatorMotorsToBrake();
     }
 
     public enum ElevatorPosition{
@@ -46,14 +60,16 @@ public class Elevator {
         PICKUP
     }
 
-    public void elevatorMotorsToCoast(){
-        elevatorLeftMotor.configure(kCoastConfig, null, PersistMode.kPersistParameters);
-        elevatorRightMotor.configure(kCoastConfig, null, PersistMode.kPersistParameters);
+    public void elevatorMotorsToBrake(){
+        // Left motor MUST be inverted
+        elevatorLeftMotor.configure(kBrakeGeneralConfig.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        // Right motor MUST NOT be inverted
+        elevatorRightMotor.configure(kBrakeGeneralConfig.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    public void elevatorMotorsToBrake(){
-        elevatorLeftMotor.configure(kBrakeConfig, null, PersistMode.kPersistParameters);
-        elevatorRightMotor.configure(kBrakeConfig, null, PersistMode.kPersistParameters);
+    public void elevatorMotorsToCoast(){
+        elevatorLeftMotor.configure(kCoastGeneralConfig.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        elevatorRightMotor.configure(kCoastGeneralConfig.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     public void stopElevatorMotors(){
@@ -62,16 +78,23 @@ public class Elevator {
     }
 
     public double getElevatorPosition(){
-        double elevatorPosition = elevatorRightMotor.getEncoder().getPosition();
+        double elevatorPosition = (elevatorRightMotor.getEncoder().getPosition() / 
+                                    elevatorRightMotor.getEncoder().getPosition()) * 2;
         return elevatorPosition;
     }
 
+    private double getElevatorVelocity(){
+        double elevatorVelocity = (elevatorRightMotor.getEncoder().getVelocity() / 
+                                    elevatorRightMotor.getEncoder().getVelocity()) * 2;
+        return elevatorVelocity;
+    }
+
     private boolean getUpperLimitSwitch(){
-        return upperLimitSwitch.get();
+        return !upperLimitSwitch.get();
     }
 
     private boolean getLowerLimitSwitch(){
-        return lowerLimitSwitch.get();
+        return !lowerLimitSwitch.get();
     }
 
     private double desaturatePidValue(double PID_value){
@@ -84,18 +107,23 @@ public class Elevator {
         return PID_value;
     }
 
-    public void moveElevatorMotorsUp(){
-        elevatorLeftMotor.set(0.9);
-        elevatorRightMotor.set(0.9);
-    }
-    
-    public void moveElevatorMotorsDown(){
-        elevatorLeftMotor.set(-0.9);
-        elevatorRightMotor.set(-0.9);
+    public void moveElevator(double velocity, boolean limitSecuritySystem){
+        elevatorLeftMotor.set(velocity);
+        elevatorRightMotor.set(velocity);
+
+        if (getLowerLimitSwitch() && limitSecuritySystem && velocity < 0){
+            stopElevatorMotors();
+        }
+        else if (getUpperLimitSwitch() && limitSecuritySystem && velocity > 0){
+            stopElevatorMotors();
+        }
     }
 
+    @Override
     public void periodic(){
-        SmartDashboard.putBoolean("Lower limit switch", getLowerLimitSwitch());
-        SmartDashboard.putNumber("null", 1);
+        SmartDashboard.putBoolean("Lower limit switch", getUpperLimitSwitch());
+        SmartDashboard.putBoolean("Upper limit switch", getLowerLimitSwitch());
+        SmartDashboard.putNumber("Elevator position", elevatorLeftMotor.getEncoder().getPosition());
+        SmartDashboard.putNumber("Elevator velocity", elevatorLeftMotor.getEncoder().getVelocity());
     }
 }

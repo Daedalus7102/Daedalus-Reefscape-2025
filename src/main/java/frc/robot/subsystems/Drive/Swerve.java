@@ -128,8 +128,7 @@ public class Swerve extends SubsystemBase {
         frontRight.getSwerveState(),
         backLeft.getSwerveState(),
         backRight.getSwerveState()
-    );
-    //new ChassisSpeeds(0, 0, 0);
+        );
     }
 
     private void runVelcAuto(ChassisSpeeds speeds){
@@ -145,11 +144,6 @@ public class Swerve extends SubsystemBase {
     }
 
     private void setOdoPose(Pose2d pose){
-        // positions[0] = frontLeft.getPosition();
-        // positions[1] = frontRight.getPosition();
-        // positions[2] = backLeft.getPosition();
-        // positions[3] = backRight.getPosition();
-
         odometry.resetPosition(getRotation2d(), positions, pose);
         poseEstimator.resetPosition(getRotation2d(), positions, pose);
     }

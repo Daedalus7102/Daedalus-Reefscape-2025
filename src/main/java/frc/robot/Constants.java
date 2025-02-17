@@ -1,7 +1,5 @@
 package frc.robot;
 
-import com.pathplanner.lib.config.PIDConstants;
-
 public class Constants {
     public static final class SwerveConstants {
         //Front Left Module Information (Used in the "Chassi" class)
@@ -52,10 +50,28 @@ public class Constants {
         }
     }
     public static final class ElevatorConstants{
+        public static final int elevatorLeftMotorID= 9;
+        public static final int elevatorRightMotorID= 10;
+
+        public static final int upperLimitSwitchID = 1;
+        public static final int lowerLimitSwitchID = 0;
+
         public static final double elevatorkP = 0.0001;
         public static final double elevatorkI = 0;
         public static final double elevatorkD = 0;
 
         public static final double elevatorMotorsMaxOutput = 0.1;
+    }
+
+    public static final class Intakes{
+        public static final class CoralIntakeConstants{
+            public static final double coralIntakeEjectVelocity = -0.4;
+            public static final double coralIntakeIntakeVleocity = 0.2;
+        }
+
+        public static final class AlgaeIntakeConstants{
+            public static final double algaeIntakeEjectVelocity = -0.1;
+            public static final double algaeIntakeIntakeVelocity = 0.1;
+        }
     }
 }
