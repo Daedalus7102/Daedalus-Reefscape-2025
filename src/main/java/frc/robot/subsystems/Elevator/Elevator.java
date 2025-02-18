@@ -36,8 +36,8 @@ public class Elevator extends SubsystemBase{
         kBrakeGeneralConfig
             .idleMode(IdleMode.kBrake);
         kBrakeGeneralConfig.encoder
-            .positionConversionFactor(1.7262435)
-            .velocityConversionFactor(1.7262435);
+            .positionConversionFactor(1.382488846)
+            .velocityConversionFactor(1.382488846);
         kBrakeGeneralConfig.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
         kBrakeGeneralConfig.signals
@@ -83,14 +83,14 @@ public class Elevator extends SubsystemBase{
     }
 
     public double getElevatorPosition(){
-        double elevatorPosition = (elevatorRightMotor.getEncoder().getPosition() / 
-                                    elevatorRightMotor.getEncoder().getPosition()) * 2;
+        double elevatorPosition = (elevatorRightMotor.getEncoder().getPosition() + 
+                                    elevatorRightMotor.getEncoder().getPosition()) / 2;
         return elevatorPosition;
     }
 
     private double getElevatorVelocity(){
-        double elevatorVelocity = (elevatorRightMotor.getEncoder().getVelocity() / 
-                                    elevatorRightMotor.getEncoder().getVelocity()) * 2;
+        double elevatorVelocity = (elevatorRightMotor.getEncoder().getVelocity() + 
+                                    elevatorRightMotor.getEncoder().getVelocity()) / 2;
         return elevatorVelocity;
     }
 
@@ -103,11 +103,11 @@ public class Elevator extends SubsystemBase{
     }
 
     private double desaturatePidValue(double PID_value){
-        if(PID_value > ElevatorConstants.elevatorMotorsMaxOutput){
-            PID_value =  ElevatorConstants.elevatorMotorsMaxOutput;
+        if(PID_value > ElevatorConstants.elevatorMotorsRiseMaxOutput){
+            PID_value =  ElevatorConstants.elevatorMotorsRiseMaxOutput;
         }
-        else if(PID_value < -ElevatorConstants.elevatorMotorsMaxOutput){
-            PID_value = -ElevatorConstants.elevatorMotorsMaxOutput;
+        else if(PID_value < ElevatorConstants.elevatorMotorsLowerMaxOutput){
+            PID_value = ElevatorConstants.elevatorMotorsLowerMaxOutput;
         }
         return PID_value;
     }
@@ -122,69 +122,56 @@ public class Elevator extends SubsystemBase{
             case HOME:
                 goal = ElevatorConstants.HomeGoalPosition;
                 goalElevatorPosition = "Home";
-
-                PIDvalue = elevatorPID.calculate(getElevatorPosition(), goal);
-                moveELevatorMotors(PIDvalue);
                 break;
 
             case L1:
                 goal = ElevatorConstants.L1GoalPosition;
                 goalElevatorPosition = "L1";
-
-                PIDvalue = elevatorPID.calculate(getElevatorPosition(), goal);
-                moveELevatorMotors(PIDvalue);
                 break;
 
             case L2:
                 goal = ElevatorConstants.L2GoalPosition;
                 goalElevatorPosition = "L2";
-
-                PIDvalue = elevatorPID.calculate(getElevatorPosition(), goal);
-                moveELevatorMotors(PIDvalue);
                 break;
 
             case L3:
                 goal = ElevatorConstants.L3GoalPosition;
                 goalElevatorPosition = "L3";
-
-                PIDvalue = elevatorPID.calculate(getElevatorPosition(), goal);
-                moveELevatorMotors(PIDvalue);
                 break;
 
             case L4:
                 goal = ElevatorConstants.L4GoalPosition;
                 goalElevatorPosition = "L4";
-
-                PIDvalue = elevatorPID.calculate(getElevatorPosition(), goal);
-                moveELevatorMotors(PIDvalue);
                 break;
 
             case PICKUP:
                 goal = ElevatorConstants.PickUpGoalPosition;
                 goalElevatorPosition = "PickUp";
-
-                PIDvalue = elevatorPID.calculate(getElevatorPosition(), goal);
-                moveELevatorMotors(PIDvalue);
                 break;
             }
 
-        //PIDvalue = desaturatePidValue(PIDvalue);
+        PIDvalue = elevatorPID.calculate(getElevatorPosition(), goal);
+        PIDvalue = desaturatePidValue(PIDvalue);
+        moveELevatorMotors(PIDvalue);
 
-        /*
-        if (getLowerLimitSwitch() && limitSecuritySystem && PIDvalue < 0){
+        if (getLowerLimitSwitch() && PIDvalue < 0){
             stopMotors();
         }
-        else if (getUpperLimitSwitch() && limitSecuritySystem && PIDvalue > 0){
+        else if (getUpperLimitSwitch() && PIDvalue > 0){
             stopMotors();
-        }*/
+        }
+
+        if (getElevatorPosition() < 0 && PIDvalue < 0){
+            stopMotors();
+        }
     }
 
     @Override
     public void periodic(){
         SmartDashboard.putBoolean("Lower limit switch", getUpperLimitSwitch());
         SmartDashboard.putBoolean("Upper limit switch", getLowerLimitSwitch());
-        SmartDashboard.putNumber("Elevator position", elevatorLeftMotor.getEncoder().getPosition());
-        SmartDashboard.putNumber("Elevator velocity", elevatorLeftMotor.getEncoder().getVelocity());
+        SmartDashboard.putNumber("Elevator position", getElevatorPosition());
+        SmartDashboard.putNumber("Elevator velocity", getElevatorVelocity());
         SmartDashboard.putNumber("Elevator PID", PIDvalue);
         SmartDashboard.putNumber("Elevator goal", goal);
     }
