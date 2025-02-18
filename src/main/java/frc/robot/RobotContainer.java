@@ -17,8 +17,10 @@ import frc.robot.commands.AlignRotationCommand;
 import frc.robot.commands.CoralScoreCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.MoveElevatorCommand;
+import frc.robot.commands.PivotAlgaeIntakeCommand;
 import frc.robot.subsystems.Drive.Swerve;
 import frc.robot.subsystems.Elevator.Elevator;
+import frc.robot.subsystems.Elevator.Elevator.ElevatorPosition;
 import frc.robot.subsystems.Intakes.AlgaeIntake;
 import frc.robot.subsystems.Intakes.AlgaeIntake.AlgaeIntakeMode;
 import frc.robot.subsystems.Intakes.CoralIntake;
@@ -72,14 +74,17 @@ public class RobotContainer {
     driverController.square().whileTrue(new AlignRotationCommand(swerve));
 
     // ----------- Operator Controller -----------
-    operatorController.povUp().whileTrue(new MoveElevatorCommand(elevator, null, 0.2));
-    operatorController.povDown().whileTrue(new MoveElevatorCommand(elevator, null, -0.2));
+    operatorController.povUp().whileTrue(new MoveElevatorCommand(elevator, ElevatorPosition.L1));
+    operatorController.povDown().whileTrue(new MoveElevatorCommand(elevator, ElevatorPosition.HOME));
 
     operatorController.triangle().whileTrue(new CoralScoreCommand(coralIntake, CoralIntakeMode.EJECT));
     operatorController.cross().whileTrue(new CoralScoreCommand(coralIntake, CoralIntakeMode.INTAKE));
 
     operatorController.L1().whileTrue(new AlgaeCommand(algaeIntake, AlgaeIntakeMode.INTAKE));
     operatorController.R1().whileTrue(new AlgaeCommand(algaeIntake, AlgaeIntakeMode.EJECT));
+  
+    operatorController.L2().whileTrue(new PivotAlgaeIntakeCommand(algaeIntake, 0.1));
+    operatorController.R2().whileTrue(new PivotAlgaeIntakeCommand(algaeIntake, -0.1));
   }
 
   public Command getAutonomousCommand() {

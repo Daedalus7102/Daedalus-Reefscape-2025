@@ -12,8 +12,10 @@ import frc.robot.Constants.Intakes.CoralIntakeConstants;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 public class CoralIntake extends SubsystemBase{
-    private final SparkMax coralIntakeLeftMotor = new SparkMax(13, MotorType.kBrushless);
-    private final SparkMax coralIntakeRightMotor = new SparkMax(14, MotorType.kBrushless);
+    private final SparkMax coralIntakePivotMotor = new SparkMax(14, MotorType.kBrushless);
+
+    private final SparkMax coralIntakeLeftMotor = new SparkMax(15, MotorType.kBrushless);
+    private final SparkMax coralIntakeRightMotor = new SparkMax(16, MotorType.kBrushless);
 
     private final SparkMaxConfig kBrakeCoralIntakeConfig = new SparkMaxConfig();
     

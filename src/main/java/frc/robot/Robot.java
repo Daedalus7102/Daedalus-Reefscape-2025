@@ -25,7 +25,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-    m_robotContainer.getElevatorSubsystem().elevatorMotorsToBrake();
+    m_robotContainer.getElevatorSubsystem().motorsToBrake();
   }
 
   @Override
@@ -54,7 +54,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    m_robotContainer.getElevatorSubsystem().elevatorMotorsToBrake();
+    m_robotContainer.getElevatorSubsystem().motorsToBrake();
   }
 
   @Override

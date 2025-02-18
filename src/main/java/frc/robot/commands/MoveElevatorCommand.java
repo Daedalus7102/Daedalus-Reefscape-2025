@@ -7,13 +7,11 @@ import frc.robot.subsystems.Elevator.Elevator.ElevatorPosition;
 public class MoveElevatorCommand extends Command {
     private final Elevator elevator;
     private final ElevatorPosition elevatorPosition;
-    private final double velocity;
 
-    public MoveElevatorCommand(Elevator elevator, ElevatorPosition elevatorPosition, double velocity){
+    public MoveElevatorCommand(Elevator elevator, ElevatorPosition elevatorPosition){
         this.elevator = elevator;
         this.elevatorPosition = elevatorPosition;
-        this.velocity = velocity;
-        // addRequirements(elevator);
+        addRequirements(elevator);
     }
 
     @Override
@@ -21,12 +19,12 @@ public class MoveElevatorCommand extends Command {
 
     @Override
     public void execute(){
-        elevator.moveElevator(velocity, true);
+        elevator.moveElevator(elevatorPosition);
     }
 
     @Override
     public void end(boolean interrupted) {
-        elevator.stopElevatorMotors();
+        elevator.stopMotors();
     }
 
     @Override

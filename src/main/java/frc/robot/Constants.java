@@ -56,11 +56,18 @@ public class Constants {
         public static final int upperLimitSwitchID = 1;
         public static final int lowerLimitSwitchID = 0;
 
-        public static final double elevatorkP = 0.0001;
+        public static final double elevatorkP = 0.006;
         public static final double elevatorkI = 0;
         public static final double elevatorkD = 0;
 
-        public static final double elevatorMotorsMaxOutput = 0.1;
+        public static final double elevatorMotorsMaxOutput = 0.2;
+
+        public static final double HomeGoalPosition = 0;
+        public static final double L1GoalPosition = 100; //
+        public static final double L2GoalPosition = 130; //
+        public static final double L3GoalPosition = 135; //
+        public static final double L4GoalPosition = 140; //
+        public static final double PickUpGoalPosition = 145; //
     }
 
     public static final class Intakes{

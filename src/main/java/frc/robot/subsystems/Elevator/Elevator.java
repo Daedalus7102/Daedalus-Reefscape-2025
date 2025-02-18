@@ -25,6 +25,10 @@ public class Elevator extends SubsystemBase{
 
     private final SparkMaxConfig kBrakeGeneralConfig = new SparkMaxConfig();
     private final SparkMaxConfig kCoastGeneralConfig = new SparkMaxConfig();
+
+    private double goal;
+    private double PIDvalue;
+    private String goalElevatorPosition;
     
     private final PIDController elevatorPID = new PIDController(ElevatorConstants.elevatorkP, ElevatorConstants.elevatorkI, ElevatorConstants.elevatorkD);
 
@@ -49,10 +53,11 @@ public class Elevator extends SubsystemBase{
         kCoastGeneralConfig.signals
             .primaryEncoderPositionPeriodMs(5);
 
-        elevatorMotorsToBrake();
+        motorsToBrake();
     }
 
     public enum ElevatorPosition{
+        HOME,
         L1,
         L2,
         L3,
@@ -60,19 +65,19 @@ public class Elevator extends SubsystemBase{
         PICKUP
     }
 
-    public void elevatorMotorsToBrake(){
+    public void motorsToBrake(){
         // Left motor MUST be inverted
         elevatorLeftMotor.configure(kBrakeGeneralConfig.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         // Right motor MUST NOT be inverted
         elevatorRightMotor.configure(kBrakeGeneralConfig.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    public void elevatorMotorsToCoast(){
+    public void motorsToCoast(){
         elevatorLeftMotor.configure(kCoastGeneralConfig.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         elevatorRightMotor.configure(kCoastGeneralConfig.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    public void stopElevatorMotors(){
+    public void stopMotors(){
         elevatorLeftMotor.set(0);
         elevatorRightMotor.set(0);
     }
@@ -107,16 +112,71 @@ public class Elevator extends SubsystemBase{
         return PID_value;
     }
 
-    public void moveElevator(double velocity, boolean limitSecuritySystem){
+    private void moveELevatorMotors(double velocity){
         elevatorLeftMotor.set(velocity);
         elevatorRightMotor.set(velocity);
+    }
 
-        if (getLowerLimitSwitch() && limitSecuritySystem && velocity < 0){
-            stopElevatorMotors();
+    public void moveElevator(ElevatorPosition elevatorPosition){
+        switch (elevatorPosition) {
+            case HOME:
+                goal = ElevatorConstants.HomeGoalPosition;
+                goalElevatorPosition = "Home";
+
+                PIDvalue = elevatorPID.calculate(getElevatorPosition(), goal);
+                moveELevatorMotors(PIDvalue);
+                break;
+
+            case L1:
+                goal = ElevatorConstants.L1GoalPosition;
+                goalElevatorPosition = "L1";
+
+                PIDvalue = elevatorPID.calculate(getElevatorPosition(), goal);
+                moveELevatorMotors(PIDvalue);
+                break;
+
+            case L2:
+                goal = ElevatorConstants.L2GoalPosition;
+                goalElevatorPosition = "L2";
+
+                PIDvalue = elevatorPID.calculate(getElevatorPosition(), goal);
+                moveELevatorMotors(PIDvalue);
+                break;
+
+            case L3:
+                goal = ElevatorConstants.L3GoalPosition;
+                goalElevatorPosition = "L3";
+
+                PIDvalue = elevatorPID.calculate(getElevatorPosition(), goal);
+                moveELevatorMotors(PIDvalue);
+                break;
+
+            case L4:
+                goal = ElevatorConstants.L4GoalPosition;
+                goalElevatorPosition = "L4";
+
+                PIDvalue = elevatorPID.calculate(getElevatorPosition(), goal);
+                moveELevatorMotors(PIDvalue);
+                break;
+
+            case PICKUP:
+                goal = ElevatorConstants.PickUpGoalPosition;
+                goalElevatorPosition = "PickUp";
+
+                PIDvalue = elevatorPID.calculate(getElevatorPosition(), goal);
+                moveELevatorMotors(PIDvalue);
+                break;
+            }
+
+        //PIDvalue = desaturatePidValue(PIDvalue);
+
+        /*
+        if (getLowerLimitSwitch() && limitSecuritySystem && PIDvalue < 0){
+            stopMotors();
         }
-        else if (getUpperLimitSwitch() && limitSecuritySystem && velocity > 0){
-            stopElevatorMotors();
-        }
+        else if (getUpperLimitSwitch() && limitSecuritySystem && PIDvalue > 0){
+            stopMotors();
+        }*/
     }
 
     @Override
@@ -125,5 +185,7 @@ public class Elevator extends SubsystemBase{
         SmartDashboard.putBoolean("Upper limit switch", getLowerLimitSwitch());
         SmartDashboard.putNumber("Elevator position", elevatorLeftMotor.getEncoder().getPosition());
         SmartDashboard.putNumber("Elevator velocity", elevatorLeftMotor.getEncoder().getVelocity());
+        SmartDashboard.putNumber("Elevator PID", PIDvalue);
+        SmartDashboard.putNumber("Elevator goal", goal);
     }
 }
