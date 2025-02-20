@@ -4,7 +4,11 @@ import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Leds extends SubsystemBase {
-    private SerialPort serial1 = new SerialPort(9600, SerialPort.Port.kUSB1);
+    
+    private SerialPort serial1;
+    public Leds() {
+        this.serial1 = new SerialPort(9600, SerialPort.Port.kUSB1);
+    }
 
     public enum EffectCode {
         OFF(0),
