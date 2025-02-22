@@ -25,14 +25,16 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-    m_robotContainer.getElevatorSubsystem().motorsToBrake();
   }
 
   @Override
   public void disabledPeriodic() {}
 
   @Override
-  public void disabledExit() {}
+  public void disabledExit() {
+    m_robotContainer.getElevatorSubsystem().motorsToBrake();
+    m_robotContainer.getSwerveSubsystem().motorsToBrake();
+  }
 
   @Override
   public void autonomousInit() {
@@ -54,7 +56,6 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    m_robotContainer.getElevatorSubsystem().motorsToBrake();
   }
 
   @Override

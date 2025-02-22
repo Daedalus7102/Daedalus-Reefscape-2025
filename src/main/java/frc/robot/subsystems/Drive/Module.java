@@ -3,7 +3,10 @@ package frc.robot.subsystems.Drive;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -15,6 +18,9 @@ import frc.robot.Constants.SwerveConstants;
 public class Module extends SubsystemBase{
     private final SparkMax driveMotor;
     private final SparkMax turnMotor;
+
+    private final SparkMaxConfig kBrakeSwerveConfig = new SparkMaxConfig();
+    private final SparkMaxConfig kCoastSwerveConfig = new SparkMaxConfig();
 
     private double realAngle = 0;
     private double desiredAngle = 0;
@@ -33,12 +39,29 @@ public class Module extends SubsystemBase{
         this.driveMotor = new SparkMax(driveMotorID, MotorType.kBrushless);
         this.turnMotor = new SparkMax(turnMotorID, MotorType.kBrushless);
 
+        kBrakeSwerveConfig
+            .idleMode(IdleMode.kBrake);
+
+        kCoastSwerveConfig
+            .idleMode(IdleMode.kCoast);
+
+        motorsToBrake();
         this.turnEncoder = new CANcoder(CANcoderID, "Drivetrain");
         this.turnPID = new PIDController(kP, kI, kD);
 
         this.turnPID.enableContinuousInput(-180, 180);
 
         this.moduleName = moduleName;
+    }
+
+    public void motorsToBrake() {
+        driveMotor.configure(kBrakeSwerveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        turnMotor.configure(kBrakeSwerveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }
+
+    public void motorsToCoast() {
+        driveMotor.configure(kCoastSwerveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        turnMotor.configure(kCoastSwerveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     public SwerveModulePosition getPosition(){

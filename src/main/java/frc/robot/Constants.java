@@ -56,31 +56,76 @@ public class Constants {
         public static final int upperLimitSwitchID = 1;
         public static final int lowerLimitSwitchID = 0;
 
-        public static final double elevatorkP = 0.01;
+        public static final double elevatorkP = 0.04;
         public static final double elevatorkI = 0;
         public static final double elevatorkD = 0;
 
-        public static final double elevatorMotorsRiseMaxOutput = 0.7;
-        public static final double elevatorMotorsLowerMaxOutput = -0.5;
+        public static final double elevatorMotorsRiseMaxOutput = 0.6;
+        public static final double elevatorMotorsLowerMaxOutput = -0.6;
 
+        // Elevator setpoints
         public static final double HomeGoalPosition = 0;
-        public static final double L1GoalPosition = 215; //
+        public static final double IntakeFLoorGoalPosition = 10; //
+        public static final double L1GoalPosition = 200; //
         public static final double L2GoalPosition = 130; //
         public static final double L3GoalPosition = 135; //
         public static final double L4GoalPosition = 140; //
         public static final double PickUpGoalPosition = 145; //
-        public static final double elevatorMaxHeight = 110; //
+        public static final double elevatorMaxHeight = 215; //
     }
 
     public static final class Intakes{
-        public static final class CoralIntakeConstants{
-            public static final double coralIntakeEjectVelocity = -0.4;
-            public static final double coralIntakeIntakeVleocity = 0.2;
-        }
-
         public static final class AlgaeIntakeConstants{
+            public static final int algaeIntakePivotMotorID = 11;
+            public static final int algaeIntakeLeftMotorID = 12;
+            public static final int algaeIntakeRightMotorID = 13;
+
+            public static final int algaePivotCancoderID = 5;
+
+            public static final double algaePivotkP = 0.01;
+            public static final double algaePivotkI = 0;
+            public static final double algaePivotkD = 0;    
+
             public static final double algaeIntakeEjectVelocity = -0.1;
             public static final double algaeIntakeIntakeVelocity = 0.1;
+
+            public static final double algaePivotEncoderOffset = 0;
+            public static final double algaePivotMotorMaxPositiveOutPut = 0.1;
+            public static final double algaePivotMotorMaxNegativeOutput = -0.1;
+
+            // Algae pivot setpoints
+            public static final double FloorIntakeGoalPosition = 0;
+            public static final double ProccesorGoalPosition = 0;
+            public static final double L2_and_L3AlgaeGoalPosition = 0;
+            public static final double NetEjectGoalPosition = 0;    
+            public static final double GeneralAlgaeEjectGaolPosition = 0;            
+        }
+
+        public static final class CoralIntakeConstants{
+            public static final int coralIntakePivotMotorID = 14;
+            public static final int coralIntakeLeftMotorID = 15;
+            public static final int coralIntakeRightMotorID = 16;
+
+            public static final int coralPivotCancoderID = 6;
+
+            public static final double coralPivotkP = 0.01;
+            public static final double coralPivotkI = 0;
+            public static final double coralPivotkD = 0;
+
+            public static final double coralIntakeEjectVelocity = -0.4;
+            public static final double coralIntakeIntakeVleocity = 0.2;
+
+            public static final double coralPivotEncoderOffset = 0;
+            public static final double coralPivotMotorMaxPositiveOutPut = 0.1;
+            public static final double coralPivotMotorMaxNegativeOutput = -0.1;
+
+
+            // Coral pivot setpoints
+            public static final double PickUpGoalPosition = 0; 
+            public static final double L1GoalPosition = 0; 
+            public static final double L2_and_L3CoralGoalPosition = 0; 
+            public static final double L4GoalPosition = 0; 
+            public static final double GeneralCoralEjectGoalPosition = 0;
         }
     }
 }

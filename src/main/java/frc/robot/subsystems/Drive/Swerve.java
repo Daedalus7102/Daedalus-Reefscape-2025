@@ -100,6 +100,20 @@ public class Swerve extends SubsystemBase {
         }
     }
 
+    public void motorsToBrake(){
+        frontLeft.motorsToBrake();
+        frontRight.motorsToBrake();
+        backLeft.motorsToBrake();
+        backRight.motorsToBrake();
+    }
+
+    public void motorsToCoast(){
+        frontLeft.motorsToCoast();
+        frontRight.motorsToCoast();
+        backLeft.motorsToCoast();
+        backRight.motorsToCoast();
+    }
+
     private void setModuleStates(SwerveModuleState[] states){
         /* It is important to assign the values ​​of the array in this order because that is how it was
         declared each state separately and have to be assigned to the indicated one */

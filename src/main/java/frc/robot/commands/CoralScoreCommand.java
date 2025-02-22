@@ -19,12 +19,13 @@ public class CoralScoreCommand extends Command {
 
     @Override
     public void execute(){
-        coralIntake.moveCoralIntake(coralIntakeMode);
+        //coralIntake.moveCoralIntake(coralIntakeMode);
     }
 
     @Override
     public void end(boolean interrupted) {
-        coralIntake.stopCoralIntakeMotors();
+        coralIntake.stopPivotMotor();
+        coralIntake.stopIntakeMotors();
     }
 
     @Override

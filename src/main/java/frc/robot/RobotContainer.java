@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,7 +18,6 @@ import frc.robot.commands.AlignRotationCommand;
 import frc.robot.commands.CoralScoreCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.MoveElevatorCommand;
-import frc.robot.commands.PivotAlgaeIntakeCommand;
 import frc.robot.subsystems.Drive.Swerve;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.Elevator.ElevatorPosition;
@@ -41,7 +41,6 @@ public class RobotContainer {
   public RobotContainer() {
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Mode", autoChooser);
-
     configureBindings();
   }
 
@@ -78,13 +77,10 @@ public class RobotContainer {
     operatorController.povDown().whileTrue(new MoveElevatorCommand(elevator, ElevatorPosition.HOME));
 
     operatorController.triangle().whileTrue(new CoralScoreCommand(coralIntake, CoralIntakeMode.EJECT));
-    operatorController.cross().whileTrue(new CoralScoreCommand(coralIntake, CoralIntakeMode.INTAKE));
+    operatorController.cross().whileTrue(new CoralScoreCommand(coralIntake, CoralIntakeMode.INTAKE_PICKUP));
 
-    operatorController.L1().whileTrue(new AlgaeCommand(algaeIntake, AlgaeIntakeMode.INTAKE));
-    operatorController.R1().whileTrue(new AlgaeCommand(algaeIntake, AlgaeIntakeMode.EJECT));
-  
-    operatorController.L2().whileTrue(new PivotAlgaeIntakeCommand(algaeIntake, 0.1));
-    operatorController.R2().whileTrue(new PivotAlgaeIntakeCommand(algaeIntake, -0.1));
+    operatorController.L1().whileTrue(new AlgaeCommand(algaeIntake, AlgaeIntakeMode.FLOOR_INTAKE));
+    operatorController.R1().whileTrue(new AlgaeCommand(algaeIntake, AlgaeIntakeMode.PROCCESOR_EJECT));    
   }
 
   public Command getAutonomousCommand() {
@@ -92,7 +88,7 @@ public class RobotContainer {
     return autoChooser.getSelected();
   }
 
-  public Swerve getChasisSubsystem() {
+  public Swerve getSwerveSubsystem() {
     return swerve;
   }
 

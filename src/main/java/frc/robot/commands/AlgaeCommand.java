@@ -19,12 +19,14 @@ public class AlgaeCommand extends Command {
 
     @Override
     public void execute(){
+        // ADD PIVOT MOTOR COMMAND
         algaeIntake.moveAlgaeIntake(algaeIntakeMode);
     }
 
     @Override
     public void end(boolean interrupted) {
-        algaeIntake.stopAlgaeIntakeMotors();
+        algaeIntake.stopPivotMotor();
+        algaeIntake.stopIntakeMotors();
     }
 
     @Override
