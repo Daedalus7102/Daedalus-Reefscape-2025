@@ -73,11 +73,14 @@ public class RobotContainer {
     driverController.square().whileTrue(new AlignRotationCommand(swerve));
 
     // ----------- Operator Controller -----------
-    operatorController.povUp().whileTrue(new MoveElevatorCommand(elevator, ElevatorPosition.L1));
-    operatorController.povDown().whileTrue(new MoveElevatorCommand(elevator, ElevatorPosition.HOME));
+    operatorController.povDown().toggleOnTrue(new MoveElevatorCommand(elevator, ElevatorPosition.HOME));
+    operatorController.povLeft().toggleOnTrue(new MoveElevatorCommand(elevator, ElevatorPosition.L2));
+    operatorController.povUp().toggleOnTrue(new MoveElevatorCommand(elevator, ElevatorPosition.L3));
+    operatorController.povRight().toggleOnTrue(new MoveElevatorCommand(elevator, ElevatorPosition.L4));
 
-    operatorController.triangle().whileTrue(new CoralScoreCommand(coralIntake, CoralIntakeMode.EJECT));
-    operatorController.cross().whileTrue(new CoralScoreCommand(coralIntake, CoralIntakeMode.INTAKE_PICKUP));
+
+    operatorController.triangle().whileTrue(new CoralScoreCommand(coralIntake, CoralIntakeMode.HOME));
+    operatorController.cross().toggleOnTrue(new CoralScoreCommand(coralIntake, CoralIntakeMode.L2_EJECT));
 
     operatorController.L1().whileTrue(new AlgaeCommand(algaeIntake, AlgaeIntakeMode.FLOOR_INTAKE));
     operatorController.R1().whileTrue(new AlgaeCommand(algaeIntake, AlgaeIntakeMode.PROCCESOR_EJECT));    

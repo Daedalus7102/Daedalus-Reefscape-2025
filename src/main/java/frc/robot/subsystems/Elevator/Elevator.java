@@ -28,7 +28,7 @@ public class Elevator extends SubsystemBase{
 
     private double goal;
     private double PIDvalue;
-    private String goalElevatorPosition;
+    private String goalElevatorPosition = "Elevator initial positon";
     
     private final PIDController elevatorPID = new PIDController(ElevatorConstants.elevatorkP, ElevatorConstants.elevatorkI, ElevatorConstants.elevatorkD);
 
@@ -115,44 +115,6 @@ public class Elevator extends SubsystemBase{
     private void moveELevatorMotors(double velocity){
         elevatorLeftMotor.set(velocity);
         elevatorRightMotor.set(velocity);
-    }
-
-    public void moveElevator(ElevatorPosition elevatorPosition){
-        switch (elevatorPosition) {
-            case HOME:
-                goal = ElevatorConstants.HomeGoalPosition;
-                goalElevatorPosition = "Home";
-                break;
-
-            case L1:
-                goal = ElevatorConstants.L1GoalPosition;
-                goalElevatorPosition = "L1";
-                break;
-
-            case L2:
-                goal = ElevatorConstants.L2GoalPosition;
-                goalElevatorPosition = "L2";
-                break;
-
-            case L3:
-                goal = ElevatorConstants.L3GoalPosition;
-                goalElevatorPosition = "L3";
-                break;
-
-            case L4:
-                goal = ElevatorConstants.L4GoalPosition;
-                goalElevatorPosition = "L4";
-                break;
-
-            case PICKUP:
-                goal = ElevatorConstants.PickUpGoalPosition;
-                goalElevatorPosition = "PickUp";
-                break;
-            }
-
-        PIDvalue = elevatorPID.calculate(getElevatorPosition(), goal);
-        PIDvalue = desaturatePidValue(PIDvalue);
-        moveELevatorMotors(PIDvalue);
 
         if (getLowerLimitSwitch() && PIDvalue < 0){
             stopMotors();
@@ -166,6 +128,42 @@ public class Elevator extends SubsystemBase{
         }
     }
 
+    public void moveElevator(ElevatorPosition elevatorPosition){
+        switch (elevatorPosition) {
+            case HOME:
+                goal = ElevatorConstants.HomeGoalPosition;
+                goalElevatorPosition = "Elevator Home";
+                break;
+            case L1:
+                goal = ElevatorConstants.L1GoalPosition;
+                goalElevatorPosition = "Elevator L1";
+                break;
+            case L2:
+                goal = ElevatorConstants.L2GoalPosition;
+                goalElevatorPosition = "Elevator L2";
+                break;
+            case L3:
+                goal = ElevatorConstants.L3GoalPosition;
+                goalElevatorPosition = "Elevator L3";
+                break;
+            case L4:
+                goal = ElevatorConstants.L4GoalPosition;
+                goalElevatorPosition = "Elevator L4";
+                break;
+            case PICKUP:
+                goal = ElevatorConstants.PickUpGoalPosition;
+                goalElevatorPosition = "Elevator PickUp";
+                break;
+            }
+
+        goal = (goal > 0) ? goal : 0;
+        goal = (goal < ElevatorConstants.elevatorMaxHeight) ? goal : ElevatorConstants.elevatorMaxHeight;
+
+        PIDvalue = elevatorPID.calculate(getElevatorPosition(), goal);
+        PIDvalue = desaturatePidValue(PIDvalue);
+        moveELevatorMotors(PIDvalue);
+    }
+
     @Override
     public void periodic(){
         SmartDashboard.putBoolean("Lower limit switch", getUpperLimitSwitch());
@@ -173,6 +171,7 @@ public class Elevator extends SubsystemBase{
         SmartDashboard.putNumber("Elevator position", getElevatorPosition());
         SmartDashboard.putNumber("Elevator velocity", getElevatorVelocity());
         SmartDashboard.putNumber("Elevator PID", PIDvalue);
-        SmartDashboard.putNumber("Elevator goal", goal);
+        SmartDashboard.putNumber("Elevator desired position", goal);
+        SmartDashboard.putString("String elevator goal", goalElevatorPosition);
     }
 }

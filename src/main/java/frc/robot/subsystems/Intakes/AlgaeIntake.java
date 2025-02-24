@@ -8,6 +8,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Intakes.AlgaeIntakeConstants;
@@ -23,12 +24,14 @@ public class AlgaeIntake extends SubsystemBase{
     private final SparkMaxConfig kBrakeGeneralConfig = new SparkMaxConfig();
     private final SparkMaxConfig kCoastGeneralConfig = new SparkMaxConfig();
 
-    private final CANcoder algaePivotCancoder = new CANcoder(AlgaeIntakeConstants.algaePivotCancoderID);
+    private final CANcoder algaePivotCancoder = new CANcoder(AlgaeIntakeConstants.algaePivotCancoderID, "Drivetrain");
     private final PIDController algaePivotPID = new PIDController(AlgaeIntakeConstants.algaePivotkP, AlgaeIntakeConstants.algaePivotkI, AlgaeIntakeConstants.algaePivotkD);
+
+    private final DigitalInput infraredSensor = new DigitalInput(2);
 
     private double goal;
     private double PIDvalue;
-    private String goalAlgaeIntakePosition = "Initial position;";
+    private String goalAlgaeIntakePosition = "Initial position";
 
     public AlgaeIntake(){
         kBrakeGeneralConfig
@@ -54,13 +57,8 @@ public class AlgaeIntake extends SubsystemBase{
         algaeIntakePivotMotor.configure(kCoastGeneralConfig.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    public void moveAlgaePivotMotor(double velocity){
-        algaeIntakePivotMotor.set(velocity);
-    }
-
-    public void moveAlgaeIntakeMotors(double velocity){
-        algaeIntakeLeftMotor.set(velocity);
-        algaeIntakeRightMotor.set(velocity);
+    private boolean getInfraredSensorValue() {
+        return !infraredSensor.get();
     }
 
     public void stopPivotMotor(){
@@ -70,6 +68,24 @@ public class AlgaeIntake extends SubsystemBase{
     public void stopIntakeMotors(){
         algaeIntakeLeftMotor.set(0);
         algaeIntakeRightMotor.set(0);
+    }
+
+    public void moveAlgaePivotMotor(double velocity){
+        algaeIntakePivotMotor.set(velocity);
+    }
+
+    public void moveAlgaeIntakeMotors(double velocity, boolean securitySystem){
+        if(securitySystem) {
+            if (getInfraredSensorValue()) {
+                stopIntakeMotors();
+            } else {
+                algaeIntakeLeftMotor.set(velocity);
+                algaeIntakeRightMotor.set(velocity);
+            }
+        } else {
+            algaeIntakeLeftMotor.set(velocity);
+            algaeIntakeRightMotor.set(velocity);
+        }
     }
 
     public double getAlgaeIntakePivotAngle() {
@@ -93,33 +109,29 @@ public class AlgaeIntake extends SubsystemBase{
         L2_INTAKE,
         L3_INTAKE,
         NET_EJECT,
-        EJECT
     }
 
     public void moveAlgaeIntake(AlgaeIntakeMode algaeIntakeMode){
         switch (algaeIntakeMode) {
             case FLOOR_INTAKE:
                 goal = AlgaeIntakeConstants.FloorIntakeGoalPosition;
-                goalAlgaeIntakePosition = "Floor intake 0 Deg";
+                goalAlgaeIntakePosition = "Floor intake x Deg";
                 break;
             case PROCCESOR_EJECT:
                 goal = AlgaeIntakeConstants.ProccesorGoalPosition;
-                goalAlgaeIntakePosition = "Floor intake 0 Deg";
+                goalAlgaeIntakePosition = "Floor intake x Deg";
                 break;
             case L2_INTAKE:
                 goal = AlgaeIntakeConstants.L2_and_L3AlgaeGoalPosition;
-                goalAlgaeIntakePosition = "Floor intake 0 Deg";
+                goalAlgaeIntakePosition = "Floor intake x Deg";
                 break;
             case L3_INTAKE:
                 goal = AlgaeIntakeConstants.L2_and_L3AlgaeGoalPosition;
-                goalAlgaeIntakePosition = "Floor intake 0 Deg";
+                goalAlgaeIntakePosition = "Floor intake x Deg";
                 break;
             case NET_EJECT:
                 goal = AlgaeIntakeConstants.NetEjectGoalPosition;
-                goalAlgaeIntakePosition = "Floor intake 0 Deg";
-                break;
-            case EJECT:
-                moveAlgaeIntakeMotors(AlgaeIntakeConstants.algaeIntakeEjectVelocity);
+                goalAlgaeIntakePosition = "Floor intake x Deg";
                 break;
         }
 
@@ -131,6 +143,7 @@ public class AlgaeIntake extends SubsystemBase{
     @Override
     public void periodic(){
         SmartDashboard.putNumber("Algae intake pivot angle", getAlgaeIntakePivotAngle());
+        SmartDashboard.putBoolean("Algae intake infrared sensor", getInfraredSensorValue());
         SmartDashboard.putNumber("Algae intake pivot PID", PIDvalue);
         SmartDashboard.putString("Algae intake pivot Goal", goalAlgaeIntakePosition);
     }

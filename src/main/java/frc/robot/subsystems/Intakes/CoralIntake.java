@@ -8,8 +8,10 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.Intakes.CoralIntakeConstants;
 
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -23,8 +25,10 @@ public class CoralIntake extends SubsystemBase{
     private final SparkMaxConfig kBrakeGeneralConfig = new SparkMaxConfig();
     private final SparkMaxConfig kCoastGeneralConfig = new SparkMaxConfig();
 
-    private final CANcoder coralPivotCancoder = new CANcoder(CoralIntakeConstants.coralPivotCancoderID);
+    private final CANcoder coralPivotCancoder = new CANcoder(CoralIntakeConstants.coralPivotCancoderID, "Drivetrain");
     private final PIDController coralPivotPID = new PIDController(CoralIntakeConstants.coralPivotkP, CoralIntakeConstants.coralPivotkI, CoralIntakeConstants.coralPivotkD);
+
+    private final DigitalInput infraredSensor = new DigitalInput(3);
 
     private double goal;
     private double PIDvalue;
@@ -45,23 +49,36 @@ public class CoralIntake extends SubsystemBase{
     }
 
     public void pivotMotorToBrake(){
-        // Pivot motor on coral intake must be inverted
-        coralIntakePivotMotor.configure(kBrakeGeneralConfig.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        // Pivot motor on coral intake MUST NOT be inverted
+        coralIntakePivotMotor.configure(kBrakeGeneralConfig.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     public void pivotMotorToCoast(){
-        // Pivot motor on coral intake must be inverted
-        coralIntakePivotMotor.configure(kCoastGeneralConfig.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        // Pivot motor on coral intake MUST NOT be inverted
+        coralIntakePivotMotor.configure(kCoastGeneralConfig.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }
+
+    private boolean getInfraredSensorValue() {
+        return !infraredSensor.get();
     }
 
     public void moveCoralPivotMotor(double velocity){
+
         coralIntakePivotMotor.set(velocity);
     }
 
-    public void moveCoralIntakeMotors(double velocity){
-        coralIntakeLeftMotor.set(velocity);
-        coralIntakeRightMotor.set(velocity);
-    }
+    public void moveCoralIntakeMotors(double velocity, boolean securitySystem){
+        if(securitySystem) {
+            if (getInfraredSensorValue()) {
+                stopIntakeMotors();
+            } else {
+                coralIntakeLeftMotor.set(velocity);
+                coralIntakeRightMotor.set(velocity);    
+            }
+        } else {
+            coralIntakeLeftMotor.set(velocity);
+            coralIntakeRightMotor.set(velocity);
+        }    }
 
     public void stopPivotMotor(){
         coralIntakePivotMotor.set(0);
@@ -88,6 +105,7 @@ public class CoralIntake extends SubsystemBase{
     }
 
     public enum CoralIntakeMode{
+        HOME,
         INTAKE_PICKUP,
         L1_EJECT,
         L2_EJECT,
@@ -98,30 +116,38 @@ public class CoralIntake extends SubsystemBase{
 
     public void moveCoralIntake(CoralIntakeMode coralintakeMode){
         switch (coralintakeMode) {
+            case HOME:
+                goal = CoralIntakeConstants.HomePosition;
+                goalCoralIntakePosition = "Coral Intake Home Deg" + CoralIntakeConstants.HomePosition;
+                break;
             case INTAKE_PICKUP:
                 goal = CoralIntakeConstants.PickUpGoalPosition;
-                goalCoralIntakePosition = "Intake pickUp 0 Deg";
+                goalCoralIntakePosition = "Coral Intake pickUp Deg" + CoralIntakeConstants.PickUpGoalPosition;
                 break;
             case L1_EJECT:
                 goal = CoralIntakeConstants.L1GoalPosition;
-                goalCoralIntakePosition = "Intake pickUp 0 Deg";
+                goalCoralIntakePosition = "Coral Intake pickUp Deg" + CoralIntakeConstants.L1GoalPosition;
                 break;
             case L2_EJECT:
                 goal = CoralIntakeConstants.L2_and_L3CoralGoalPosition;
-                goalCoralIntakePosition = "Intake pickUp 0 Deg";
+                goalCoralIntakePosition = "Coral Intake pickUp Deg" + CoralIntakeConstants.L2_and_L3CoralGoalPosition;
                 break;
             case L3_EJECT:
                 goal = CoralIntakeConstants.L2_and_L3CoralGoalPosition;
-                goalCoralIntakePosition = "Intake pickUp 0 Deg";
+                goalCoralIntakePosition = "Coral Intake pickUp Deg" + CoralIntakeConstants.L2_and_L3CoralGoalPosition;
                 break;
             case L4_EJECT:
                 goal = CoralIntakeConstants.L4GoalPosition;
-                goalCoralIntakePosition = "Intake pickUp 0 Deg";
+                goalCoralIntakePosition = "Coral Intake pickUp Deg" + CoralIntakeConstants.L4GoalPosition;
                 break;
             case EJECT:
-                moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeEjectVelocity);
+                moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeEjectVelocity, false);
+                goalCoralIntakePosition = "Coral Intake EJECT Deg" + getCoralIntakePivotAngle();
                 break;
         }
+                
+        goal = (goal > CoralIntakeConstants.coralPivotMinAngle) ? goal : CoralIntakeConstants.coralPivotMinAngle;
+        goal = (goal < CoralIntakeConstants.coralPivotMaxAngle) ? goal : CoralIntakeConstants.coralPivotMaxAngle;
 
         PIDvalue = coralPivotPID.calculate(getCoralIntakePivotAngle(), goal);
         PIDvalue = desaturatePidValue(PIDvalue);
@@ -131,6 +157,7 @@ public class CoralIntake extends SubsystemBase{
     @Override
     public void periodic(){
         SmartDashboard.putNumber("Coral intake pivot angle", getCoralIntakePivotAngle());
+        SmartDashboard.putBoolean("Coral infrared sensor", getInfraredSensorValue());
         SmartDashboard.putNumber("Coral intake pivot PID", PIDvalue);
         SmartDashboard.putString("Coral Intake desired position", goalCoralIntakePosition);
     }

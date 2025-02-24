@@ -60,17 +60,17 @@ public class Constants {
         public static final double elevatorkI = 0;
         public static final double elevatorkD = 0;
 
-        public static final double elevatorMotorsRiseMaxOutput = 0.6;
-        public static final double elevatorMotorsLowerMaxOutput = -0.6;
+        public static final double elevatorMotorsRiseMaxOutput = 0.2;
+        public static final double elevatorMotorsLowerMaxOutput = -0.2;
 
         // Elevator setpoints
         public static final double HomeGoalPosition = 0;
         public static final double IntakeFLoorGoalPosition = 10; //
-        public static final double L1GoalPosition = 200; //
-        public static final double L2GoalPosition = 130; //
-        public static final double L3GoalPosition = 135; //
-        public static final double L4GoalPosition = 140; //
-        public static final double PickUpGoalPosition = 145; //
+        public static final double L1GoalPosition = 30; //
+        public static final double L2GoalPosition = 90; //
+        public static final double L3GoalPosition = 120; //
+        public static final double L4GoalPosition = 150; //
+        public static final double PickUpGoalPosition = 20; //
         public static final double elevatorMaxHeight = 215; //
     }
 
@@ -108,24 +108,26 @@ public class Constants {
 
             public static final int coralPivotCancoderID = 6;
 
-            public static final double coralPivotkP = 0.01;
+            public static final double coralPivotkP = 0.006;
             public static final double coralPivotkI = 0;
             public static final double coralPivotkD = 0;
 
             public static final double coralIntakeEjectVelocity = -0.4;
             public static final double coralIntakeIntakeVleocity = 0.2;
 
-            public static final double coralPivotEncoderOffset = 0;
-            public static final double coralPivotMotorMaxPositiveOutPut = 0.1;
+            public static final double coralPivotEncoderOffset = -60;
+            public static final double coralPivotMotorMaxPositiveOutPut = 0.2;
             public static final double coralPivotMotorMaxNegativeOutput = -0.1;
 
-
             // Coral pivot setpoints
-            public static final double PickUpGoalPosition = 0; 
+            public static final double HomePosition = 142;
+            public static final double PickUpGoalPosition = 90; 
             public static final double L1GoalPosition = 0; 
-            public static final double L2_and_L3CoralGoalPosition = 0; 
+            public static final double L2_and_L3CoralGoalPosition = 95; 
             public static final double L4GoalPosition = 0; 
             public static final double GeneralCoralEjectGoalPosition = 0;
+            public static final double coralPivotMaxAngle = 162;
+            public static final double coralPivotMinAngle = 14;
         }
     }
 }

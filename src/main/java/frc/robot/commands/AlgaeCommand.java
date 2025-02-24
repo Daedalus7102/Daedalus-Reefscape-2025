@@ -20,7 +20,7 @@ public class AlgaeCommand extends Command {
     @Override
     public void execute(){
         // ADD PIVOT MOTOR COMMAND
-        algaeIntake.moveAlgaeIntake(algaeIntakeMode);
+        algaeIntake.moveAlgaeIntakeMotors(-0.1, true);
     }
 
     @Override
