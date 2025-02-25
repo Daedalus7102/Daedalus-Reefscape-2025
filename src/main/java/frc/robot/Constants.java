@@ -44,9 +44,26 @@ public class Constants {
         public static final double kDeadband = 0.10;
 
         public static final class AutoRotateConstants {
-            public static final double chassisZAutoRotationkP = 0.04;
-            public static final double autoRotationkDeadband = 0.30;
-            public static final double autoRotationMaxOutput = 0.2;
+            public static final double chassisZAutoRotationkP = 0.06;
+            public static final double autoRotationkDeadband = 0.60;
+            public static final double autoRotationMaxOutput = 0.1;
+        }
+
+        public static final class AimbotConstants {
+            public static final double leftTargetTXAimbotReef = 10.33;
+            public static final double leftTargetTYAimbotReef = -2;
+
+            public static final double rightTargetTXAimbotReef = -16.11;
+            public static final double rightTargetTYAimbotReef = -2;
+    
+            public static final double xAprilTagThreshold = 0.1;
+            public static final double yApriltagThreshold = 0.1;
+    
+            public static final double xDriveMaxSpeed = 0.3;
+            public static final double yDriveMaxSpeed = 0.105;
+            public static final double kPdriveX = 1.3;
+            public static final double kPdriveY = 1.5;
+
         }
     }
     public static final class ElevatorConstants{
@@ -64,12 +81,13 @@ public class Constants {
         public static final double elevatorMotorsLowerMaxOutput = -0.2;
 
         // Elevator setpoints
+        public static final double READ_REEF_APRILTAG_Position = 30;
         public static final double HomeGoalPosition = 0;
         public static final double IntakeFLoorGoalPosition = 10; //
         public static final double L1GoalPosition = 30; //
         public static final double L2GoalPosition = 90; //
         public static final double L3GoalPosition = 120; //
-        public static final double L4GoalPosition = 150; //
+        public static final double L4GoalPosition = 213; //
         public static final double PickUpGoalPosition = 20; //
         public static final double elevatorMaxHeight = 215; //
     }

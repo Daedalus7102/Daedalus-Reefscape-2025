@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.commands.AimbotCommand;
 import frc.robot.commands.AlgaeCommand;
 import frc.robot.commands.AlignRotationCommand;
 import frc.robot.commands.CoralScoreCommand;
@@ -52,8 +53,8 @@ public class RobotContainer {
         () -> (-driverController.getLeftY()),
         () -> (driverController.getLeftX()),
         () -> (-driverController.getRightX()),
-        false,
-        SwerveConstants.chassisHighMaxOutput
+        SwerveConstants.chassisHighMaxOutput,
+        false
       )
     );
 
@@ -63,19 +64,19 @@ public class RobotContainer {
         () -> (-driverController.getLeftY()),
         () -> (driverController.getLeftX()),
         () -> (-driverController.getRightX()),
-        true,
-        SwerveConstants.chassisLowMaxOutput
+        SwerveConstants.chassisLowMaxOutput,
+        true
       )
     );
 
     // ------------ Driver Controller ------------
     driverController.triangle().whileTrue(new InstantCommand(() -> swerve.zeroHeading()));
-    driverController.square().whileTrue(new AlignRotationCommand(swerve));
+    driverController.square().whileTrue(new AimbotCommand(swerve));
 
     // ----------- Operator Controller -----------
     operatorController.povDown().toggleOnTrue(new MoveElevatorCommand(elevator, ElevatorPosition.HOME));
     operatorController.povLeft().toggleOnTrue(new MoveElevatorCommand(elevator, ElevatorPosition.L2));
-    operatorController.povUp().toggleOnTrue(new MoveElevatorCommand(elevator, ElevatorPosition.L3));
+    driverController.povUp().toggleOnTrue(new MoveElevatorCommand(elevator, ElevatorPosition.READ_REEF_APRILTAG));
     operatorController.povRight().toggleOnTrue(new MoveElevatorCommand(elevator, ElevatorPosition.L4));
 
 

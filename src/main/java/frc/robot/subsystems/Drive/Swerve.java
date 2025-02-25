@@ -92,7 +92,7 @@ public class Swerve extends SubsystemBase {
         setModuleStates(states);
     }
 
-    public void setChassisSpeeds(double xSpeed, double ySpeed, double zSpeed, boolean robotRelative, double chassisMaxOutput) {
+    public void setChassisSpeeds(double xSpeed, double ySpeed, double zSpeed, double chassisMaxOutput, boolean robotRelative) {
         if (robotRelative == false) {
             setFieldOrientedSpeed(xSpeed, ySpeed, zSpeed, chassisMaxOutput);
         } else {

@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.Constants.SwerveConstants.AutoRotateConstants;
 import frc.robot.subsystems.Drive.Swerve;
 
 public class AlignRotationCommand extends Command {
@@ -45,7 +46,7 @@ public class AlignRotationCommand extends Command {
     @Override
     public void execute() {
         double zSpeed = calibrateZ(desiredAngle());
-        swerve.setChassisSpeeds(0, 0, zSpeed, true, SwerveConstants.AutoRotateConstants.autoRotationMaxOutput);
+        swerve.setChassisSpeeds(0, 0, zSpeed, AutoRotateConstants.autoRotationMaxOutput, true);
     }
 
     @Override

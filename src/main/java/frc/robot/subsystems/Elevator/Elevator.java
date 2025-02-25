@@ -57,6 +57,7 @@ public class Elevator extends SubsystemBase{
     }
 
     public enum ElevatorPosition{
+        READ_REEF_APRILTAG,
         HOME,
         L1,
         L2,
@@ -130,6 +131,10 @@ public class Elevator extends SubsystemBase{
 
     public void moveElevator(ElevatorPosition elevatorPosition){
         switch (elevatorPosition) {
+            case READ_REEF_APRILTAG:
+                goal = ElevatorConstants.READ_REEF_APRILTAG_Position;
+                goalElevatorPosition = "Elevator read Reef apriltag";
+                break;
             case HOME:
                 goal = ElevatorConstants.HomeGoalPosition;
                 goalElevatorPosition = "Elevator Home";

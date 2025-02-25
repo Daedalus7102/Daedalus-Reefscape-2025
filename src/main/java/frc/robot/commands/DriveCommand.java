@@ -5,17 +5,19 @@ import java.util.function.Supplier;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.Drive.Swerve;
+import frc.robot.subsystems.Elevator.Elevator;
 import edu.wpi.first.math.controller.PIDController;
 
 public class DriveCommand extends Command{
     Swerve swerve;
+    Elevator elevator;
     Supplier<Double> xSpeed, ySpeed, zSpeed;
     private final PIDController xPID, yPID, zPID;
     private boolean robotRelative = false;
     private double chassisMaxOutput;
 
     public DriveCommand(Swerve swerve, Supplier<Double> xSpeed, Supplier<Double> ySpeed, Supplier<Double> zSpeed, 
-                        boolean robotRelative, double chassisMaxOutput){
+                        double chassisMaxOutput, boolean robotRelative){
         addRequirements(swerve);
         this.swerve =swerve;
         
@@ -48,7 +50,7 @@ public class DriveCommand extends Command{
         yNeed = yPID.calculate(yNeed);
         zNeed = zPID.calculate(zNeed);
         
-        swerve.setChassisSpeeds(xNeed, yNeed, zNeed, robotRelative, chassisMaxOutput);
+        swerve.setChassisSpeeds(xNeed, yNeed, zNeed, chassisMaxOutput, robotRelative);
     }
 
     @Override
