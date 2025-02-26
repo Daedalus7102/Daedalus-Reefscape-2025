@@ -1,5 +1,5 @@
 package frc.robot.commands;
-
+/*
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.SwerveConstants.AutoRotateConstants;
@@ -58,4 +58,4 @@ public class AlignRotationCommand extends Command {
     return !needsCalibration;
     }
 
-}
+}*/

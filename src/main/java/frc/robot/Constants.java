@@ -45,24 +45,24 @@ public class Constants {
 
         public static final class AutoRotateConstants {
             public static final double chassisZAutoRotationkP = 0.06;
-            public static final double autoRotationkDeadband = 0.60;
+            public static final double autoRotationkDeadband = 1.60;
             public static final double autoRotationMaxOutput = 0.1;
         }
 
         public static final class AimbotConstants {
-            public static final double leftTargetTXAimbotReef = 10.33;
-            public static final double leftTargetTYAimbotReef = -2;
+            public static final double leftTargetTXAimbotReef = 13.61;
+            public static final double leftTargetTYAimbotReef = 8.55;
 
             public static final double rightTargetTXAimbotReef = -16.11;
-            public static final double rightTargetTYAimbotReef = -2;
+            public static final double rightTargetTYAimbotReef = 8.55;
     
-            public static final double xAprilTagThreshold = 0.1;
-            public static final double yApriltagThreshold = 0.1;
+            public static final double xAprilTagThreshold = 0.3;
+            public static final double yApriltagThreshold = 0.3;
     
-            public static final double xDriveMaxSpeed = 0.3;
-            public static final double yDriveMaxSpeed = 0.105;
-            public static final double kPdriveX = 1.3;
-            public static final double kPdriveY = 1.5;
+            public static final double xDriveMaxSpeed = 0.2;
+            public static final double yDriveMaxSpeed = 0.2;
+            public static final double kPdriveX = 1;
+            public static final double kPdriveY = 1.9;
 
         }
     }
@@ -73,23 +73,31 @@ public class Constants {
         public static final int upperLimitSwitchID = 1;
         public static final int lowerLimitSwitchID = 0;
 
-        public static final double elevatorkP = 0.04;
+        public static final double elevatorkP = 0.05;
         public static final double elevatorkI = 0;
         public static final double elevatorkD = 0;
 
-        public static final double elevatorMotorsRiseMaxOutput = 0.2;
-        public static final double elevatorMotorsLowerMaxOutput = -0.2;
+        public static final double elevatorMotorsRiseMaxOutput = 0.3;
+        public static final double elevatorMotorsLowerMaxOutput = -0.3;
 
-        // Elevator setpoints
-        public static final double READ_REEF_APRILTAG_Position = 30;
-        public static final double HomeGoalPosition = 0;
-        public static final double IntakeFLoorGoalPosition = 10; //
-        public static final double L1GoalPosition = 30; //
-        public static final double L2GoalPosition = 90; //
-        public static final double L3GoalPosition = 120; //
-        public static final double L4GoalPosition = 213; //
-        public static final double PickUpGoalPosition = 20; //
-        public static final double elevatorMaxHeight = 215; //
+        public static final double elevatorkDeadBand = 3;
+
+        // Elevator setpoints for coral
+        public static final double HOMEPosition = 0;
+        public static final double READ_REEF_APRILTAGPosition = 30; 
+        public static final double L1Position = 30; //
+        public static final double L2Position = 36; //
+        public static final double L3Position = 33; //
+        public static final double L4Position = 213; //
+        public static final double PICKUPPosition = 20; //
+        public static final double elevatorMaxHeight = 100;// 215; //
+
+        // Elevator setpoints for algae
+        public static final double FLOOR_INTAKE_ALGAEPosition = 45;
+        public static final double PROCESSOR_EJECTPosition = 50; //
+        public static final double BETWEEN_L2_AND_L3Position = 50; //
+        public static final double BETWEEN_L3_AND_L4Position = 60; //
+        public static final double NETPosition = 0; //
     }
 
     public static final class Intakes{
@@ -108,15 +116,28 @@ public class Constants {
             public static final double algaeIntakeIntakeVelocity = 0.1;
 
             public static final double algaePivotEncoderOffset = 0;
-            public static final double algaePivotMotorMaxPositiveOutPut = 0.1;
-            public static final double algaePivotMotorMaxNegativeOutput = -0.1;
+            public static final double algaePivotMotorMaxPositiveOutPut = 0.2;
+            public static final double algaePivotMotorMaxNegativeOutput = -0.2;
+
+            public static final double pivotMotorkDeadBand = 1;
 
             // Algae pivot setpoints
-            public static final double FloorIntakeGoalPosition = 0;
-            public static final double ProccesorGoalPosition = 0;
-            public static final double L2_and_L3AlgaeGoalPosition = 0;
-            public static final double NetEjectGoalPosition = 0;    
-            public static final double GeneralAlgaeEjectGaolPosition = 0;            
+            public static final double FLOOR_INTAKEPosition = 140;
+            public static final double PROCCESOR_EJECTPosition = 140;
+            public static final double BETWEEN_L2_AND_L3_OR_L3_AND_L4_Position = 140;
+            public static final double HOMEPosition = 93.69;
+            public static final double NET_EJECTPosition = 140;    
+            // public static final double GeneralAlgaeEjectGaolPosition = 0;  
+            public static final double pivotMaxAngle = 257.10;
+            public static final double pivotMinAngle = 93.69;
+
+            public enum MergedAlgaeScorePositions {
+                FLOOR_INTAKE,
+                PROCCESOR_EJECT,
+                BETWEEN_L2_AND_L3Position,
+                BETWEEN_L3_AND_L4Position,
+                HOME
+            }
         }
 
         public static final class CoralIntakeConstants{
@@ -126,26 +147,39 @@ public class Constants {
 
             public static final int coralPivotCancoderID = 6;
 
-            public static final double coralPivotkP = 0.006;
+            public static final double coralPivotkP = 0.01;
             public static final double coralPivotkI = 0;
             public static final double coralPivotkD = 0;
 
-            public static final double coralIntakeEjectVelocity = -0.4;
-            public static final double coralIntakeIntakeVleocity = 0.2;
+            public static final double coralIntakeEjectVelocity = -0.2;
+            public static final double coralIntakeIntakeVleocity = 0.1;
+            public static final double coralIntakeSecureCoralVelocity = 0.05;
 
             public static final double coralPivotEncoderOffset = -60;
-            public static final double coralPivotMotorMaxPositiveOutPut = 0.2;
+            public static final double coralPivotMotorMaxPositiveOutPut = 0.1;
             public static final double coralPivotMotorMaxNegativeOutput = -0.1;
 
+            public static final double pivotMotorkDeadBand = 10;
+
             // Coral pivot setpoints
-            public static final double HomePosition = 142;
-            public static final double PickUpGoalPosition = 90; 
-            public static final double L1GoalPosition = 0; 
-            public static final double L2_and_L3CoralGoalPosition = 95; 
-            public static final double L4GoalPosition = 0; 
-            public static final double GeneralCoralEjectGoalPosition = 0;
-            public static final double coralPivotMaxAngle = 162;
-            public static final double coralPivotMinAngle = 14;
+            public static final double HOMEPosition = 209;
+            public static final double INTAKE_PICKUPPosition = 190; 
+            public static final double L1Position = 170; 
+            public static final double L2_and_L3Position = 140;
+            public static final double L4Position = 100; 
+            // public static final double GeneralEJECTPosition = 0;
+            public static final double pivotMaxAngle = 210;
+            public static final double pivotMinAngle = 62;
+
+            public enum MergedCoralScorePositions {
+                READ_REEF_APRILTAG,
+                HOME,
+                INTAKE,
+                L1,
+                L2,
+                L3,
+                L4
+            }
         }
     }
 }

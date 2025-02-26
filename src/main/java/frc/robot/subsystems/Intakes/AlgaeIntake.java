@@ -29,7 +29,7 @@ public class AlgaeIntake extends SubsystemBase{
 
     private final DigitalInput infraredSensor = new DigitalInput(2);
 
-    private double goal;
+    private double goal = AlgaeIntakeConstants.HOMEPosition;
     private double PIDvalue;
     private String goalAlgaeIntakePosition = "Initial position";
 
@@ -39,8 +39,7 @@ public class AlgaeIntake extends SubsystemBase{
         kCoastGeneralConfig
             .idleMode(IdleMode.kCoast);
 
-        pivotMotorToBrake();
-
+        pivotMotorToCoast();
         // Algae left intake motor MUST be inverted
         algaeIntakeLeftMotor.configure(kBrakeGeneralConfig.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         // Algae left intake motor MUST NOT be inverted
@@ -106,45 +105,53 @@ public class AlgaeIntake extends SubsystemBase{
     public enum AlgaeIntakeMode{
         FLOOR_INTAKE,
         PROCCESOR_EJECT,
-        L2_INTAKE,
-        L3_INTAKE,
+        BETWEEN_L2_AND_L3_OR_L3_AND_L4_Position,
+        HOME,
         NET_EJECT,
     }
 
     public void moveAlgaeIntake(AlgaeIntakeMode algaeIntakeMode){
         switch (algaeIntakeMode) {
             case FLOOR_INTAKE:
-                goal = AlgaeIntakeConstants.FloorIntakeGoalPosition;
-                goalAlgaeIntakePosition = "Floor intake x Deg";
+                goal = AlgaeIntakeConstants.FLOOR_INTAKEPosition;
+                goalAlgaeIntakePosition = "Algae intake floor " + AlgaeIntakeConstants.FLOOR_INTAKEPosition;
                 break;
             case PROCCESOR_EJECT:
-                goal = AlgaeIntakeConstants.ProccesorGoalPosition;
-                goalAlgaeIntakePosition = "Floor intake x Deg";
+                goal = AlgaeIntakeConstants.PROCCESOR_EJECTPosition;
+                goalAlgaeIntakePosition = "Algae intake processor " + AlgaeIntakeConstants.PROCCESOR_EJECTPosition;
                 break;
-            case L2_INTAKE:
-                goal = AlgaeIntakeConstants.L2_and_L3AlgaeGoalPosition;
-                goalAlgaeIntakePosition = "Floor intake x Deg";
+            case BETWEEN_L2_AND_L3_OR_L3_AND_L4_Position:
+                goal = AlgaeIntakeConstants.BETWEEN_L2_AND_L3_OR_L3_AND_L4_Position;
+                goalAlgaeIntakePosition = "Algae intake Between L2 and L3 or L3 and L4 " + AlgaeIntakeConstants.BETWEEN_L2_AND_L3_OR_L3_AND_L4_Position;
                 break;
-            case L3_INTAKE:
-                goal = AlgaeIntakeConstants.L2_and_L3AlgaeGoalPosition;
-                goalAlgaeIntakePosition = "Floor intake x Deg";
-                break;
+            case HOME:
+                goal = AlgaeIntakeConstants.HOMEPosition;
+                goalAlgaeIntakePosition = "Algae intake Home position" + AlgaeIntakeConstants.HOMEPosition;
             case NET_EJECT:
-                goal = AlgaeIntakeConstants.NetEjectGoalPosition;
-                goalAlgaeIntakePosition = "Floor intake x Deg";
                 break;
         }
 
-        PIDvalue = algaePivotPID.calculate(getAlgaeIntakePivotAngle(), goal);
-        PIDvalue = desaturatePidValue(PIDvalue);
-        moveAlgaePivotMotor(PIDvalue);
+        goal = (goal > AlgaeIntakeConstants.pivotMinAngle) ? goal : AlgaeIntakeConstants.pivotMinAngle;
+        goal = (goal < AlgaeIntakeConstants.pivotMaxAngle) ? goal : AlgaeIntakeConstants.pivotMaxAngle;
+    }
+
+    public boolean pivotMotorInDesiredAngle() {
+        boolean pivotMotorAngleApplied = getAlgaeIntakePivotAngle() <= goal + AlgaeIntakeConstants.pivotMotorkDeadBand
+                                        || getAlgaeIntakePivotAngle() >= goal - AlgaeIntakeConstants.pivotMotorkDeadBand;
+        return pivotMotorAngleApplied;
     }
 
     @Override
     public void periodic(){
+        PIDvalue = algaePivotPID.calculate(getAlgaeIntakePivotAngle(), goal);
+        PIDvalue = desaturatePidValue(PIDvalue);
+        moveAlgaePivotMotor(PIDvalue);
+
         SmartDashboard.putNumber("Algae intake pivot angle", getAlgaeIntakePivotAngle());
         SmartDashboard.putBoolean("Algae intake infrared sensor", getInfraredSensorValue());
         SmartDashboard.putNumber("Algae intake pivot PID", PIDvalue);
         SmartDashboard.putString("Algae intake pivot Goal", goalAlgaeIntakePosition);
+        SmartDashboard.putBoolean("Algae pivot motor to desired angle", pivotMotorInDesiredAngle());
+        SmartDashboard.putNumber("Coral pivot motor speed", algaeIntakePivotMotor.getEncoder().getVelocity());
     }
 }

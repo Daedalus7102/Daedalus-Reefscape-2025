@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -7,23 +9,36 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.Constants.Intakes.CoralIntakeConstants;
 import frc.robot.Constants.SwerveConstants.AimbotConstants;
 import frc.robot.Constants.SwerveConstants.AutoRotateConstants;
 import frc.robot.subsystems.Drive.Swerve;
+import frc.robot.subsystems.Elevator.Elevator;
+import frc.robot.subsystems.Elevator.Elevator.ElevatorHeights;
+import frc.robot.subsystems.Intakes.CoralIntake;
+import frc.robot.subsystems.Intakes.CoralIntake.CoralIntakeMode;
 
 public class AimbotCommand extends Command{
   private final Swerve swerve;
+  private final Elevator elevator;
+  private final CoralIntake coralIntake;
   private boolean needsRotCalibration;
   private double angleError;
+  boolean isFinished;
+  private ElevatorHeights elevatorPosition;
+  private CoralIntakeMode coralIntakeMode;
 
   private double xAprilTagTarget;
   private double yAprilTagTarget;
-  private boolean algined = false;
   Timer timer = new Timer();
 
-  public AimbotCommand(Swerve swerve) {
+  public AimbotCommand(Swerve swerve, Elevator elevator, CoralIntake coralIntake, ElevatorHeights elevatorPosition, CoralIntakeMode coralIntakeMode) {
       this.swerve = swerve;
-      addRequirements(swerve);
+      this.elevator = elevator;
+      this.coralIntake = coralIntake;
+      this.elevatorPosition = elevatorPosition;
+      this.coralIntakeMode = coralIntakeMode;
+      addRequirements(swerve, elevator, coralIntake);
     }
   
   @Override
@@ -47,17 +62,15 @@ public class AimbotCommand extends Command{
   }
 
   private double calibrateZ(int setPoint){
-      needsRotCalibration = Math.abs(swerve.getNormalizedGyroAngle() - setPoint) > SwerveConstants.AutoRotateConstants.autoRotationkDeadband;
+      // needsRotCalibration = Math.abs(swerve.getNormalizedGyroAngle() - setPoint) > AutoRotateConstants.autoRotationkDeadband;
       
-      if(needsRotCalibration){
-          angleError = setPoint - swerve.getNormalizedGyroAngle();
-          if(setPoint == 0 && swerve.getNormalizedGyroAngle() > 330){
-              angleError = 360 - swerve.getNormalizedGyroAngle();
-          }
-          double speed = angleError * SwerveConstants.AutoRotateConstants.chassisZAutoRotationkP;
-          return speed;
-      }
-      return 0.0;
+        angleError = setPoint - swerve.getNormalizedGyroAngle();
+        if(setPoint == 0 && swerve.getNormalizedGyroAngle() > 330){
+            angleError = 360 - swerve.getNormalizedGyroAngle();
+        }
+        needsRotCalibration = angleError > AutoRotateConstants.autoRotationkDeadband;
+        double speed = angleError * AutoRotateConstants.chassisZAutoRotationkP;
+        return speed;
   }
 
   // Limelight needed for the following functions
@@ -122,43 +135,64 @@ public class AimbotCommand extends Command{
   @Override
   public void execute() {
     timer.start();
-    double zSpeed = calibrateZ(desiredAngle());
-    swerve.setChassisSpeeds(0, 0, zSpeed, AutoRotateConstants.autoRotationMaxOutput, true);
-    SmartDashboard.putBoolean("Needs rot calibration", needsRotCalibration);
-    
+    coralIntake.moveCoralIntake(CoralIntakeMode.HOME);
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-front");
     NetworkTableEntry tx = table.getEntry("tx");
     NetworkTableEntry ty = table.getEntry("ty");
-    
-    SmartDashboard.putNumber("Aimbot xTarget", xAprilTagTarget);
-    SmartDashboard.putNumber("Aimbot yTarget", yAprilTagTarget);
 
     // Read values periodically
     double x = tx.getDouble(0.0);
     double y = ty.getDouble(0.0);
     double found = table.getEntry("tv").getDouble(0);
     
+    double xSpeed = calibrateX(x);
+    double ySpeed = calibrateY(y);
+    double zSpeed = calibrateZ(desiredAngle());
+
+    if(timer.get() < 4) {
+      coralIntake.moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeSecureCoralVelocity, false);
+      elevator.moveElevator(ElevatorHeights.READ_REEF_APRILTAG);
+      swerve.setChassisSpeeds(0, 0, zSpeed, AutoRotateConstants.autoRotationMaxOutput, true);
+    }
+
+    if(found >= 1 && timer.get() > 1){
+      coralIntake.moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeSecureCoralVelocity, false);
+      swerve.setChassisSpeeds(-ySpeed / 3, xSpeed, zSpeed, 0.2, true);
+
+      if(timer.get() > 1.5) {
+        coralIntake.moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeSecureCoralVelocity, false);
+        swerve.setChassisSpeeds(-ySpeed, xSpeed, zSpeed, 0.2, true);
+      }
+
+      if(timer.get() > 4) {
+        coralIntake.moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeSecureCoralVelocity, false);
+        elevator.moveElevator(elevatorPosition);
+
+        if(elevator.isAtTarget()) {
+          coralIntake.moveCoralIntake(CoralIntakeMode.L2_AND_L3EJECT);
+        }
+      }
+    }
+
+    isFinished = timer.get() > 4;
+    
+    SmartDashboard.putBoolean("Needs rot calibration", needsRotCalibration);
+    SmartDashboard.putNumber("Aimbot xTarget", xAprilTagTarget);
+    SmartDashboard.putNumber("Aimbot yTarget", yAprilTagTarget);
     SmartDashboard.putNumber("tx", x);
     SmartDashboard.putNumber("ty", y);
-
-    if(found == 1 && timer.get() > 0.5){
-        double xSpeed = calibrateX(x);
-        double ySpeed = calibrateY(y);
-        swerve.setChassisSpeeds(ySpeed, xSpeed, zSpeed, 0.2, true);
-
-        SmartDashboard.putBoolean("Aimbot Needs x calibration", needsXCalibration(x));
-        SmartDashboard.putBoolean("Aimbot Needs y calibration", needsYCalibration(y));  
-        SmartDashboard.putNumber("Aimbot xSpeed", xSpeed);
-        SmartDashboard.putNumber("Aimbot ySpeed", ySpeed);  
-        SmartDashboard.putNumber("Aimbot Required distance X", x - AimbotConstants.leftTargetTXAimbotReef);
-        SmartDashboard.putNumber("Aimbot Required distance Y", y - AimbotConstants.rightTargetTYAimbotReef);    
-    }
+    SmartDashboard.putBoolean("Aimbot Needs x calibration", needsXCalibration(x));
+    SmartDashboard.putBoolean("Aimbot Needs y calibration", needsYCalibration(y));  
+    SmartDashboard.putNumber("Aimbot xSpeed", xSpeed);
+    SmartDashboard.putNumber("Aimbot ySpeed", ySpeed);  
+    SmartDashboard.putBoolean("Is finished", isFinished);    
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     swerve.setChassisSpeeds(0, 0, 0, 0, true);
+    coralIntake.stopIntakeMotors();
     timer.stop();
     timer.reset();
   }

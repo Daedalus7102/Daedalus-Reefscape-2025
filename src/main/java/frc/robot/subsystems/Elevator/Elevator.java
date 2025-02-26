@@ -56,16 +56,6 @@ public class Elevator extends SubsystemBase{
         motorsToBrake();
     }
 
-    public enum ElevatorPosition{
-        READ_REEF_APRILTAG,
-        HOME,
-        L1,
-        L2,
-        L3,
-        L4,
-        PICKUP
-    }
-
     public void motorsToBrake(){
         // Left motor MUST be inverted
         elevatorLeftMotor.configure(kBrakeGeneralConfig.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -97,6 +87,7 @@ public class Elevator extends SubsystemBase{
 
     private boolean getUpperLimitSwitch(){
         return !upperLimitSwitch.get();
+        
     }
 
     private boolean getLowerLimitSwitch(){
@@ -129,48 +120,91 @@ public class Elevator extends SubsystemBase{
         }
     }
 
-    public void moveElevator(ElevatorPosition elevatorPosition){
-        switch (elevatorPosition) {
-            case READ_REEF_APRILTAG:
-                goal = ElevatorConstants.READ_REEF_APRILTAG_Position;
-                goalElevatorPosition = "Elevator read Reef apriltag";
-                break;
+    public enum ElevatorHeights{
+        // For coral
+        HOME,
+        READ_REEF_APRILTAG,
+        L1,
+        L2,
+        L3,
+        L4,
+        PICKUP,
+
+        // For algae
+        FLOOR_ALGAE_INTAKE,
+        PROCESSOR_EJECT,
+        BETWEEN_L2_AND_L3,
+        BETWEEN_L3_AND_L4,
+        NET
+    }
+
+    public void moveElevator(ElevatorHeights elevatorHeights){
+        switch (elevatorHeights) {
+            // For coral
             case HOME:
-                goal = ElevatorConstants.HomeGoalPosition;
-                goalElevatorPosition = "Elevator Home";
+                goal = ElevatorConstants.HOMEPosition;
+                goalElevatorPosition = "Elevator Home " + ElevatorConstants.HOMEPosition;
+                break;
+            case READ_REEF_APRILTAG:
+                goal = ElevatorConstants.READ_REEF_APRILTAGPosition;
+                goalElevatorPosition = "Elevator read Reef apriltag " + ElevatorConstants.READ_REEF_APRILTAGPosition;
                 break;
             case L1:
-                goal = ElevatorConstants.L1GoalPosition;
-                goalElevatorPosition = "Elevator L1";
+                goal = ElevatorConstants.L1Position;
+                goalElevatorPosition = "Elevator L1 " + ElevatorConstants.L1Position;
                 break;
             case L2:
-                goal = ElevatorConstants.L2GoalPosition;
-                goalElevatorPosition = "Elevator L2";
+                goal = ElevatorConstants.L2Position;
+                goalElevatorPosition = "Elevator L2 " + ElevatorConstants.L2Position;
                 break;
             case L3:
-                goal = ElevatorConstants.L3GoalPosition;
-                goalElevatorPosition = "Elevator L3";
+                goal = ElevatorConstants.L3Position;
+                goalElevatorPosition = "Elevator L3 " + ElevatorConstants.L3Position;
                 break;
             case L4:
-                goal = ElevatorConstants.L4GoalPosition;
-                goalElevatorPosition = "Elevator L4";
+                goal = ElevatorConstants.L4Position;
+                goalElevatorPosition = "Elevator L4 " + ElevatorConstants.L4Position;
                 break;
             case PICKUP:
-                goal = ElevatorConstants.PickUpGoalPosition;
-                goalElevatorPosition = "Elevator PickUp";
+                goal = ElevatorConstants.PICKUPPosition;
+                goalElevatorPosition = "Elevator PickUp " + ElevatorConstants.PICKUPPosition;
                 break;
-            }
+
+            // FOr algae
+            case FLOOR_ALGAE_INTAKE:
+                goal = ElevatorConstants.FLOOR_INTAKE_ALGAEPosition;
+                goalElevatorPosition = "Elevator floor algae intake " + ElevatorConstants.FLOOR_INTAKE_ALGAEPosition;
+                break;
+            case PROCESSOR_EJECT:
+                goal = ElevatorConstants.PROCESSOR_EJECTPosition;
+                goalElevatorPosition = "Elevator processor algae intake " + ElevatorConstants.PROCESSOR_EJECTPosition;
+                break;
+            case BETWEEN_L2_AND_L3:
+                goal = ElevatorConstants.BETWEEN_L2_AND_L3Position;
+                goalElevatorPosition = "Elevator between L2 and L3" + ElevatorConstants.BETWEEN_L2_AND_L3Position;
+                break;
+            case BETWEEN_L3_AND_L4:
+                goal = ElevatorConstants.BETWEEN_L3_AND_L4Position;
+                goalElevatorPosition = "Elevator between L3 and L4" + ElevatorConstants.BETWEEN_L3_AND_L4Position;
+            case NET:
+                break;
+            }    
 
         goal = (goal > 0) ? goal : 0;
         goal = (goal < ElevatorConstants.elevatorMaxHeight) ? goal : ElevatorConstants.elevatorMaxHeight;
+    }
 
-        PIDvalue = elevatorPID.calculate(getElevatorPosition(), goal);
-        PIDvalue = desaturatePidValue(PIDvalue);
-        moveELevatorMotors(PIDvalue);
+    public boolean isAtTarget() {
+        return getElevatorPosition() >= goal - ElevatorConstants.elevatorkDeadBand
+        && getElevatorPosition() <= goal + ElevatorConstants.elevatorkDeadBand;
     }
 
     @Override
     public void periodic(){
+        PIDvalue = elevatorPID.calculate(getElevatorPosition(), goal);
+        PIDvalue = desaturatePidValue(PIDvalue);
+        moveELevatorMotors(PIDvalue);
+
         SmartDashboard.putBoolean("Lower limit switch", getUpperLimitSwitch());
         SmartDashboard.putBoolean("Upper limit switch", getLowerLimitSwitch());
         SmartDashboard.putNumber("Elevator position", getElevatorPosition());
@@ -178,5 +212,6 @@ public class Elevator extends SubsystemBase{
         SmartDashboard.putNumber("Elevator PID", PIDvalue);
         SmartDashboard.putNumber("Elevator desired position", goal);
         SmartDashboard.putString("String elevator goal", goalElevatorPosition);
+        SmartDashboard.putBoolean("isFinished", isAtTarget());
     }
 }

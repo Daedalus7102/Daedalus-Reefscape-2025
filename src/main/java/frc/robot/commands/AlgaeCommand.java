@@ -11,7 +11,7 @@ public class AlgaeCommand extends Command {
     public AlgaeCommand(AlgaeIntake algaeIntake, AlgaeIntakeMode algaeIntakeMode){
         this.algaeIntake = algaeIntake;
         this.algaeIntakeMode = algaeIntakeMode;
-        // addRequirements(coralIntake);
+        addRequirements(algaeIntake);
     }
 
     @Override
