@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.Intakes.AlgaeIntakeConstants;
 import frc.robot.Constants.Intakes.AlgaeIntakeConstants.MergedAlgaeScorePositions;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.Elevator.ElevatorHeights;
@@ -35,6 +36,7 @@ public class MoveAlgaeCommand extends Command{
       case FLOOR_INTAKE:
         elevator.moveElevator(ElevatorHeights.FLOOR_ALGAE_INTAKE);
         algaeIntake.moveAlgaeIntake(AlgaeIntakeMode.FLOOR_INTAKE);
+        algaeIntake.moveAlgaeIntakeMotors(AlgaeIntakeConstants.algaeIntakeEjectVelocity, false);
         break;
 
       case PROCCESOR_EJECT:
@@ -45,12 +47,21 @@ public class MoveAlgaeCommand extends Command{
       case BETWEEN_L2_AND_L3Position:
         elevator.moveElevator(ElevatorHeights.BETWEEN_L2_AND_L3);
         algaeIntake.moveAlgaeIntake(AlgaeIntakeMode.BETWEEN_L2_AND_L3_OR_L3_AND_L4_Position);
+        algaeIntake.moveAlgaeIntakeMotors(AlgaeIntakeConstants.algaeIntakeIntakeVelocity, true);
         break;
       case BETWEEN_L3_AND_L4Position:
         elevator.moveElevator(ElevatorHeights.BETWEEN_L3_AND_L4);
         algaeIntake.moveAlgaeIntake(AlgaeIntakeMode.BETWEEN_L2_AND_L3_OR_L3_AND_L4_Position);
+        algaeIntake.moveAlgaeIntakeMotors(AlgaeIntakeConstants.algaeIntakeIntakeVelocity, true);
+
       case HOME:
-        algaeIntake.moveAlgaeIntake(AlgaeIntakeMode.HOME);
+        algaeIntake.moveAlgaeIntakeMotors(0, true);
+        if (algaeIntake.getInfraredSensorValue()) {
+          algaeIntake.moveAlgaeIntake(AlgaeIntakeMode.HOME_WITH_ALGAE);
+        }
+        else {
+          algaeIntake.moveAlgaeIntake(AlgaeIntakeMode.HOME);
+        }
         break;
     }
   }

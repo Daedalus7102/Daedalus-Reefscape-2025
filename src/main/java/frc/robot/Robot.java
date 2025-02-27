@@ -25,6 +25,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
+    m_robotContainer.getAlgaeIntakeSubsystem().pivotMotorToCoast();
   }
 
   @Override
@@ -34,6 +35,7 @@ public class Robot extends TimedRobot {
   public void disabledExit() {
     m_robotContainer.getElevatorSubsystem().motorsToBrake();
     m_robotContainer.getSwerveSubsystem().motorsToBrake();
+    m_robotContainer.getAlgaeIntakeSubsystem().pivotMotorToBrake();
   }
 
   @Override

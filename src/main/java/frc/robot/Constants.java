@@ -36,7 +36,7 @@ public class Constants {
         public static final double driveRPS2MPS = driveRevsToMeters;
 
         //Variable setting the maximum speed of the modules (Used in "Chassi" class)
-        public static final double chassisHighMaxOutput = 0.9;
+        public static double chassisHighMaxOutput = 0.9;
         public static final double chassisLowMaxOutput = 0.2;
 
         public static final double chassisXYAccelerationkP = 0.9;
@@ -77,25 +77,25 @@ public class Constants {
         public static final double elevatorkI = 0;
         public static final double elevatorkD = 0;
 
-        public static final double elevatorMotorsRiseMaxOutput = 0.3;
-        public static final double elevatorMotorsLowerMaxOutput = -0.3;
+        public static final double elevatorMotorsRiseMaxOutput = 0.6;
+        public static final double elevatorMotorsLowerMaxOutput = -0.5;
 
         public static final double elevatorkDeadBand = 3;
 
         // Elevator setpoints for coral
         public static final double HOMEPosition = 0;
         public static final double READ_REEF_APRILTAGPosition = 30; 
-        public static final double L1Position = 30; //
-        public static final double L2Position = 36; //
-        public static final double L3Position = 33; //
-        public static final double L4Position = 213; //
-        public static final double PICKUPPosition = 20; //
-        public static final double elevatorMaxHeight = 100;// 215; //
+        public static final double L1Position = 0; //
+        public static final double L2Position = 43;
+        public static final double L3Position = 85;
+        public static final double L4Position = 180;
+        public static final double PICKUPPosition = 25;
+        public static final double elevatorMaxHeight = 215;// 215; //
 
         // Elevator setpoints for algae
-        public static final double FLOOR_INTAKE_ALGAEPosition = 45;
-        public static final double PROCESSOR_EJECTPosition = 50; //
-        public static final double BETWEEN_L2_AND_L3Position = 50; //
+        public static final double FLOOR_INTAKE_ALGAEPosition = 5;
+        public static final double PROCESSOR_EJECTPosition = 20; //
+        public static final double BETWEEN_L2_AND_L3Position = 84; //
         public static final double BETWEEN_L3_AND_L4Position = 60; //
         public static final double NETPosition = 0; //
     }
@@ -112,8 +112,9 @@ public class Constants {
             public static final double algaePivotkI = 0;
             public static final double algaePivotkD = 0;    
 
-            public static final double algaeIntakeEjectVelocity = -0.1;
-            public static final double algaeIntakeIntakeVelocity = 0.1;
+            public static final double algaeIntakeEjectVelocity = 0.1;
+            public static final double algaeIntakeIntakeVelocity = -0.1;
+            public static final double algaeIntakeSecureAlgaeValocity = 0.05;
 
             public static final double algaePivotEncoderOffset = 0;
             public static final double algaePivotMotorMaxPositiveOutPut = 0.2;
@@ -122,10 +123,11 @@ public class Constants {
             public static final double pivotMotorkDeadBand = 1;
 
             // Algae pivot setpoints
-            public static final double FLOOR_INTAKEPosition = 140;
+            public static final double FLOOR_INTAKEPosition = 167;
             public static final double PROCCESOR_EJECTPosition = 140;
-            public static final double BETWEEN_L2_AND_L3_OR_L3_AND_L4_Position = 140;
+            public static final double BETWEEN_L2_AND_L3_OR_L3_AND_L4_Position = 167;
             public static final double HOMEPosition = 93.69;
+            public static final double HOME_WITH_ALGAEPosition = 138;
             public static final double NET_EJECTPosition = 140;    
             // public static final double GeneralAlgaeEjectGaolPosition = 0;  
             public static final double pivotMaxAngle = 257.10;
@@ -147,29 +149,29 @@ public class Constants {
 
             public static final int coralPivotCancoderID = 6;
 
-            public static final double coralPivotkP = 0.01;
+            public static final double coralPivotkP = 0.016;
             public static final double coralPivotkI = 0;
             public static final double coralPivotkD = 0;
 
             public static final double coralIntakeEjectVelocity = -0.2;
             public static final double coralIntakeIntakeVleocity = 0.1;
-            public static final double coralIntakeSecureCoralVelocity = 0.05;
+            public static final double coralIntakeSecureCoralVelocity = 0.2;
 
             public static final double coralPivotEncoderOffset = -60;
-            public static final double coralPivotMotorMaxPositiveOutPut = 0.1;
-            public static final double coralPivotMotorMaxNegativeOutput = -0.1;
+            public static double coralPivotMotorMaxPositiveOutPut = 0.3;
+            public static final double coralPivotMotorMaxNegativeOutput = -0.04;
 
-            public static final double pivotMotorkDeadBand = 10;
+            public static final double pivotMotorkDeadBand = 0.1;
 
             // Coral pivot setpoints
-            public static final double HOMEPosition = 209;
+            public static final double HOMEPosition = 203.20;
             public static final double INTAKE_PICKUPPosition = 190; 
-            public static final double L1Position = 170; 
-            public static final double L2_and_L3Position = 140;
-            public static final double L4Position = 100; 
+            public static final double L1Position = 175; 
+            public static final double L2_and_L3Position = 115.25;
+            public static final double L4Position = 80;
             // public static final double GeneralEJECTPosition = 0;
-            public static final double pivotMaxAngle = 210;
-            public static final double pivotMinAngle = 62;
+            public static final double pivotMaxAngle = 203.20;
+            public static final double pivotMinAngle = 53.29;
 
             public enum MergedCoralScorePositions {
                 READ_REEF_APRILTAG,

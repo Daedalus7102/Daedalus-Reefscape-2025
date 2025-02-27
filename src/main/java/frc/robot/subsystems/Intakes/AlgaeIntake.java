@@ -27,7 +27,7 @@ public class AlgaeIntake extends SubsystemBase{
     private final CANcoder algaePivotCancoder = new CANcoder(AlgaeIntakeConstants.algaePivotCancoderID, "Drivetrain");
     private final PIDController algaePivotPID = new PIDController(AlgaeIntakeConstants.algaePivotkP, AlgaeIntakeConstants.algaePivotkI, AlgaeIntakeConstants.algaePivotkD);
 
-    private final DigitalInput infraredSensor = new DigitalInput(1);
+    private final DigitalInput infraredSensor = new DigitalInput(5);
 
     private double goal = AlgaeIntakeConstants.HOMEPosition;
     private double PIDvalue;
@@ -51,6 +51,7 @@ public class AlgaeIntake extends SubsystemBase{
         PROCCESOR_EJECT,
         BETWEEN_L2_AND_L3_OR_L3_AND_L4_Position,
         HOME,
+        HOME_WITH_ALGAE,
         NET_EJECT,
     }
 
@@ -64,7 +65,7 @@ public class AlgaeIntake extends SubsystemBase{
         algaeIntakePivotMotor.configure(kCoastGeneralConfig.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    private boolean getInfraredSensorValue() {
+    public boolean getInfraredSensorValue() {
         return !infraredSensor.get();
     }
 
@@ -80,7 +81,7 @@ public class AlgaeIntake extends SubsystemBase{
     public void moveAlgaeIntakeMotors(double velocity, boolean securitySystem){
         if(securitySystem) {
             if (getInfraredSensorValue()) {
-                stopIntakeMotors();
+                    stopIntakeMotors();
             } else {
                 algaeIntakeLeftMotor.set(velocity);
                 algaeIntakeRightMotor.set(velocity);
@@ -127,12 +128,14 @@ public class AlgaeIntake extends SubsystemBase{
             case HOME:
                 goal = AlgaeIntakeConstants.HOMEPosition;
                 goalAlgaeIntakePosition = "Algae intake Home position" + AlgaeIntakeConstants.HOMEPosition;
+                break;
+            case HOME_WITH_ALGAE:
+                goal = AlgaeIntakeConstants.HOME_WITH_ALGAEPosition;
+                goalAlgaeIntakePosition = "Algae intake Home with algae position" + AlgaeIntakeConstants.HOME_WITH_ALGAEPosition;
+                break;
             case NET_EJECT:
                 break;
         }
-
-        goal = (goal > AlgaeIntakeConstants.pivotMinAngle) ? goal : AlgaeIntakeConstants.pivotMinAngle;
-        goal = (goal < AlgaeIntakeConstants.pivotMaxAngle) ? goal : AlgaeIntakeConstants.pivotMaxAngle;
     }
 
     public boolean pivotMotorInDesiredAngle() {
@@ -143,6 +146,9 @@ public class AlgaeIntake extends SubsystemBase{
 
     @Override
     public void periodic(){
+        goal = (goal > AlgaeIntakeConstants.pivotMinAngle) ? goal : AlgaeIntakeConstants.pivotMinAngle;
+        goal = (goal < AlgaeIntakeConstants.pivotMaxAngle) ? goal : AlgaeIntakeConstants.pivotMaxAngle;
+
         PIDvalue = algaePivotPID.calculate(getAlgaeIntakePivotAngle(), goal);
         PIDvalue = desaturatePidValue(PIDvalue);
         moveAlgaePivotMotor(PIDvalue);

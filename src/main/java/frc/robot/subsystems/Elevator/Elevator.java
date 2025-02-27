@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.SwerveConstants;
 
 public class Elevator extends SubsystemBase{
     // Left motor MUST be inverted because of how the robot is configured
@@ -189,9 +190,6 @@ public class Elevator extends SubsystemBase{
             case NET:
                 break;
             }    
-
-        goal = (goal > 0) ? goal : 0;
-        goal = (goal < ElevatorConstants.elevatorMaxHeight) ? goal : ElevatorConstants.elevatorMaxHeight;
     }
 
     public boolean isAtTarget() {
@@ -201,10 +199,18 @@ public class Elevator extends SubsystemBase{
 
     @Override
     public void periodic(){
+        goal = (goal > 0) ? goal : 0;
+        goal = (goal < ElevatorConstants.elevatorMaxHeight) ? goal : ElevatorConstants.elevatorMaxHeight;
+
         PIDvalue = elevatorPID.calculate(getElevatorPosition(), goal);
         PIDvalue = desaturatePidValue(PIDvalue);
         moveELevatorMotors(PIDvalue);
 
+        if (getElevatorPosition() > 100) {
+            SwerveConstants.chassisHighMaxOutput = SwerveConstants.chassisLowMaxOutput;
+        } else {
+            SwerveConstants.chassisHighMaxOutput = 0.9;
+        }
         SmartDashboard.putBoolean("Lower limit switch", getUpperLimitSwitch());
         SmartDashboard.putBoolean("Upper limit switch", getLowerLimitSwitch());
         SmartDashboard.putNumber("Elevator position", getElevatorPosition());

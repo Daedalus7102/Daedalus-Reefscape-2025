@@ -31,7 +31,7 @@ public class CoralIntake extends SubsystemBase{
 
     private final DigitalInput infraredSensor = new DigitalInput(0);
 
-    private double goal;
+    private double goal = CoralIntakeConstants.HOMEPosition;
     private double PIDvalue;
     private String goalCoralIntakePosition = "Initial position";
     
@@ -41,7 +41,7 @@ public class CoralIntake extends SubsystemBase{
         kCoastGeneralConfig
             .idleMode(IdleMode.kCoast);
         
-        // pivotMotorToCoast();
+        pivotMotorToBrake();
 
         // Coral left intake motor MUST be inverted
         coralIntakeLeftMotor.configure(kBrakeGeneralConfig.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -91,7 +91,8 @@ public class CoralIntake extends SubsystemBase{
         } else {
             coralIntakeLeftMotor.set(velocity);
             coralIntakeRightMotor.set(velocity);
-        }    }
+        }
+    }
 
     public void stopPivotMotor(){
         coralIntakePivotMotor.set(0);
@@ -103,6 +104,17 @@ public class CoralIntake extends SubsystemBase{
     }
 
     private double desaturatePidValue(double PID_value){
+        if(getInfraredSensorValue()) {
+            CoralIntakeConstants.coralPivotMotorMaxPositiveOutPut =+ 0.2;
+        } else {
+            if(getCoralIntakePivotAngle() > 150) {
+                CoralIntakeConstants.coralPivotMotorMaxPositiveOutPut = 0.05;
+            }
+            else {
+                CoralIntakeConstants.coralPivotMotorMaxPositiveOutPut = 0.3;
+            }
+        }
+
         if(PID_value > CoralIntakeConstants.coralPivotMotorMaxPositiveOutPut){
             PID_value =  CoralIntakeConstants.coralPivotMotorMaxPositiveOutPut;
         }
@@ -134,10 +146,7 @@ public class CoralIntake extends SubsystemBase{
                 goal = CoralIntakeConstants.L4Position;
                 goalCoralIntakePosition = "Coral Intake pickUp Deg" + CoralIntakeConstants.L4Position;
                 break;
-        }
-                
-        goal = (goal > CoralIntakeConstants.pivotMinAngle) ? goal : CoralIntakeConstants.pivotMinAngle;
-        goal = (goal < CoralIntakeConstants.pivotMaxAngle) ? goal : CoralIntakeConstants.pivotMaxAngle;
+        }                
     }            
 
     public boolean pivotMotorInDesiredAngle() {
@@ -148,6 +157,9 @@ public class CoralIntake extends SubsystemBase{
 
     @Override
     public void periodic(){
+        goal = (goal > CoralIntakeConstants.pivotMinAngle) ? goal : CoralIntakeConstants.pivotMinAngle;
+        goal = (goal < CoralIntakeConstants.pivotMaxAngle) ? goal : CoralIntakeConstants.pivotMaxAngle;
+
         PIDvalue = coralPivotPID.calculate(getCoralIntakePivotAngle(), goal);
         PIDvalue = desaturatePidValue(PIDvalue);
         moveCoralPivotMotor(PIDvalue);

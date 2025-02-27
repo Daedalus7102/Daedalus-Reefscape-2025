@@ -1,22 +1,17 @@
 package frc.robot.commands;
 
-import java.util.function.Supplier;
-/*
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.SwerveConstants;
-import frc.robot.Constants.Intakes.CoralIntakeConstants;
 import frc.robot.Constants.SwerveConstants.AimbotConstants;
 import frc.robot.Constants.SwerveConstants.AutoRotateConstants;
 import frc.robot.subsystems.Drive.Swerve;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.Elevator.ElevatorHeights;
 import frc.robot.subsystems.Intakes.CoralIntake;
-import frc.robot.subsystems.Intakes.CoralIntake.CoralIntakeMode;
 
 public class AimbotCommand extends Command{
   private final Swerve swerve;
@@ -25,19 +20,15 @@ public class AimbotCommand extends Command{
   private boolean needsRotCalibration;
   private double angleError;
   boolean isFinished;
-  private ElevatorHeights elevatorPosition;
-  private CoralIntakeMode coralIntakeMode;
 
   private double xAprilTagTarget;
   private double yAprilTagTarget;
   Timer timer = new Timer();
 
-  public AimbotCommand(Swerve swerve, Elevator elevator, CoralIntake coralIntake, ElevatorHeights elevatorPosition, CoralIntakeMode coralIntakeMode) {
+  public AimbotCommand(Swerve swerve, Elevator elevator, CoralIntake coralIntake) {
       this.swerve = swerve;
       this.elevator = elevator;
       this.coralIntake = coralIntake;
-      this.elevatorPosition = elevatorPosition;
-      this.coralIntakeMode = coralIntakeMode;
       addRequirements(swerve, elevator, coralIntake);
     }
   
@@ -163,18 +154,7 @@ public class AimbotCommand extends Command{
         // coralIntake.moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeSecureCoralVelocity, false);
         swerve.setChassisSpeeds(-ySpeed, xSpeed, zSpeed, 0.2, true);
       }
-
-      if(timer.get() > 4) {
-        // coralIntake.moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeSecureCoralVelocity, false);
-        elevator.moveElevator(elevatorPosition);
-
-        if(elevator.isAtTarget()) {
-          // coralIntake.moveCoralIntake(CoralIntakeMode.L2_AND_L3EJECT);
-        }
-      }
     }
-
-    isFinished = timer.get() > 4;
     
     SmartDashboard.putBoolean("Needs rot calibration", needsRotCalibration);
     SmartDashboard.putNumber("Aimbot xTarget", xAprilTagTarget);
@@ -192,7 +172,7 @@ public class AimbotCommand extends Command{
   @Override
   public void end(boolean interrupted) {
     swerve.setChassisSpeeds(0, 0, 0, 0, true);
-    // coralIntake.stopIntakeMotors();
+    elevator.stopMotors();
     timer.stop();
     timer.reset();
   }
@@ -202,4 +182,3 @@ public class AimbotCommand extends Command{
     return false;
   }
 }
-*/

@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.Intakes.CoralIntakeConstants;
 import frc.robot.Constants.Intakes.CoralIntakeConstants.MergedCoralScorePositions;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.Elevator.ElevatorHeights;
@@ -36,11 +37,13 @@ public class ScoreCoralCommand extends Command{
         break;
 
       case HOME:
+        coralIntake.moveCoralIntakeMotors(0, true);
         elevator.moveElevator(ElevatorHeights.HOME);
         coralIntake.moveCoralIntake(CoralIntakeMode.HOME);
         break;
 
       case INTAKE:
+        coralIntake.moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeIntakeVleocity, true);
         elevator.moveElevator(ElevatorHeights.PICKUP);
         coralIntake.moveCoralIntake(CoralIntakeMode.INTAKE_PICKUP);
         break;
