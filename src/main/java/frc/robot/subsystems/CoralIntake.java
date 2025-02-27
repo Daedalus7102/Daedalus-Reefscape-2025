@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Intakes;
+package frc.robot.Subsystems;
 
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.Intakes.CoralIntakeConstants;
+import frc.robot.Utilities.PositionEnums.CoralScorePositions;
 
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -106,15 +106,7 @@ public class CoralIntake extends SubsystemBase{
         return PID_value;
     }
 
-    public enum CoralIntakeMode{
-        HOME,
-        INTAKE_PICKUP,
-        L1_EJECT,
-        L2_AND_L3EJECT,
-        L4_EJECT
-    }
-
-    public void moveCoralIntake(CoralIntakeMode coralintakeMode){
+    public void moveCoralIntake(CoralScorePositions coralintakeMode){
         /*if(getCoralIntakePivotAngle() > 150) {
             CoralIntakeConstants.coralPivotMotorMaxPositiveOutPut = 0.03;
             CoralIntakeConstants.coralPivotMotorMaxNegativeOutput = -0.1;
@@ -123,28 +115,8 @@ public class CoralIntake extends SubsystemBase{
             CoralIntakeConstants.coralPivotMotorMaxPositiveOutPut = 0.2;
             CoralIntakeConstants.coralPivotMotorMaxNegativeOutput = -0.02;
         }*/
-        switch (coralintakeMode) {
-            case HOME:
-                goal = CoralIntakeConstants.HOMEPosition;
-                goalCoralIntakePosition = "Coral Intake Home Deg" + CoralIntakeConstants.HOMEPosition;    
-                break;
-            case INTAKE_PICKUP:
-                goal = CoralIntakeConstants.INTAKE_PICKUPPosition;
-                goalCoralIntakePosition = "Coral Intake pickUp Deg" + CoralIntakeConstants.INTAKE_PICKUPPosition;
-                break;
-            case L1_EJECT:
-                goal = CoralIntakeConstants.L1Position;
-                goalCoralIntakePosition = "Coral Intake pickUp Deg" + CoralIntakeConstants.L1Position;
-                break;
-            case L2_AND_L3EJECT:
-                goal = CoralIntakeConstants.L2_and_L3Position;
-                goalCoralIntakePosition = "Coral Intake pickUp Deg" + CoralIntakeConstants.L2_and_L3Position;
-                break;
-            case L4_EJECT:
-                goal = CoralIntakeConstants.L4Position;
-                goalCoralIntakePosition = "Coral Intake pickUp Deg" + CoralIntakeConstants.L4Position;
-                break;
-        }
+        
+        goal = coralintakeMode.getCoralIntakePosition();
                 
         goal = (goal > CoralIntakeConstants.pivotMinAngle) ? goal : CoralIntakeConstants.pivotMinAngle;
         goal = (goal < CoralIntakeConstants.pivotMaxAngle) ? goal : CoralIntakeConstants.pivotMaxAngle;

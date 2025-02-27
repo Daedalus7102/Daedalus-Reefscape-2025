@@ -1,11 +1,11 @@
-package frc.robot.commands;
+package frc.robot.Commands;
 
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.subsystems.Drive.Swerve;
-import frc.robot.subsystems.Elevator.Elevator;
+import frc.robot.Subsystems.Elevator;
+import frc.robot.Subsystems.Drive.Swerve;
 import edu.wpi.first.math.controller.PIDController;
 
 public class DriveCommand extends Command{

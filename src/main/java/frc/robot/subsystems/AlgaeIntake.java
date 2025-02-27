@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Intakes;
+package frc.robot.Subsystems;
 
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Intakes.AlgaeIntakeConstants;
+import frc.robot.Utilities.PositionEnums.AlgaeScorePositions;
 
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -110,26 +111,8 @@ public class AlgaeIntake extends SubsystemBase{
         NET_EJECT,
     }
 
-    public void moveAlgaeIntake(AlgaeIntakeMode algaeIntakeMode){
-        switch (algaeIntakeMode) {
-            case FLOOR_INTAKE:
-                goal = AlgaeIntakeConstants.FLOOR_INTAKEPosition;
-                goalAlgaeIntakePosition = "Algae intake floor " + AlgaeIntakeConstants.FLOOR_INTAKEPosition;
-                break;
-            case PROCCESOR_EJECT:
-                goal = AlgaeIntakeConstants.PROCCESOR_EJECTPosition;
-                goalAlgaeIntakePosition = "Algae intake processor " + AlgaeIntakeConstants.PROCCESOR_EJECTPosition;
-                break;
-            case BETWEEN_L2_AND_L3_OR_L3_AND_L4_Position:
-                goal = AlgaeIntakeConstants.BETWEEN_L2_AND_L3_OR_L3_AND_L4_Position;
-                goalAlgaeIntakePosition = "Algae intake Between L2 and L3 or L3 and L4 " + AlgaeIntakeConstants.BETWEEN_L2_AND_L3_OR_L3_AND_L4_Position;
-                break;
-            case HOME:
-                goal = AlgaeIntakeConstants.HOMEPosition;
-                goalAlgaeIntakePosition = "Algae intake Home position" + AlgaeIntakeConstants.HOMEPosition;
-            case NET_EJECT:
-                break;
-        }
+    public void moveAlgaeIntake(AlgaeScorePositions scorePositions){
+        goal = scorePositions.getAlgaeIntakePosition();
 
         goal = (goal > AlgaeIntakeConstants.pivotMinAngle) ? goal : AlgaeIntakeConstants.pivotMinAngle;
         goal = (goal < AlgaeIntakeConstants.pivotMaxAngle) ? goal : AlgaeIntakeConstants.pivotMaxAngle;

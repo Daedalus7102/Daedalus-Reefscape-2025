@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Elevator;
+package frc.robot.Subsystems;
 
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -13,6 +13,9 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Utilities.Clamp;
+import frc.robot.Utilities.PositionEnums.AlgaeScorePositions;
+import frc.robot.Utilities.PositionEnums.CoralScorePositions;
 
 public class Elevator extends SubsystemBase{
     // Left motor MUST be inverted because of how the robot is configured
@@ -120,78 +123,14 @@ public class Elevator extends SubsystemBase{
         }
     }
 
-    public enum ElevatorHeights{
-        // For coral
-        HOME,
-        READ_REEF_APRILTAG,
-        L1,
-        L2,
-        L3,
-        L4,
-        PICKUP,
-
-        // For algae
-        FLOOR_ALGAE_INTAKE,
-        PROCESSOR_EJECT,
-        BETWEEN_L2_AND_L3,
-        BETWEEN_L3_AND_L4,
-        NET
+    public void moveElevator(CoralScorePositions elevatorHeights){
+        goal = elevatorHeights.getElevatorPosition();
+        goal = Clamp.clamp(goal, 0, ElevatorConstants.elevatorMaxHeight);
     }
 
-    public void moveElevator(ElevatorHeights elevatorHeights){
-        switch (elevatorHeights) {
-            // For coral
-            case HOME:
-                goal = ElevatorConstants.HOMEPosition;
-                goalElevatorPosition = "Elevator Home " + ElevatorConstants.HOMEPosition;
-                break;
-            case READ_REEF_APRILTAG:
-                goal = ElevatorConstants.READ_REEF_APRILTAGPosition;
-                goalElevatorPosition = "Elevator read Reef apriltag " + ElevatorConstants.READ_REEF_APRILTAGPosition;
-                break;
-            case L1:
-                goal = ElevatorConstants.L1Position;
-                goalElevatorPosition = "Elevator L1 " + ElevatorConstants.L1Position;
-                break;
-            case L2:
-                goal = ElevatorConstants.L2Position;
-                goalElevatorPosition = "Elevator L2 " + ElevatorConstants.L2Position;
-                break;
-            case L3:
-                goal = ElevatorConstants.L3Position;
-                goalElevatorPosition = "Elevator L3 " + ElevatorConstants.L3Position;
-                break;
-            case L4:
-                goal = ElevatorConstants.L4Position;
-                goalElevatorPosition = "Elevator L4 " + ElevatorConstants.L4Position;
-                break;
-            case PICKUP:
-                goal = ElevatorConstants.PICKUPPosition;
-                goalElevatorPosition = "Elevator PickUp " + ElevatorConstants.PICKUPPosition;
-                break;
-
-            // FOr algae
-            case FLOOR_ALGAE_INTAKE:
-                goal = ElevatorConstants.FLOOR_INTAKE_ALGAEPosition;
-                goalElevatorPosition = "Elevator floor algae intake " + ElevatorConstants.FLOOR_INTAKE_ALGAEPosition;
-                break;
-            case PROCESSOR_EJECT:
-                goal = ElevatorConstants.PROCESSOR_EJECTPosition;
-                goalElevatorPosition = "Elevator processor algae intake " + ElevatorConstants.PROCESSOR_EJECTPosition;
-                break;
-            case BETWEEN_L2_AND_L3:
-                goal = ElevatorConstants.BETWEEN_L2_AND_L3Position;
-                goalElevatorPosition = "Elevator between L2 and L3" + ElevatorConstants.BETWEEN_L2_AND_L3Position;
-                break;
-            case BETWEEN_L3_AND_L4:
-                goal = ElevatorConstants.BETWEEN_L3_AND_L4Position;
-                goalElevatorPosition = "Elevator between L3 and L4" + ElevatorConstants.BETWEEN_L3_AND_L4Position;
-            case NET:
-                break;
-            }    
-
-        goal = (goal > 0) ? goal : 0;
-        goal = (goal < ElevatorConstants.elevatorMaxHeight) ? goal : ElevatorConstants.elevatorMaxHeight;
+    public void moveElevator(AlgaeScorePositions elevatorHeights) {
+        goal = elevatorHeights.getElevatorPosition();
+        goal = Clamp.clamp(goal, 0, ElevatorConstants.elevatorMaxHeight);
     }
 
     public boolean isAtTarget() {

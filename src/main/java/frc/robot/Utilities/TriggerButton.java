@@ -1,8 +1,7 @@
-package frc.robot.utils;
+package frc.robot.Utilities;
 
 import java.util.function.BooleanSupplier;
 
-import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class TriggerButton extends Trigger {

@@ -1,5 +1,6 @@
-package frc.robot.commands;
+package frc.robot.Commands;
 
+/* 
 import com.pathplanner.lib.path.IdealStartingState;
 
 import edu.wpi.first.wpilibj.Timer;
@@ -7,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.Intakes.CoralIntakeConstants;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Intakes.CoralIntake;
-import frc.robot.subsystems.Intakes.CoralIntake.CoralIntakeMode;
 
 public class CoralScoreCommand extends Command {
     private final CoralIntake coralIntake;
@@ -97,3 +97,4 @@ public class CoralScoreCommand extends Command {
       return timer.get() > 3; //isFinished;
     }
   }
+*/

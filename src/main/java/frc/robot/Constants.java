@@ -131,13 +131,7 @@ public class Constants {
             public static final double pivotMaxAngle = 257.10;
             public static final double pivotMinAngle = 93.69;
 
-            public enum MergedAlgaeScorePositions {
-                FLOOR_INTAKE,
-                PROCCESOR_EJECT,
-                BETWEEN_L2_AND_L3Position,
-                BETWEEN_L3_AND_L4Position,
-                HOME
-            }
+            
         }
 
         public static final class CoralIntakeConstants{
@@ -171,15 +165,6 @@ public class Constants {
             public static final double pivotMaxAngle = 210;
             public static final double pivotMinAngle = 62;
 
-            public enum MergedCoralScorePositions {
-                READ_REEF_APRILTAG,
-                HOME,
-                INTAKE,
-                L1,
-                L2,
-                L3,
-                L4
-            }
         }
     }
 }

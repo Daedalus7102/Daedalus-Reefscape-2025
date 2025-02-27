@@ -11,24 +11,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
+import frc.robot.Commands.DriveCommand;
+import frc.robot.Commands.GrabCoralFromSource;
+import frc.robot.Commands.MoveAlgaeCommand;
+import frc.robot.Commands.MoveElevatorCommand;
+import frc.robot.Commands.ScoreCoralCommand;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.Intakes.CoralIntakeConstants;
-import frc.robot.Constants.Intakes.AlgaeIntakeConstants.MergedAlgaeScorePositions;
-import frc.robot.Constants.Intakes.CoralIntakeConstants.MergedCoralScorePositions;
-import frc.robot.commands.AimbotCommand;
-import frc.robot.commands.DriveCommand;
-import frc.robot.commands.GrabCoralFromSource;
-import frc.robot.commands.MoveAlgaeCommand;
-import frc.robot.commands.MoveElevatorCommand;
-import frc.robot.commands.ScoreCoralCommand;
-import frc.robot.subsystems.Drive.Swerve;
-import frc.robot.subsystems.Elevator.Elevator;
-import frc.robot.subsystems.Elevator.Elevator.ElevatorHeights;
-import frc.robot.subsystems.Intakes.AlgaeIntake;
-import frc.robot.subsystems.Intakes.CoralIntake;
-import frc.robot.subsystems.Intakes.AlgaeIntake.AlgaeIntakeMode;
-import frc.robot.subsystems.Intakes.CoralIntake.CoralIntakeMode;
-import frc.robot.utils.TriggerButton;
+import frc.robot.Subsystems.AlgaeIntake;
+import frc.robot.Subsystems.CoralIntake;
+import frc.robot.Subsystems.Elevator;
+import frc.robot.Subsystems.AlgaeIntake.AlgaeIntakeMode;
+import frc.robot.Subsystems.Drive.Swerve;
+import frc.robot.Utilities.TriggerButton;
+import frc.robot.Utilities.PositionEnums.AlgaeScorePositions;
+import frc.robot.Utilities.PositionEnums.CoralScorePositions;
 
 public class RobotContainer {
   // Subsystems
@@ -47,45 +44,6 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Mode", autoChooser);
     configureBindings();
-  }
-
-  private MergedCoralScorePositions sumPosition(MergedCoralScorePositions base, int sum) {
-    int current;
-    switch (base) {
-      case HOME:
-        current = 0;
-        break;
-      case L1:
-        current = 1;
-        break;
-      case L2:
-        current = 2;
-        break;
-      case L3:
-        current = 3;
-        break;
-      case L4:
-        current = 4;
-        break;
-      default:
-        current = 0;
-    }
-
-    current += sum;
-    
-    if (current <= 0) {
-      return MergedCoralScorePositions.HOME;
-    } else if (current >= 4) {
-      return MergedCoralScorePositions.L4;
-    }
-
-    if (current == 1) {
-      return MergedCoralScorePositions.L1;
-    } else if (current == 2) {
-      return MergedCoralScorePositions.L2;
-    } else {
-      return MergedCoralScorePositions.L3;
-    }
   }
 
   private void configureBindings() {/*
@@ -119,12 +77,12 @@ public class RobotContainer {
 
     // ----------- Operator Controller -----------
     // operatorController.square().toggleOnTrue(new ScoreCoralCommand(elevator, coralIntake, MergedCoralScorePositions.L2));
-    operatorController.triangle().toggleOnTrue(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.HOME));
-    operatorController.circle().toggleOnTrue(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.INTAKE).alongWith(new InstantCommand(() -> coralIntake.moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeIntakeVleocity, true))));
+    operatorController.triangle().toggleOnTrue(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, CoralScorePositions.HOME));
+    operatorController.circle().toggleOnTrue(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, CoralScorePositions.INTAKE).alongWith(new InstantCommand(() -> coralIntake.moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeIntakeVleocity, true))));
 
-    operatorController.cross().toggleOnTrue(new InstantCommand(() -> elevator.moveElevator(ElevatorHeights.L3)));
-    operatorController.L1().whileTrue(new MoveAlgaeCommand(elevator, algaeIntake, coralIntake, MergedAlgaeScorePositions.FLOOR_INTAKE).alongWith(new InstantCommand(() -> algaeIntake.moveAlgaeIntakeMotors(-0.1, false))));
-    operatorController.L1().whileFalse(new MoveAlgaeCommand(elevator, algaeIntake, coralIntake, MergedAlgaeScorePositions.HOME));
+    operatorController.cross().toggleOnTrue(new InstantCommand(() -> elevator.moveElevator(CoralScorePositions.L3)));
+    operatorController.L1().whileTrue(new MoveAlgaeCommand(elevator, algaeIntake, coralIntake, AlgaeScorePositions.FLOOR_INTAKE).alongWith(new InstantCommand(() -> algaeIntake.moveAlgaeIntakeMotors(-0.1, false))));
+    operatorController.L1().whileFalse(new MoveAlgaeCommand(elevator, algaeIntake, coralIntake, AlgaeScorePositions.HOME));
     operatorController.povLeft().toggleOnTrue(new InstantCommand(() -> coralIntake.moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeEjectVelocity, false)));
 
     /*/ new controls

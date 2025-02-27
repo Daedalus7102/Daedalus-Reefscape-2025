@@ -1,16 +1,14 @@
-package frc.robot.commands;
+package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Intakes.AlgaeIntake;
-import frc.robot.subsystems.Intakes.AlgaeIntake.AlgaeIntakeMode;
+import frc.robot.Subsystems.AlgaeIntake;
+import frc.robot.Subsystems.AlgaeIntake.AlgaeIntakeMode;
 
 public class AlgaeCommand extends Command {
     private final AlgaeIntake algaeIntake;
-    private final AlgaeIntakeMode algaeIntakeMode;
 
     public AlgaeCommand(AlgaeIntake algaeIntake, AlgaeIntakeMode algaeIntakeMode){
         this.algaeIntake = algaeIntake;
-        this.algaeIntakeMode = algaeIntakeMode;
         addRequirements(algaeIntake);
     }
 

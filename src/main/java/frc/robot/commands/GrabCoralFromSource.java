@@ -1,12 +1,11 @@
-package frc.robot.commands;
+package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.subsystems.Elevator.Elevator;
-import frc.robot.subsystems.Elevator.Elevator.ElevatorHeights;
-import frc.robot.subsystems.Intakes.CoralIntake;
-import frc.robot.subsystems.Intakes.CoralIntake.CoralIntakeMode;
+import frc.robot.Subsystems.CoralIntake;
+import frc.robot.Subsystems.Elevator;
+import frc.robot.Utilities.PositionEnums.CoralScorePositions;
 
 public class GrabCoralFromSource extends Command{
   private final Elevator elevator;
@@ -28,8 +27,8 @@ public class GrabCoralFromSource extends Command{
 
   @Override
   public void execute() {
-    elevator.moveElevator(ElevatorHeights.PICKUP);
-    coralIntake.moveCoralIntake(CoralIntakeMode.INTAKE_PICKUP);
+    elevator.moveElevator(CoralScorePositions.INTAKE);
+    coralIntake.moveCoralIntake(CoralScorePositions.INTAKE);
     if(shoot.getAsBoolean()) {
         coralIntake.moveCoralIntakeMotors(-0.1, true);
     }
