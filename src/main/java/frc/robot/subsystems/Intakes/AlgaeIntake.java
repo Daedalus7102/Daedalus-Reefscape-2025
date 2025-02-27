@@ -27,7 +27,7 @@ public class AlgaeIntake extends SubsystemBase{
     private final CANcoder algaePivotCancoder = new CANcoder(AlgaeIntakeConstants.algaePivotCancoderID, "Drivetrain");
     private final PIDController algaePivotPID = new PIDController(AlgaeIntakeConstants.algaePivotkP, AlgaeIntakeConstants.algaePivotkI, AlgaeIntakeConstants.algaePivotkD);
 
-    private final DigitalInput infraredSensor = new DigitalInput(2);
+    private final DigitalInput infraredSensor = new DigitalInput(1);
 
     private double goal = AlgaeIntakeConstants.HOMEPosition;
     private double PIDvalue;
@@ -46,6 +46,14 @@ public class AlgaeIntake extends SubsystemBase{
         algaeIntakeRightMotor.configure(kBrakeGeneralConfig.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
+    public enum AlgaeIntakeMode{
+        FLOOR_INTAKE,
+        PROCCESOR_EJECT,
+        BETWEEN_L2_AND_L3_OR_L3_AND_L4_Position,
+        HOME,
+        NET_EJECT,
+    }
+
     public void pivotMotorToBrake(){
         // Pivot motor on coral intake must be inverted
         algaeIntakePivotMotor.configure(kBrakeGeneralConfig.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -58,10 +66,6 @@ public class AlgaeIntake extends SubsystemBase{
 
     private boolean getInfraredSensorValue() {
         return !infraredSensor.get();
-    }
-
-    public void stopPivotMotor(){
-        algaeIntakePivotMotor.set(0);
     }
 
     public void stopIntakeMotors(){
@@ -87,6 +91,10 @@ public class AlgaeIntake extends SubsystemBase{
         }
     }
 
+    public void stopPivotMotor(){
+        algaeIntakePivotMotor.set(0);
+    }
+
     public double getAlgaeIntakePivotAngle() {
         double algaePivotAngle = algaePivotCancoder.getAbsolutePosition().getValueAsDouble() * 360 + AlgaeIntakeConstants.algaePivotEncoderOffset;
         return algaePivotAngle;
@@ -100,14 +108,6 @@ public class AlgaeIntake extends SubsystemBase{
             PID_value = AlgaeIntakeConstants.algaePivotMotorMaxNegativeOutput;
         }
         return PID_value;
-    }
-
-    public enum AlgaeIntakeMode{
-        FLOOR_INTAKE,
-        PROCCESOR_EJECT,
-        BETWEEN_L2_AND_L3_OR_L3_AND_L4_Position,
-        HOME,
-        NET_EJECT,
     }
 
     public void moveAlgaeIntake(AlgaeIntakeMode algaeIntakeMode){

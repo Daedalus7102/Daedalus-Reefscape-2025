@@ -1,7 +1,7 @@
 package frc.robot.commands;
 
 import java.util.function.Supplier;
-
+/*
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -135,7 +135,7 @@ public class AimbotCommand extends Command{
   @Override
   public void execute() {
     timer.start();
-    coralIntake.moveCoralIntake(CoralIntakeMode.HOME);
+    // coralIntake.moveCoralIntake(CoralIntakeMode.HOME);
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-front");
     NetworkTableEntry tx = table.getEntry("tx");
     NetworkTableEntry ty = table.getEntry("ty");
@@ -150,26 +150,26 @@ public class AimbotCommand extends Command{
     double zSpeed = calibrateZ(desiredAngle());
 
     if(timer.get() < 4) {
-      coralIntake.moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeSecureCoralVelocity, false);
+      // coralIntake.moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeSecureCoralVelocity, false);
       elevator.moveElevator(ElevatorHeights.READ_REEF_APRILTAG);
       swerve.setChassisSpeeds(0, 0, zSpeed, AutoRotateConstants.autoRotationMaxOutput, true);
     }
 
     if(found >= 1 && timer.get() > 1){
-      coralIntake.moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeSecureCoralVelocity, false);
+      // coralIntake.moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeSecureCoralVelocity, false);
       swerve.setChassisSpeeds(-ySpeed / 3, xSpeed, zSpeed, 0.2, true);
 
       if(timer.get() > 1.5) {
-        coralIntake.moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeSecureCoralVelocity, false);
+        // coralIntake.moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeSecureCoralVelocity, false);
         swerve.setChassisSpeeds(-ySpeed, xSpeed, zSpeed, 0.2, true);
       }
 
       if(timer.get() > 4) {
-        coralIntake.moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeSecureCoralVelocity, false);
+        // coralIntake.moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeSecureCoralVelocity, false);
         elevator.moveElevator(elevatorPosition);
 
         if(elevator.isAtTarget()) {
-          coralIntake.moveCoralIntake(CoralIntakeMode.L2_AND_L3EJECT);
+          // coralIntake.moveCoralIntake(CoralIntakeMode.L2_AND_L3EJECT);
         }
       }
     }
@@ -192,7 +192,7 @@ public class AimbotCommand extends Command{
   @Override
   public void end(boolean interrupted) {
     swerve.setChassisSpeeds(0, 0, 0, 0, true);
-    coralIntake.stopIntakeMotors();
+    // coralIntake.stopIntakeMotors();
     timer.stop();
     timer.reset();
   }
@@ -202,3 +202,4 @@ public class AimbotCommand extends Command{
     return false;
   }
 }
+*/

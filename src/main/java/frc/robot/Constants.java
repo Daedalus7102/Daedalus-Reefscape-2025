@@ -70,8 +70,8 @@ public class Constants {
         public static final int elevatorLeftMotorID= 9;
         public static final int elevatorRightMotorID= 10;
 
-        public static final int upperLimitSwitchID = 1;
-        public static final int lowerLimitSwitchID = 0;
+        public static final int upperLimitSwitchID = 2;
+        public static final int lowerLimitSwitchID = 3;
 
         public static final double elevatorkP = 0.05;
         public static final double elevatorkI = 0;

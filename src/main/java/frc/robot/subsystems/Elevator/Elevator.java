@@ -26,7 +26,7 @@ public class Elevator extends SubsystemBase{
     private final SparkMaxConfig kBrakeGeneralConfig = new SparkMaxConfig();
     private final SparkMaxConfig kCoastGeneralConfig = new SparkMaxConfig();
 
-    private double goal;
+    private double goal = ElevatorConstants.HOMEPosition;
     private double PIDvalue;
     private String goalElevatorPosition = "Elevator initial positon";
     

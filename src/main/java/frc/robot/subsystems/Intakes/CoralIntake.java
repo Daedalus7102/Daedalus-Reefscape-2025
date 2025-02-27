@@ -29,11 +29,9 @@ public class CoralIntake extends SubsystemBase{
     private final CANcoder coralPivotCancoder = new CANcoder(CoralIntakeConstants.coralPivotCancoderID, "Drivetrain");
     private final PIDController coralPivotPID = new PIDController(CoralIntakeConstants.coralPivotkP, CoralIntakeConstants.coralPivotkI, CoralIntakeConstants.coralPivotkD);
 
-    private final DigitalInput infraredSensor = new DigitalInput(1);
+    private final DigitalInput infraredSensor = new DigitalInput(0);
 
-    Timer timer = new Timer();
-
-    private double goal = CoralIntakeConstants.HOMEPosition;
+    private double goal;
     private double PIDvalue;
     private String goalCoralIntakePosition = "Initial position";
     
@@ -43,12 +41,20 @@ public class CoralIntake extends SubsystemBase{
         kCoastGeneralConfig
             .idleMode(IdleMode.kCoast);
         
-        pivotMotorToBrake();
+        // pivotMotorToCoast();
 
         // Coral left intake motor MUST be inverted
         coralIntakeLeftMotor.configure(kBrakeGeneralConfig.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         // Coral right intake motor MUST NOT be inverted
         coralIntakeRightMotor.configure(kBrakeGeneralConfig.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }
+
+    public enum CoralIntakeMode{
+        HOME,
+        INTAKE_PICKUP,
+        L1_EJECT,
+        L2_AND_L3EJECT,
+        L4_EJECT
     }
 
     public void pivotMotorToBrake(){
@@ -63,6 +69,11 @@ public class CoralIntake extends SubsystemBase{
 
     public boolean getInfraredSensorValue() {
         return !infraredSensor.get();
+    }
+
+    public void stopIntakeMotors(){
+        coralIntakeLeftMotor.set(0);
+        coralIntakeRightMotor.set(0);
     }
 
     public void moveCoralPivotMotor(double velocity){
@@ -86,11 +97,6 @@ public class CoralIntake extends SubsystemBase{
         coralIntakePivotMotor.set(0);
     }
 
-    public void stopIntakeMotors(){
-        coralIntakeLeftMotor.set(0);
-        coralIntakeRightMotor.set(0);
-    }
-
     public double getCoralIntakePivotAngle(){
         double coralPivotAngle = coralPivotCancoder.getAbsolutePosition().getValueAsDouble() * 360 + CoralIntakeConstants.coralPivotEncoderOffset;
         return coralPivotAngle;
@@ -106,23 +112,7 @@ public class CoralIntake extends SubsystemBase{
         return PID_value;
     }
 
-    public enum CoralIntakeMode{
-        HOME,
-        INTAKE_PICKUP,
-        L1_EJECT,
-        L2_AND_L3EJECT,
-        L4_EJECT
-    }
-
     public void moveCoralIntake(CoralIntakeMode coralintakeMode){
-        /*if(getCoralIntakePivotAngle() > 150) {
-            CoralIntakeConstants.coralPivotMotorMaxPositiveOutPut = 0.03;
-            CoralIntakeConstants.coralPivotMotorMaxNegativeOutput = -0.1;
-        }
-        else {
-            CoralIntakeConstants.coralPivotMotorMaxPositiveOutPut = 0.2;
-            CoralIntakeConstants.coralPivotMotorMaxNegativeOutput = -0.02;
-        }*/
         switch (coralintakeMode) {
             case HOME:
                 goal = CoralIntakeConstants.HOMEPosition;
