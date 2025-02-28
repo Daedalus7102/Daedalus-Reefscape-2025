@@ -94,6 +94,11 @@ public class CoralIntake extends SubsystemBase{
         }
     }
 
+    public void moveCoralIntakeMotorsForL1() {
+        coralIntakeLeftMotor.set(-0.1);
+        coralIntakeRightMotor.set(-0.3);
+    }
+
     public void stopPivotMotor(){
         coralIntakePivotMotor.set(0);
     }
@@ -108,7 +113,7 @@ public class CoralIntake extends SubsystemBase{
             CoralIntakeConstants.coralPivotMotorMaxPositiveOutPut =+ 0.2;
         } else {
             if(getCoralIntakePivotAngle() > 150) {
-                CoralIntakeConstants.coralPivotMotorMaxPositiveOutPut = 0.05;
+                CoralIntakeConstants.coralPivotMotorMaxPositiveOutPut = 0.06;
             }
             else {
                 CoralIntakeConstants.coralPivotMotorMaxPositiveOutPut = 0.3;

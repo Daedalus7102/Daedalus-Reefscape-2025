@@ -36,7 +36,7 @@ public class MoveAlgaeCommand extends Command{
       case FLOOR_INTAKE:
         elevator.moveElevator(ElevatorHeights.FLOOR_ALGAE_INTAKE);
         algaeIntake.moveAlgaeIntake(AlgaeIntakeMode.FLOOR_INTAKE);
-        algaeIntake.moveAlgaeIntakeMotors(AlgaeIntakeConstants.algaeIntakeEjectVelocity, false);
+        algaeIntake.moveAlgaeIntakeMotors(AlgaeIntakeConstants.algaeIntakeIntakeVelocity, false);
         break;
 
       case PROCCESOR_EJECT:
@@ -53,9 +53,10 @@ public class MoveAlgaeCommand extends Command{
         elevator.moveElevator(ElevatorHeights.BETWEEN_L3_AND_L4);
         algaeIntake.moveAlgaeIntake(AlgaeIntakeMode.BETWEEN_L2_AND_L3_OR_L3_AND_L4_Position);
         algaeIntake.moveAlgaeIntakeMotors(AlgaeIntakeConstants.algaeIntakeIntakeVelocity, true);
-
+        break;
       case HOME:
         algaeIntake.moveAlgaeIntakeMotors(0, true);
+        elevator.moveElevator(ElevatorHeights.HOME);
         if (algaeIntake.getInfraredSensorValue()) {
           algaeIntake.moveAlgaeIntake(AlgaeIntakeMode.HOME_WITH_ALGAE);
         }

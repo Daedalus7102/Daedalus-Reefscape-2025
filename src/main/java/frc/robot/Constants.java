@@ -50,8 +50,8 @@ public class Constants {
         }
 
         public static final class AimbotConstants {
-            public static final double leftTargetTXAimbotReef = 13.61;
-            public static final double leftTargetTYAimbotReef = 8.55;
+            public static final double leftTargetTXAimbotReef = 12.16;
+            public static final double leftTargetTYAimbotReef = 12.61;
 
             public static final double rightTargetTXAimbotReef = -16.11;
             public static final double rightTargetTYAimbotReef = 8.55;
@@ -77,8 +77,8 @@ public class Constants {
         public static final double elevatorkI = 0;
         public static final double elevatorkD = 0;
 
-        public static final double elevatorMotorsRiseMaxOutput = 0.6;
-        public static final double elevatorMotorsLowerMaxOutput = -0.5;
+        public static final double elevatorMotorsRiseMaxOutput = 0.2;
+        public static final double elevatorMotorsLowerMaxOutput = -0.3;
 
         public static final double elevatorkDeadBand = 3;
 
@@ -89,14 +89,14 @@ public class Constants {
         public static final double L2Position = 43;
         public static final double L3Position = 85;
         public static final double L4Position = 180;
-        public static final double PICKUPPosition = 25;
+        public static final double PICKUPPosition = 35;
         public static final double elevatorMaxHeight = 215;// 215; //
 
         // Elevator setpoints for algae
         public static final double FLOOR_INTAKE_ALGAEPosition = 5;
         public static final double PROCESSOR_EJECTPosition = 20; //
         public static final double BETWEEN_L2_AND_L3Position = 84; //
-        public static final double BETWEEN_L3_AND_L4Position = 60; //
+        public static final double BETWEEN_L3_AND_L4Position = 100; //
         public static final double NETPosition = 0; //
     }
 
@@ -112,8 +112,8 @@ public class Constants {
             public static final double algaePivotkI = 0;
             public static final double algaePivotkD = 0;    
 
-            public static final double algaeIntakeEjectVelocity = 0.1;
-            public static final double algaeIntakeIntakeVelocity = -0.1;
+            public static final double algaeIntakeEjectVelocity = 0.2;
+            public static final double algaeIntakeIntakeVelocity = -0.2;
             public static final double algaeIntakeSecureAlgaeValocity = 0.05;
 
             public static final double algaePivotEncoderOffset = 0;
@@ -124,11 +124,11 @@ public class Constants {
 
             // Algae pivot setpoints
             public static final double FLOOR_INTAKEPosition = 167;
-            public static final double PROCCESOR_EJECTPosition = 140;
+            public static final double PROCCESOR_EJECTPosition = 167;
             public static final double BETWEEN_L2_AND_L3_OR_L3_AND_L4_Position = 167;
             public static final double HOMEPosition = 93.69;
             public static final double HOME_WITH_ALGAEPosition = 138;
-            public static final double NET_EJECTPosition = 140;    
+            public static final double NET_EJECTPosition = 145;    
             // public static final double GeneralAlgaeEjectGaolPosition = 0;  
             public static final double pivotMaxAngle = 257.10;
             public static final double pivotMinAngle = 93.69;
@@ -165,8 +165,8 @@ public class Constants {
 
             // Coral pivot setpoints
             public static final double HOMEPosition = 203.20;
-            public static final double INTAKE_PICKUPPosition = 190; 
-            public static final double L1Position = 175; 
+            public static final double INTAKE_PICKUPPosition = 188; 
+            public static final double L1Position = 120; 
             public static final double L2_and_L3Position = 115.25;
             public static final double L4Position = 80;
             // public static final double GeneralEJECTPosition = 0;

@@ -69,12 +69,12 @@ public class RobotContainer {
     );
 
     // ------------ Driver Controller ------------
-    // driverController.triangle().whileTrue(new InstantCommand(() -> swerve.zeroHeading()));
-    // driverController.square().whileTrue(new AimbotCommand(swerve, elevator, coralIntake));
-    // driverController.square().whileFalse(new MoveElevatorCommand(elevator, ElevatorPosition.HOME));
+    driverController.triangle().whileTrue(new InstantCommand(() -> swerve.zeroHeading()));
+    driverController.square().whileTrue(new AimbotCommand(swerve, elevator, coralIntake));
+    driverController.square().whileFalse(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.HOME));
 
     // ----------- Operator Controller -----------
-    operatorController.povDown().toggleOnTrue(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.L1));
+    operatorController.povDown().toggleOnTrue(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.L1).withTimeout(2).andThen(new InstantCommand(() -> coralIntake.moveCoralIntakeMotorsForL1())));
     operatorController.povLeft().toggleOnTrue(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.L2));
     operatorController.povUp().toggleOnTrue(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.L3));
     operatorController.L1().toggleOnTrue(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.L4));
@@ -90,6 +90,7 @@ public class RobotContainer {
     operatorController.R1().toggleOnTrue(new MoveAlgaeCommand(elevator, algaeIntake, coralIntake, MergedAlgaeScorePositions.BETWEEN_L3_AND_L4Position));
 
     operatorController.R2().whileTrue(new InstantCommand(() -> coralIntake.moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeEjectVelocity, false))).whileFalse(new InstantCommand(() -> coralIntake.stopIntakeMotors()));
+    operatorController.R1().whileTrue(new InstantCommand(() -> coralIntake.moveCoralIntakeMotorsForL1())).whileFalse(new InstantCommand(() -> coralIntake.stopIntakeMotors()));
     operatorController.L2().whileTrue(new InstantCommand(() -> algaeIntake.moveAlgaeIntakeMotors(AlgaeIntakeConstants.algaeIntakeEjectVelocity, false))).whileFalse(new InstantCommand(() -> algaeIntake.stopIntakeMotors()));
     //operatorController.setRumble(RumbleType.kBothRumble, 0.5);
 

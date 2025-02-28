@@ -27,7 +27,7 @@ public class AlgaeIntake extends SubsystemBase{
     private final CANcoder algaePivotCancoder = new CANcoder(AlgaeIntakeConstants.algaePivotCancoderID, "Drivetrain");
     private final PIDController algaePivotPID = new PIDController(AlgaeIntakeConstants.algaePivotkP, AlgaeIntakeConstants.algaePivotkI, AlgaeIntakeConstants.algaePivotkD);
 
-    private final DigitalInput infraredSensor = new DigitalInput(5);
+    private final DigitalInput infraredSensor = new DigitalInput(1);
 
     private double goal = AlgaeIntakeConstants.HOMEPosition;
     private double PIDvalue;
