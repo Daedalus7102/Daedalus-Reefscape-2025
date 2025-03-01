@@ -182,19 +182,36 @@ public class Elevator extends SubsystemBase{
                 break;
             case BETWEEN_L2_AND_L3:
                 goal = ElevatorConstants.BETWEEN_L2_AND_L3Position;
-                goalElevatorPosition = "Elevator between L2 and L3" + ElevatorConstants.BETWEEN_L2_AND_L3Position;
+                goalElevatorPosition = "Elevator between L2 and L3 " + ElevatorConstants.BETWEEN_L2_AND_L3Position;
                 break;
             case BETWEEN_L3_AND_L4:
                 goal = ElevatorConstants.BETWEEN_L3_AND_L4Position;
-                goalElevatorPosition = "Elevator between L3 and L4" + ElevatorConstants.BETWEEN_L3_AND_L4Position;
+                goalElevatorPosition = "Elevator between L3 and L4 " + ElevatorConstants.BETWEEN_L3_AND_L4Position;
+                break;
             case NET:
+                goal = ElevatorConstants.NETPosition;
+                goalElevatorPosition = "Elevator net position " + ElevatorConstants.NETPosition;
                 break;
             }    
+    }
+
+    
+    public double getElevatorLeftMotorTemp() {
+        return elevatorLeftMotor.getMotorTemperature();
+    }
+
+    public double getElevatorRightMotorTemp() {
+        return elevatorRightMotor.getMotorTemperature();
     }
 
     public boolean isAtTarget() {
         return getElevatorPosition() >= goal - ElevatorConstants.elevatorkDeadBand
         && getElevatorPosition() <= goal + ElevatorConstants.elevatorkDeadBand;
+    }
+
+    public void resetMotorEncoders() {
+        elevatorLeftMotor.getEncoder().setPosition(0);
+        elevatorRightMotor.getEncoder().setPosition(0);
     }
 
     @Override
@@ -206,7 +223,7 @@ public class Elevator extends SubsystemBase{
         PIDvalue = desaturatePidValue(PIDvalue);
         moveELevatorMotors(PIDvalue);
 
-        if (getElevatorPosition() > 100) {
+        if (getElevatorPosition() > 70) {
             SwerveConstants.chassisHighMaxOutput = SwerveConstants.chassisLowMaxOutput;
         } else {
             SwerveConstants.chassisHighMaxOutput = 0.9;
@@ -219,5 +236,8 @@ public class Elevator extends SubsystemBase{
         SmartDashboard.putNumber("Elevator desired position", goal);
         SmartDashboard.putString("String elevator goal", goalElevatorPosition);
         SmartDashboard.putBoolean("isFinished", isAtTarget());
+
+        SmartDashboard.putNumber("Elevator left motor Temperature", getElevatorLeftMotorTemp());
+        SmartDashboard.putNumber("Elevator right motor Temperature", getElevatorRightMotorTemp());
     }
 }

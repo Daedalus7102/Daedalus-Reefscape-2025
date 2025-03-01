@@ -111,12 +111,15 @@ public class CoralIntake extends SubsystemBase{
     private double desaturatePidValue(double PID_value){
         if(getInfraredSensorValue()) {
             CoralIntakeConstants.coralPivotMotorMaxPositiveOutPut =+ 0.2;
+            CoralIntakeConstants.coralPivotMotorMaxNegativeOutput =- 0.07;
         } else {
-            if(getCoralIntakePivotAngle() > 150) {
-                CoralIntakeConstants.coralPivotMotorMaxPositiveOutPut = 0.06;
+            if(getCoralIntakePivotAngle() > 160) {
+                CoralIntakeConstants.coralPivotMotorMaxPositiveOutPut = 0.044;
+                CoralIntakeConstants.coralPivotMotorMaxNegativeOutput = -0.15;
             }
             else {
-                CoralIntakeConstants.coralPivotMotorMaxPositiveOutPut = 0.3;
+                CoralIntakeConstants.coralPivotMotorMaxPositiveOutPut = 0.33;
+                CoralIntakeConstants.coralPivotMotorMaxNegativeOutput = -0.06;
             }
         }
 

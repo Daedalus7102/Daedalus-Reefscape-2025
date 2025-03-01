@@ -6,6 +6,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.Intakes.CoralIntakeConstants;
 import frc.robot.Constants.SwerveConstants.AimbotConstants;
 import frc.robot.Constants.SwerveConstants.AutoRotateConstants;
 import frc.robot.subsystems.Drive.Swerve;
@@ -20,15 +21,17 @@ public class AimbotCommand extends Command{
   private boolean needsRotCalibration;
   private double angleError;
   boolean isFinished;
+  private boolean algae;
 
   private double xAprilTagTarget;
   private double yAprilTagTarget;
   Timer timer = new Timer();
 
-  public AimbotCommand(Swerve swerve, Elevator elevator, CoralIntake coralIntake) {
+  public AimbotCommand(Swerve swerve, Elevator elevator, CoralIntake coralIntake, boolean algae) {
       this.swerve = swerve;
       this.elevator = elevator;
       this.coralIntake = coralIntake;
+      this.algae = algae;
       addRequirements(swerve, elevator, coralIntake);
     }
   
@@ -66,16 +69,21 @@ public class AimbotCommand extends Command{
 
   // Limelight needed for the following functions
   private void selectLeftRightTarget(LeftRightTarget leftRightTarget) {
-    switch (leftRightTarget) {
-      case LEFT:
-        xAprilTagTarget = AimbotConstants.leftTargetTXAimbotReef;
-        yAprilTagTarget = AimbotConstants.leftTargetTYAimbotReef;
-        break;
-    
-      case RIGHT:
-        xAprilTagTarget = AimbotConstants.rightTargetTXAimbotReef;
-        yAprilTagTarget = AimbotConstants.rightTargetTYAimbotReef;
-        break;
+    if (algae) {
+        xAprilTagTarget = AimbotConstants.algaeTargetTXAimbot;
+        yAprilTagTarget = AimbotConstants.algaeTargetTYAimbot;
+    } else {
+      switch (leftRightTarget) {
+        case LEFT:
+          xAprilTagTarget = AimbotConstants.leftTargetTXAimbotReef;
+          yAprilTagTarget = AimbotConstants.leftTargetTYAimbotReef;
+          break;
+      
+        case RIGHT:
+          xAprilTagTarget = AimbotConstants.rightTargetTXAimbotReef;
+          yAprilTagTarget = AimbotConstants.rightTargetTYAimbotReef;
+          break;
+      }
     }
   }
 
@@ -126,6 +134,7 @@ public class AimbotCommand extends Command{
   @Override
   public void execute() {
     timer.start();
+    coralIntake.moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeIntakeVleocity, true);
     // coralIntake.moveCoralIntake(CoralIntakeMode.HOME);
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-front");
     NetworkTableEntry tx = table.getEntry("tx");
@@ -146,11 +155,11 @@ public class AimbotCommand extends Command{
       swerve.setChassisSpeeds(0, 0, zSpeed, AutoRotateConstants.autoRotationMaxOutput, true);
     }
 
-    if(found >= 1 && timer.get() > 1){
+    if(timer.get() > 1){
       // coralIntake.moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeSecureCoralVelocity, false);
-      swerve.setChassisSpeeds(-ySpeed / 3, xSpeed, zSpeed, 0.2, true);
+      swerve.setChassisSpeeds(0, xSpeed, zSpeed, 0.2, true);
 
-      if(timer.get() > 1.5) {
+      if(timer.get() > 2) {
         // coralIntake.moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeSecureCoralVelocity, false);
         swerve.setChassisSpeeds(-ySpeed, xSpeed, zSpeed, 0.2, true);
       }

@@ -63,15 +63,20 @@ public class RobotContainer {
         () -> (-driverController.getLeftY()),
         () -> (driverController.getLeftX()),
         () -> (-driverController.getRightX()),
-        SwerveConstants.chassisLowMaxOutput,
+        0.4,
         true
       )
     );
 
     // ------------ Driver Controller ------------
     driverController.triangle().whileTrue(new InstantCommand(() -> swerve.zeroHeading()));
-    driverController.square().whileTrue(new AimbotCommand(swerve, elevator, coralIntake));
+    driverController.square().whileTrue(new AimbotCommand(swerve, elevator, coralIntake, false));
+    driverController.circle().whileTrue(new AimbotCommand(swerve, elevator, coralIntake, true));
+
     driverController.square().whileFalse(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.HOME));
+    driverController.circle().whileFalse(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.HOME));
+
+    // driverController.options().whileTrue(new InstantCommand(() -> elevator.resetMotorEncoders()));
 
     // ----------- Operator Controller -----------
     operatorController.povDown().toggleOnTrue(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.L1).withTimeout(2).andThen(new InstantCommand(() -> coralIntake.moveCoralIntakeMotorsForL1())));
@@ -83,6 +88,7 @@ public class RobotContainer {
     operatorController.square().toggleOnTrue(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.HOME));
     // driverController.square().toggleOnTrue(new MoveAlgaeCommand(elevator, algaeIntake, coralIntake, MergedAlgaeScorePositions.HOME));
     operatorController.touchpad().toggleOnTrue(new MoveAlgaeCommand(elevator, algaeIntake, coralIntake, MergedAlgaeScorePositions.HOME));
+    operatorController.options().toggleOnTrue(new MoveAlgaeCommand(elevator, algaeIntake, coralIntake, MergedAlgaeScorePositions.NET_EJECTPosition));
 
     operatorController.cross().toggleOnTrue(new MoveAlgaeCommand(elevator, algaeIntake, coralIntake, MergedAlgaeScorePositions.FLOOR_INTAKE));
     operatorController.circle().toggleOnTrue(new MoveAlgaeCommand(elevator, algaeIntake, coralIntake, MergedAlgaeScorePositions.PROCCESOR_EJECT));
@@ -164,5 +170,9 @@ public class RobotContainer {
 
   public AlgaeIntake getAlgaeIntakeSubsystem() {
     return algaeIntake;
+  }
+
+  public CoralIntake getcCoralIntake() {
+    return coralIntake;
   }
 }

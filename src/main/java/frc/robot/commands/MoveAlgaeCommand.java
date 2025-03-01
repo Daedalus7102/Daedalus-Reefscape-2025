@@ -57,12 +57,11 @@ public class MoveAlgaeCommand extends Command{
       case HOME:
         algaeIntake.moveAlgaeIntakeMotors(0, true);
         elevator.moveElevator(ElevatorHeights.HOME);
-        if (algaeIntake.getInfraredSensorValue()) {
-          algaeIntake.moveAlgaeIntake(AlgaeIntakeMode.HOME_WITH_ALGAE);
-        }
-        else {
-          algaeIntake.moveAlgaeIntake(AlgaeIntakeMode.HOME);
-        }
+        algaeIntake.moveAlgaeIntake(AlgaeIntakeMode.HOME_WITH_ALGAE);
+        break;
+      case NET_EJECTPosition:
+        elevator.moveElevator(ElevatorHeights.NET);
+        algaeIntake.moveAlgaeIntake(AlgaeIntakeMode.NET_EJECT);
         break;
     }
   }

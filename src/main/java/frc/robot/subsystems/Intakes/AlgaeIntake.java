@@ -127,13 +127,15 @@ public class AlgaeIntake extends SubsystemBase{
                 break;
             case HOME:
                 goal = AlgaeIntakeConstants.HOMEPosition;
-                goalAlgaeIntakePosition = "Algae intake Home position" + AlgaeIntakeConstants.HOMEPosition;
+                goalAlgaeIntakePosition = "Algae intake Home position " + AlgaeIntakeConstants.HOMEPosition;
                 break;
             case HOME_WITH_ALGAE:
                 goal = AlgaeIntakeConstants.HOME_WITH_ALGAEPosition;
-                goalAlgaeIntakePosition = "Algae intake Home with algae position" + AlgaeIntakeConstants.HOME_WITH_ALGAEPosition;
+                goalAlgaeIntakePosition = "Algae intake Home with algae position " + AlgaeIntakeConstants.HOME_WITH_ALGAEPosition;
                 break;
             case NET_EJECT:
+                goal = AlgaeIntakeConstants.NET_EJECTPosition;
+                goalAlgaeIntakePosition = "Algae intake Net eject position " + AlgaeIntakeConstants.NET_EJECTPosition;
                 break;
         }
     }
