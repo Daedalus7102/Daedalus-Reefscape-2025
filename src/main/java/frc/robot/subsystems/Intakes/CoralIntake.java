@@ -7,6 +7,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
@@ -28,6 +29,7 @@ public class CoralIntake extends SubsystemBase{
 
     private final CANcoder coralPivotCancoder = new CANcoder(CoralIntakeConstants.coralPivotCancoderID, "Drivetrain");
     private final PIDController coralPivotPID = new PIDController(CoralIntakeConstants.coralPivotkP, CoralIntakeConstants.coralPivotkI, CoralIntakeConstants.coralPivotkD);
+    private final ArmFeedforward coralPivotFeedforward = new ArmFeedforward(0.1, 0.9, 0,0);
 
     private final DigitalInput infraredSensor = new DigitalInput(0);
 
@@ -44,9 +46,9 @@ public class CoralIntake extends SubsystemBase{
         pivotMotorToBrake();
 
         // Coral left intake motor MUST be inverted
-        coralIntakeLeftMotor.configure(kBrakeGeneralConfig.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        coralIntakeLeftMotor.configure(kBrakeGeneralConfig.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
         // Coral right intake motor MUST NOT be inverted
-        coralIntakeRightMotor.configure(kBrakeGeneralConfig.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        coralIntakeRightMotor.configure(kBrakeGeneralConfig.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
     public enum CoralIntakeMode{
@@ -59,12 +61,12 @@ public class CoralIntake extends SubsystemBase{
 
     public void pivotMotorToBrake(){
         // Pivot motor on coral intake MUST NOT be inverted
-        coralIntakePivotMotor.configure(kBrakeGeneralConfig.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        coralIntakePivotMotor.configure(kBrakeGeneralConfig.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
     public void pivotMotorToCoast(){
         // Pivot motor on coral intake MUST NOT be inverted
-        coralIntakePivotMotor.configure(kCoastGeneralConfig.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        coralIntakePivotMotor.configure(kCoastGeneralConfig.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
     public boolean getInfraredSensorValue() {
@@ -78,6 +80,10 @@ public class CoralIntake extends SubsystemBase{
 
     public void moveCoralPivotMotor(double velocity){
         coralIntakePivotMotor.set(velocity);
+    }
+
+    public void setCoralPivotVoltage(double voltage) {
+        coralIntakePivotMotor.setVoltage(voltage);
     }
 
     public void moveCoralIntakeMotors(double velocity, boolean securitySystem){
@@ -108,21 +114,12 @@ public class CoralIntake extends SubsystemBase{
         return coralPivotAngle;
     }
 
-    private double desaturatePidValue(double PID_value){
-        if(getInfraredSensorValue()) {
-            CoralIntakeConstants.coralPivotMotorMaxPositiveOutPut =+ 0.2;
-            CoralIntakeConstants.coralPivotMotorMaxNegativeOutput =- 0.07;
-        } else {
-            if(getCoralIntakePivotAngle() > 160) {
-                CoralIntakeConstants.coralPivotMotorMaxPositiveOutPut = 0.044;
-                CoralIntakeConstants.coralPivotMotorMaxNegativeOutput = -0.15;
-            }
-            else {
-                CoralIntakeConstants.coralPivotMotorMaxPositiveOutPut = 0.33;
-                CoralIntakeConstants.coralPivotMotorMaxNegativeOutput = -0.06;
-            }
-        }
+    public double getCoralIntakePivotRadians() {
+        double coralPivotRadians = coralPivotCancoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI;
+        return coralPivotRadians;
+    }
 
+    private double desaturatePidValue(double PID_value){
         if(PID_value > CoralIntakeConstants.coralPivotMotorMaxPositiveOutPut){
             PID_value =  CoralIntakeConstants.coralPivotMotorMaxPositiveOutPut;
         }
@@ -168,9 +165,11 @@ public class CoralIntake extends SubsystemBase{
         goal = (goal > CoralIntakeConstants.pivotMinAngle) ? goal : CoralIntakeConstants.pivotMinAngle;
         goal = (goal < CoralIntakeConstants.pivotMaxAngle) ? goal : CoralIntakeConstants.pivotMaxAngle;
 
+        double feedforward = coralPivotFeedforward.calculate(getCoralIntakePivotRadians(), 0.5);
         PIDvalue = coralPivotPID.calculate(getCoralIntakePivotAngle(), goal);
+        // PIDvalue = coralPivotFeedforward.calculate(getCoralIntakePivotRadians(), PIDvalue);
         PIDvalue = desaturatePidValue(PIDvalue);
-        moveCoralPivotMotor(PIDvalue);
+        setCoralPivotVoltage(PIDvalue + coralPivotFeedforward.calculate(getCoralIntakePivotRadians(), 0.3));
 
         SmartDashboard.putNumber("Coral intake pivot angle", getCoralIntakePivotAngle());
         SmartDashboard.putBoolean("Coral infrared sensor", getInfraredSensorValue());
@@ -178,5 +177,7 @@ public class CoralIntake extends SubsystemBase{
         SmartDashboard.putString("Coral Intake desired position", goalCoralIntakePosition);
         SmartDashboard.putBoolean("Coral pivot motor to desired angle", pivotMotorInDesiredAngle());
         SmartDashboard.putNumber("Coral pivot motor speed", coralIntakePivotMotor.getEncoder().getVelocity());
+        SmartDashboard.putNumber("Coral pivot radians", getCoralIntakePivotRadians());
+        SmartDashboard.putNumber("FeedForward value", feedforward);
     }
 }

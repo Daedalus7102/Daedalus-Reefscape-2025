@@ -55,13 +55,13 @@ public class Module extends SubsystemBase{
     }
 
     public void motorsToBrake() {
-        driveMotor.configure(kBrakeSwerveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        turnMotor.configure(kBrakeSwerveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        driveMotor.configure(kBrakeSwerveConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+        turnMotor.configure(kBrakeSwerveConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
     public void motorsToCoast() {
-        driveMotor.configure(kCoastSwerveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        turnMotor.configure(kCoastSwerveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        driveMotor.configure(kCoastSwerveConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+        turnMotor.configure(kCoastSwerveConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
     public SwerveModulePosition getPosition(){

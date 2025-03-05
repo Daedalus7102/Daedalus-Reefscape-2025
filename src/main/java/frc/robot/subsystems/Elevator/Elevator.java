@@ -6,6 +6,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SmartMotionConfigAccessor;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -55,18 +56,20 @@ public class Elevator extends SubsystemBase{
             .primaryEncoderPositionPeriodMs(5);
 
         motorsToBrake();
+        
+        elevatorPID.setTolerance(1);
     }
 
     public void motorsToBrake(){
         // Left motor MUST be inverted
-        elevatorLeftMotor.configure(kBrakeGeneralConfig.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        elevatorLeftMotor.configure(kBrakeGeneralConfig.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
         // Right motor MUST NOT be inverted
-        elevatorRightMotor.configure(kBrakeGeneralConfig.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        elevatorRightMotor.configure(kBrakeGeneralConfig.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
     public void motorsToCoast(){
-        elevatorLeftMotor.configure(kCoastGeneralConfig.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        elevatorRightMotor.configure(kCoastGeneralConfig.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        elevatorLeftMotor.configure(kCoastGeneralConfig.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+        elevatorRightMotor.configure(kCoastGeneralConfig.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
     public void stopMotors(){
@@ -205,8 +208,7 @@ public class Elevator extends SubsystemBase{
     }
 
     public boolean isAtTarget() {
-        return getElevatorPosition() >= goal - ElevatorConstants.elevatorkDeadBand
-        && getElevatorPosition() <= goal + ElevatorConstants.elevatorkDeadBand;
+        return elevatorPID.atSetpoint();
     }
 
     public void resetMotorEncoders() {
@@ -219,6 +221,11 @@ public class Elevator extends SubsystemBase{
         goal = (goal > 0) ? goal : 0;
         goal = (goal < ElevatorConstants.elevatorMaxHeight) ? goal : ElevatorConstants.elevatorMaxHeight;
 
+        if(goal == 0 && isAtTarget() && getElevatorPosition() < 2) {
+            resetMotorEncoders();
+        }
+
+        SmartDashboard.putBoolean("reset encoders?", goal == 0 && isAtTarget() && getElevatorPosition() < 2);
         PIDvalue = elevatorPID.calculate(getElevatorPosition(), goal);
         PIDvalue = desaturatePidValue(PIDvalue);
         moveELevatorMotors(PIDvalue);
@@ -228,6 +235,7 @@ public class Elevator extends SubsystemBase{
         } else {
             SwerveConstants.chassisHighMaxOutput = 0.9;
         }
+
         SmartDashboard.putBoolean("Lower limit switch", getUpperLimitSwitch());
         SmartDashboard.putBoolean("Upper limit switch", getLowerLimitSwitch());
         SmartDashboard.putNumber("Elevator position", getElevatorPosition());

@@ -24,6 +24,7 @@ import frc.robot.subsystems.Drive.Swerve;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Intakes.AlgaeIntake;
 import frc.robot.subsystems.Intakes.CoralIntake;
+import pabeles.concurrency.ConcurrencyOps.NewInstance;
 
 public class RobotContainer {
   // Subsystems
@@ -49,9 +50,9 @@ public class RobotContainer {
     swerve.setDefaultCommand(
       new DriveCommand(
         swerve,
-        () -> (-driverController.getLeftY()),
-        () -> (driverController.getLeftX()),
-        () -> (-driverController.getRightX()),
+        () -> (driverController.getLeftY()),
+        () -> (-driverController.getLeftX()),
+        () -> (driverController.getRightX()),
         SwerveConstants.chassisHighMaxOutput,
         false
       )
@@ -60,10 +61,10 @@ public class RobotContainer {
     driverController.L1().whileTrue(
       new DriveCommand(
         swerve,
-        () -> (-driverController.getLeftY()),
-        () -> (driverController.getLeftX()),
-        () -> (-driverController.getRightX()),
-        0.4,
+        () -> (driverController.getLeftY()),
+        () -> (-driverController.getLeftX()),
+        () -> (driverController.getRightX()),
+        0.5,
         true
       )
     );
@@ -73,10 +74,10 @@ public class RobotContainer {
     driverController.square().whileTrue(new AimbotCommand(swerve, elevator, coralIntake, false));
     driverController.circle().whileTrue(new AimbotCommand(swerve, elevator, coralIntake, true));
 
-    driverController.square().whileFalse(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.HOME));
+    // driverController.square().whileFalse(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.HOME));
     driverController.circle().whileFalse(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.HOME));
 
-    // driverController.options().whileTrue(new InstantCommand(() -> elevator.resetMotorEncoders()));
+    driverController.options().whileTrue(new InstantCommand(() -> elevator.resetMotorEncoders()));
 
     // ----------- Operator Controller -----------
     operatorController.povDown().toggleOnTrue(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.L1).withTimeout(2).andThen(new InstantCommand(() -> coralIntake.moveCoralIntakeMotorsForL1())));
@@ -98,6 +99,8 @@ public class RobotContainer {
     operatorController.R2().whileTrue(new InstantCommand(() -> coralIntake.moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeEjectVelocity, false))).whileFalse(new InstantCommand(() -> coralIntake.stopIntakeMotors()));
     operatorController.R1().whileTrue(new InstantCommand(() -> coralIntake.moveCoralIntakeMotorsForL1())).whileFalse(new InstantCommand(() -> coralIntake.stopIntakeMotors()));
     operatorController.L2().whileTrue(new InstantCommand(() -> algaeIntake.moveAlgaeIntakeMotors(AlgaeIntakeConstants.algaeIntakeEjectVelocity, false))).whileFalse(new InstantCommand(() -> algaeIntake.stopIntakeMotors()));
+
+    operatorController.create().whileTrue(new InstantCommand(() -> algaeIntake.moveAlgaeIntakeMotors(0.9, false))).whileFalse(new InstantCommand(() -> algaeIntake.stopIntakeMotors()));
     //operatorController.setRumble(RumbleType.kBothRumble, 0.5);
 
     /*

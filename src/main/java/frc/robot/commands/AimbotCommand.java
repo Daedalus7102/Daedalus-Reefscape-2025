@@ -148,7 +148,8 @@ public class AimbotCommand extends Command{
     double xSpeed = calibrateX(x);
     double ySpeed = calibrateY(y);
     double zSpeed = calibrateZ(desiredAngle());
-
+    swerve.setChassisSpeeds(0, 0, zSpeed, AutoRotateConstants.autoRotationMaxOutput, true);
+/*
     if(timer.get() < 4) {
       // coralIntake.moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeSecureCoralVelocity, false);
       elevator.moveElevator(ElevatorHeights.READ_REEF_APRILTAG);
@@ -163,7 +164,7 @@ public class AimbotCommand extends Command{
         // coralIntake.moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeSecureCoralVelocity, false);
         swerve.setChassisSpeeds(-ySpeed, xSpeed, zSpeed, 0.2, true);
       }
-    }
+    }*/
     
     SmartDashboard.putBoolean("Needs rot calibration", needsRotCalibration);
     SmartDashboard.putNumber("Aimbot xTarget", xAprilTagTarget);

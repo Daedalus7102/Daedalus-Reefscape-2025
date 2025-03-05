@@ -41,9 +41,9 @@ public class AlgaeIntake extends SubsystemBase{
 
         pivotMotorToCoast();
         // Algae left intake motor MUST be inverted
-        algaeIntakeLeftMotor.configure(kBrakeGeneralConfig.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        algaeIntakeLeftMotor.configure(kBrakeGeneralConfig.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
         // Algae left intake motor MUST NOT be inverted
-        algaeIntakeRightMotor.configure(kBrakeGeneralConfig.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        algaeIntakeRightMotor.configure(kBrakeGeneralConfig.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
     public enum AlgaeIntakeMode{
@@ -57,12 +57,12 @@ public class AlgaeIntake extends SubsystemBase{
 
     public void pivotMotorToBrake(){
         // Pivot motor on coral intake must be inverted
-        algaeIntakePivotMotor.configure(kBrakeGeneralConfig.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        algaeIntakePivotMotor.configure(kBrakeGeneralConfig.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
     public void pivotMotorToCoast(){
         // Pivot motor on coral intake must be inverted
-        algaeIntakePivotMotor.configure(kCoastGeneralConfig.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        algaeIntakePivotMotor.configure(kCoastGeneralConfig.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
     public boolean getInfraredSensorValue() {
