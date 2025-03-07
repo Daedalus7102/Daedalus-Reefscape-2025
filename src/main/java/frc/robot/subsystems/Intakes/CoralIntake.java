@@ -36,8 +36,6 @@ public class CoralIntake extends SubsystemBase{
 
     private final DigitalInput infraredSensor = new DigitalInput(0);
 
-    private final PIDController angleCorrectionPID = new PIDController(0.001, 0, 0);
-
     private double goal = CoralIntakeConstants.HOMEPosition;
     private double PIDvalue;
     private String goalCoralIntakePosition = "Initial position";
