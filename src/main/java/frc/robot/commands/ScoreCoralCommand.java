@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.Intakes.CoralIntakeConstants;
 import frc.robot.Constants.Intakes.CoralIntakeConstants.MergedCoralScorePositions;
@@ -16,12 +18,14 @@ public class ScoreCoralCommand extends Command{
   private final CoralIntake coralIntake;
   private final AlgaeIntake algaeIntake;
   private final MergedCoralScorePositions mergedCoralScorePositions;
+  private Supplier<Double> correctCoralAngle;
 
-  public ScoreCoralCommand(Elevator elevator, CoralIntake coralIntake, AlgaeIntake algaeIntake, MergedCoralScorePositions mergedCoralScorePositions) {
+  public ScoreCoralCommand(Elevator elevator, CoralIntake coralIntake, AlgaeIntake algaeIntake, MergedCoralScorePositions mergedCoralScorePositions, Supplier<Double> correctCoralAngle) {
       this.elevator = elevator;
       this.coralIntake = coralIntake;
       this.algaeIntake = algaeIntake;
       this.mergedCoralScorePositions = mergedCoralScorePositions;
+      this.correctCoralAngle = correctCoralAngle;
       addRequirements(elevator);
     }
   
@@ -39,33 +43,33 @@ public class ScoreCoralCommand extends Command{
       case HOME:
         coralIntake.moveCoralIntakeMotors(0, true);
         elevator.moveElevator(ElevatorHeights.HOME);
-        coralIntake.moveCoralIntake(CoralIntakeMode.HOME);
+        coralIntake.moveCoralIntake(CoralIntakeMode.HOME, correctCoralAngle);
         break;
 
       case INTAKE:
         coralIntake.moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeIntakeVleocity, true);
         elevator.moveElevator(ElevatorHeights.PICKUP);
-        coralIntake.moveCoralIntake(CoralIntakeMode.INTAKE_PICKUP);
+        coralIntake.moveCoralIntake(CoralIntakeMode.INTAKE_PICKUP, correctCoralAngle);
         break;
 
       case L1:
         elevator.moveElevator(ElevatorHeights.L1);
-        coralIntake.moveCoralIntake(CoralIntakeMode.L1_EJECT);
+        coralIntake.moveCoralIntake(CoralIntakeMode.L1_EJECT, correctCoralAngle);
         break;
 
       case L2:
         elevator.moveElevator(ElevatorHeights.L2);
-        coralIntake.moveCoralIntake(CoralIntakeMode.L2_AND_L3EJECT);
+        coralIntake.moveCoralIntake(CoralIntakeMode.L2_AND_L3EJECT, correctCoralAngle);
         break;
       
       case L3:
         elevator.moveElevator(ElevatorHeights.L3);
-        coralIntake.moveCoralIntake(CoralIntakeMode.L2_AND_L3EJECT);
+        coralIntake.moveCoralIntake(CoralIntakeMode.L2_AND_L3EJECT, correctCoralAngle);
         break;
 
       case L4:
         elevator.moveElevator(ElevatorHeights.L4);
-        coralIntake.moveCoralIntake(CoralIntakeMode.L4_EJECT);
+        coralIntake.moveCoralIntake(CoralIntakeMode.L4_EJECT, correctCoralAngle);
         break;
     }
   }

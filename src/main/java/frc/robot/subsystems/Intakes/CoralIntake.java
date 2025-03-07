@@ -3,17 +3,20 @@ package frc.robot.subsystems.Intakes;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.constraint.MaxVelocityConstraint;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.Intakes.CoralIntakeConstants;
 
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -32,6 +35,8 @@ public class CoralIntake extends SubsystemBase{
     private final ArmFeedforward coralPivotFeedforward = new ArmFeedforward(0.1, 0.9, 0,0);
 
     private final DigitalInput infraredSensor = new DigitalInput(0);
+
+    private final PIDController angleCorrectionPID = new PIDController(0.001, 0, 0);
 
     private double goal = CoralIntakeConstants.HOMEPosition;
     private double PIDvalue;
@@ -129,29 +134,34 @@ public class CoralIntake extends SubsystemBase{
         return PID_value;
     }
 
-    public void moveCoralIntake(CoralIntakeMode coralintakeMode){
+    public void moveCoralIntake(CoralIntakeMode coralintakeMode, Supplier<Double> joyStickSupplier){
+        double angleCorrection = 0;
+        if(Math.abs(joyStickSupplier.get()) > 0.1) {
+            angleCorrection = -joyStickSupplier.get() * 10;
+        }
+
         switch (coralintakeMode) {
             case HOME:
                 goal = CoralIntakeConstants.HOMEPosition;
                 goalCoralIntakePosition = "Coral Intake Home Deg" + CoralIntakeConstants.HOMEPosition;    
                 break;
             case INTAKE_PICKUP:
-                goal = CoralIntakeConstants.INTAKE_PICKUPPosition;
+                goal = CoralIntakeConstants.INTAKE_PICKUPPosition + angleCorrection;
                 goalCoralIntakePosition = "Coral Intake pickUp Deg" + CoralIntakeConstants.INTAKE_PICKUPPosition;
                 break;
             case L1_EJECT:
-                goal = CoralIntakeConstants.L1Position;
+                goal = CoralIntakeConstants.L1Position + angleCorrection;
                 goalCoralIntakePosition = "Coral Intake pickUp Deg" + CoralIntakeConstants.L1Position;
                 break;
             case L2_AND_L3EJECT:
-                goal = CoralIntakeConstants.L2_and_L3Position;
+                goal = CoralIntakeConstants.L2_and_L3Position + angleCorrection;
                 goalCoralIntakePosition = "Coral Intake pickUp Deg" + CoralIntakeConstants.L2_and_L3Position;
                 break;
             case L4_EJECT:
-                goal = CoralIntakeConstants.L4Position;
+                goal = CoralIntakeConstants.L4Position + angleCorrection;
                 goalCoralIntakePosition = "Coral Intake pickUp Deg" + CoralIntakeConstants.L4Position;
                 break;
-        }                
+        }             
     }            
 
     public boolean pivotMotorInDesiredAngle() {

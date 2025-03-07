@@ -5,6 +5,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.config.PIDConstants;
+
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -19,6 +21,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.LimelightHelpers;
 import frc.robot.Constants.SwerveConstants;
 
 public class Swerve extends SubsystemBase {
@@ -212,9 +215,23 @@ public class Swerve extends SubsystemBase {
     @Override
     // The periodic works to see minimal things within the subsystem (It works even when it is disabled)
     public void periodic() {
+        LimelightHelpers.SetRobotOrientation("limelight-front", getAngle(), 0, 0, 0, 0, 0);
+        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-front");
+
+        if(Math.abs(gyro.getRate()) > 360 || mt2.tagCount == 0) {
+            poseEstimator.update(getRotation2d(), positions);
+            odometry.update(getRotation2d(), positions);
+        }
+        else {
+        poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
+        poseEstimator.addVisionMeasurement(
+            mt2.pose,
+            mt2.timestampSeconds);
+
         odometry.update(getRotation2d(), positions);
-        poseEstimator.update(getRotation2d(), positions);
-        field.setRobotPose(getPose2d());
+        }
+
+        field.setRobotPose(poseEstimator.getEstimatedPosition());
         
         SmartDashboard.putNumber("TurnMotor frontLeft angle", this.frontLeft.getTurnEncoder());
         SmartDashboard.putNumber("TurnMotor frontRigh angle", this.frontRight.getTurnEncoder());

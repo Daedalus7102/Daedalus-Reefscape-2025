@@ -24,7 +24,6 @@ import frc.robot.subsystems.Drive.Swerve;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Intakes.AlgaeIntake;
 import frc.robot.subsystems.Intakes.CoralIntake;
-import pabeles.concurrency.ConcurrencyOps.NewInstance;
 
 public class RobotContainer {
   // Subsystems
@@ -75,18 +74,18 @@ public class RobotContainer {
     driverController.circle().whileTrue(new AimbotCommand(swerve, elevator, coralIntake, true));
 
     // driverController.square().whileFalse(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.HOME));
-    driverController.circle().whileFalse(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.HOME));
+    driverController.circle().whileFalse(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.HOME, () -> operatorController.getRightY()));
 
     driverController.options().whileTrue(new InstantCommand(() -> elevator.resetMotorEncoders()));
 
     // ----------- Operator Controller -----------
-    operatorController.povDown().toggleOnTrue(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.L1).withTimeout(2).andThen(new InstantCommand(() -> coralIntake.moveCoralIntakeMotorsForL1())));
-    operatorController.povLeft().toggleOnTrue(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.L2));
-    operatorController.povUp().toggleOnTrue(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.L3));
-    operatorController.L1().toggleOnTrue(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.L4));
-    operatorController.povRight().toggleOnTrue(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.INTAKE)).whileFalse(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.HOME));
+    operatorController.povDown().toggleOnTrue(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.L1, () -> operatorController.getRightY()).withTimeout(2).andThen(new InstantCommand(() -> coralIntake.moveCoralIntakeMotorsForL1())));
+    operatorController.povLeft().toggleOnTrue(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.L2, () -> operatorController.getRightY()));
+    operatorController.povUp().toggleOnTrue(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.L3, () -> operatorController.getRightY()));
+    operatorController.L1().toggleOnTrue(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.L4, () -> operatorController.getRightY()));
+    operatorController.povRight().toggleOnTrue(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.INTAKE, () -> operatorController.getRightY())).whileFalse(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.HOME, () -> operatorController.getRightY()));
 
-    operatorController.square().toggleOnTrue(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.HOME));
+    operatorController.square().toggleOnTrue(new ScoreCoralCommand(elevator, coralIntake, algaeIntake, MergedCoralScorePositions.HOME, () -> operatorController.getRightY()));
     // driverController.square().toggleOnTrue(new MoveAlgaeCommand(elevator, algaeIntake, coralIntake, MergedAlgaeScorePositions.HOME));
     operatorController.touchpad().toggleOnTrue(new MoveAlgaeCommand(elevator, algaeIntake, coralIntake, MergedAlgaeScorePositions.HOME));
     operatorController.options().toggleOnTrue(new MoveAlgaeCommand(elevator, algaeIntake, coralIntake, MergedAlgaeScorePositions.NET_EJECTPosition));
