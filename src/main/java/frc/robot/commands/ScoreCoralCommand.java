@@ -18,14 +18,14 @@ public class ScoreCoralCommand extends Command{
   private final CoralIntake coralIntake;
   private final AlgaeIntake algaeIntake;
   private final MergedCoralScorePositions mergedCoralScorePositions;
-  private Supplier<Double> correctCoralAngle;
+  private Supplier<Double> joyStickSupplier;
 
-  public ScoreCoralCommand(Elevator elevator, CoralIntake coralIntake, AlgaeIntake algaeIntake, MergedCoralScorePositions mergedCoralScorePositions, Supplier<Double> correctCoralAngle) {
+  public ScoreCoralCommand(Elevator elevator, CoralIntake coralIntake, AlgaeIntake algaeIntake, MergedCoralScorePositions mergedCoralScorePositions, Supplier<Double> joyStickSupplier) {
       this.elevator = elevator;
       this.coralIntake = coralIntake;
       this.algaeIntake = algaeIntake;
       this.mergedCoralScorePositions = mergedCoralScorePositions;
-      this.correctCoralAngle = correctCoralAngle;
+      this.joyStickSupplier = joyStickSupplier;
       addRequirements(elevator);
     }
   
@@ -36,6 +36,11 @@ public class ScoreCoralCommand extends Command{
   public void execute() {
     algaeIntake.moveAlgaeIntake(AlgaeIntakeMode.HOME);
 
+    double angleCorrection = 0;
+    if(Math.abs(joyStickSupplier.get()) > 0.1) {
+        angleCorrection = -joyStickSupplier.get() * 10;
+    }
+
     switch (mergedCoralScorePositions) {
       case READ_REEF_APRILTAG:
         break;
@@ -43,33 +48,33 @@ public class ScoreCoralCommand extends Command{
       case HOME:
         coralIntake.moveCoralIntakeMotors(0, true);
         elevator.moveElevator(ElevatorHeights.HOME);
-        coralIntake.moveCoralIntake(CoralIntakeMode.HOME, correctCoralAngle);
+        coralIntake.moveCoralIntake(CoralIntakeMode.HOME, 0);
         break;
 
       case INTAKE:
         coralIntake.moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeIntakeVleocity, true);
         elevator.moveElevator(ElevatorHeights.PICKUP);
-        coralIntake.moveCoralIntake(CoralIntakeMode.INTAKE_PICKUP, correctCoralAngle);
+        coralIntake.moveCoralIntake(CoralIntakeMode.INTAKE_PICKUP, angleCorrection);
         break;
 
       case L1:
         elevator.moveElevator(ElevatorHeights.L1);
-        coralIntake.moveCoralIntake(CoralIntakeMode.L1_EJECT, correctCoralAngle);
+        coralIntake.moveCoralIntake(CoralIntakeMode.L1_EJECT, angleCorrection);
         break;
 
       case L2:
         elevator.moveElevator(ElevatorHeights.L2);
-        coralIntake.moveCoralIntake(CoralIntakeMode.L2_AND_L3EJECT, correctCoralAngle);
+        coralIntake.moveCoralIntake(CoralIntakeMode.L2_AND_L3EJECT, angleCorrection);
         break;
       
       case L3:
         elevator.moveElevator(ElevatorHeights.L3);
-        coralIntake.moveCoralIntake(CoralIntakeMode.L2_AND_L3EJECT, correctCoralAngle);
+        coralIntake.moveCoralIntake(CoralIntakeMode.L2_AND_L3EJECT, angleCorrection);
         break;
 
       case L4:
         elevator.moveElevator(ElevatorHeights.L4);
-        coralIntake.moveCoralIntake(CoralIntakeMode.L4_EJECT, correctCoralAngle);
+        coralIntake.moveCoralIntake(CoralIntakeMode.L4_EJECT, angleCorrection);
         break;
     }
   }

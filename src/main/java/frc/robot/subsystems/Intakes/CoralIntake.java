@@ -134,31 +134,26 @@ public class CoralIntake extends SubsystemBase{
         return PID_value;
     }
 
-    public void moveCoralIntake(CoralIntakeMode coralintakeMode, Supplier<Double> joyStickSupplier){
-        double angleCorrection = 0;
-        if(Math.abs(joyStickSupplier.get()) > 0.1) {
-            angleCorrection = -joyStickSupplier.get() * 10;
-        }
-
+    public void moveCoralIntake(CoralIntakeMode coralintakeMode, double correctionAngle){
         switch (coralintakeMode) {
             case HOME:
                 goal = CoralIntakeConstants.HOMEPosition;
                 goalCoralIntakePosition = "Coral Intake Home Deg" + CoralIntakeConstants.HOMEPosition;    
                 break;
             case INTAKE_PICKUP:
-                goal = CoralIntakeConstants.INTAKE_PICKUPPosition + angleCorrection;
+                goal = CoralIntakeConstants.INTAKE_PICKUPPosition + correctionAngle;
                 goalCoralIntakePosition = "Coral Intake pickUp Deg" + CoralIntakeConstants.INTAKE_PICKUPPosition;
                 break;
             case L1_EJECT:
-                goal = CoralIntakeConstants.L1Position + angleCorrection;
+                goal = CoralIntakeConstants.L1Position + correctionAngle;
                 goalCoralIntakePosition = "Coral Intake pickUp Deg" + CoralIntakeConstants.L1Position;
                 break;
             case L2_AND_L3EJECT:
-                goal = CoralIntakeConstants.L2_and_L3Position + angleCorrection;
+                goal = CoralIntakeConstants.L2_and_L3Position + correctionAngle;
                 goalCoralIntakePosition = "Coral Intake pickUp Deg" + CoralIntakeConstants.L2_and_L3Position;
                 break;
             case L4_EJECT:
-                goal = CoralIntakeConstants.L4Position + angleCorrection;
+                goal = CoralIntakeConstants.L4Position + correctionAngle;
                 goalCoralIntakePosition = "Coral Intake pickUp Deg" + CoralIntakeConstants.L4Position;
                 break;
         }             

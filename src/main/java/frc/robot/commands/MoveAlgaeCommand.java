@@ -26,12 +26,12 @@ public class MoveAlgaeCommand extends Command{
   
   @Override
   public void initialize() {
-    coralIntake.moveCoralIntake(CoralIntakeMode.HOME, null);
+    coralIntake.moveCoralIntake(CoralIntakeMode.HOME, 0);
   }
 
   @Override
   public void execute() {
-    coralIntake.moveCoralIntake(CoralIntakeMode.HOME, null);
+    coralIntake.moveCoralIntake(CoralIntakeMode.HOME, 0);
     switch (mergedAlgaeScorePositions) {
       case FLOOR_INTAKE:
         elevator.moveElevator(ElevatorHeights.FLOOR_ALGAE_INTAKE);

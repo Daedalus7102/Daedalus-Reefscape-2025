@@ -76,13 +76,14 @@ public class Constants {
         public static final int upperLimitSwitchID = 2;
         public static final int lowerLimitSwitchID = 3;
 
-        public static final double elevatorkP = 0.09;
+        public static final double elevatorHighkP = 0.09;
+        public static final double elevatorLowKp = 0.03;
         public static final double elevatorkI = 0;
         public static final double elevatorkD = 0;
 
         public static final double elevatorMotorsRiseMaxOutput = 0.8;// 0.8;
         //  Lower output MUST be negative
-        public static final double elevatorMotorsLowerMaxOutput = -0.6;// -0.7;
+        public static final double elevatorMotorsLowerMaxOutput = -0.8;// -0.7;
 
         public static final double elevatorkDeadBand = 3;
 

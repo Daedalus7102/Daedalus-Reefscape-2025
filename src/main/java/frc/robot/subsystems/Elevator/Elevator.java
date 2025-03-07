@@ -9,7 +9,6 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
@@ -21,9 +20,6 @@ public class Elevator extends SubsystemBase{
     // Right motor MUST NOT be inverted
     private final SparkMax elevatorRightMotor = new SparkMax(ElevatorConstants.elevatorRightMotorID, MotorType.kBrushless);
 
-    DigitalInput upperLimitSwitch = new DigitalInput(ElevatorConstants.upperLimitSwitchID);
-    DigitalInput lowerLimitSwitch = new DigitalInput(ElevatorConstants.lowerLimitSwitchID);
-
     private final SparkMaxConfig kBrakeGeneralConfig = new SparkMaxConfig();
     private final SparkMaxConfig kCoastGeneralConfig = new SparkMaxConfig();
 
@@ -31,7 +27,7 @@ public class Elevator extends SubsystemBase{
     private double PIDvalue;
     private String goalElevatorPosition = "Elevator initial positon";
     
-    private final PIDController elevatorPID = new PIDController(ElevatorConstants.elevatorkP, ElevatorConstants.elevatorkI, ElevatorConstants.elevatorkD);
+    private final PIDController elevatorPID = new PIDController(ElevatorConstants.elevatorHighkP, ElevatorConstants.elevatorkI, ElevatorConstants.elevatorkD);
 
     public Elevator(){
         kBrakeGeneralConfig
@@ -88,35 +84,25 @@ public class Elevator extends SubsystemBase{
         return elevatorVelocity;
     }
 
-    private boolean getUpperLimitSwitch(){
-        return !upperLimitSwitch.get();
-        
-    }
-
-    private boolean getLowerLimitSwitch(){
-        return !lowerLimitSwitch.get();
-    }
-
     private double desaturatePidValue(double PID_value){
         if(PID_value > ElevatorConstants.elevatorMotorsRiseMaxOutput){
             PID_value =  ElevatorConstants.elevatorMotorsRiseMaxOutput;
-        }
-        else if(PID_value < ElevatorConstants.elevatorMotorsLowerMaxOutput){
+        } else if(PID_value < ElevatorConstants.elevatorMotorsLowerMaxOutput){
             PID_value = ElevatorConstants.elevatorMotorsLowerMaxOutput;
         }
+
+        if (getElevatorPosition() < 10 && getElevatorVelocity() < 0) {
+            elevatorPID.setP(ElevatorConstants.elevatorLowKp);
+        } else {
+            elevatorPID.setP(ElevatorConstants.elevatorHighkP);
+        }
+
         return PID_value;
     }
 
     private void moveELevatorMotors(double velocity){
         elevatorLeftMotor.set(velocity);
         elevatorRightMotor.set(velocity);
-
-        if (getLowerLimitSwitch() && PIDvalue < 0){
-            stopMotors();
-        }
-        else if (getUpperLimitSwitch() && PIDvalue > 0){
-            stopMotors();
-        }
 
         if (getElevatorPosition() < 0 && PIDvalue < 0){
             stopMotors();
@@ -220,7 +206,7 @@ public class Elevator extends SubsystemBase{
         goal = (goal > 0) ? goal : 0;
         goal = (goal < ElevatorConstants.elevatorMaxHeight) ? goal : ElevatorConstants.elevatorMaxHeight;
 
-        if(goal == 0 && isAtTarget() && getElevatorPosition() < 2) {
+        if(goal == 0 && isAtTarget() && getElevatorPosition() < 1) {
             resetMotorEncoders();
         }
 
@@ -235,8 +221,8 @@ public class Elevator extends SubsystemBase{
             SwerveConstants.chassisHighMaxOutput = 0.9;
         }
 
-        SmartDashboard.putBoolean("Lower limit switch", getUpperLimitSwitch());
-        SmartDashboard.putBoolean("Upper limit switch", getLowerLimitSwitch());
+        SmartDashboard.putBoolean("Get elevator boolean", getElevatorPosition() > 20 && PIDvalue < 0);
+
         SmartDashboard.putNumber("Elevator position", getElevatorPosition());
         SmartDashboard.putNumber("Elevator velocity", getElevatorVelocity());
         SmartDashboard.putNumber("Elevator PID", PIDvalue);
