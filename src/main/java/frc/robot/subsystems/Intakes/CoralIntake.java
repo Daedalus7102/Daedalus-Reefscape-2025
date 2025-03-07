@@ -107,7 +107,7 @@ public class CoralIntake extends SubsystemBase{
 
     public void moveCoralIntakeMotorsForL1() {
         coralIntakeLeftMotor.set(-0.1);
-        coralIntakeRightMotor.set(-0.3);
+        coralIntakeRightMotor.set(-0.5);
     }
 
     public void stopPivotMotor(){

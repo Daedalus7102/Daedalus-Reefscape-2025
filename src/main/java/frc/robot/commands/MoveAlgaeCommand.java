@@ -55,7 +55,7 @@ public class MoveAlgaeCommand extends Command{
         algaeIntake.moveAlgaeIntakeMotors(AlgaeIntakeConstants.algaeIntakeIntakeVelocity, true);
         break;
       case HOME:
-        algaeIntake.moveAlgaeIntakeMotors(0, true);
+        algaeIntake.moveAlgaeIntakeMotors(-0.05, true);
         elevator.moveElevator(ElevatorHeights.HOME);
         algaeIntake.moveAlgaeIntake(AlgaeIntakeMode.HOME_WITH_ALGAE);
         break;

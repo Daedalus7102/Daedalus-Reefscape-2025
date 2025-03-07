@@ -179,7 +179,7 @@ public class Swerve extends SubsystemBase {
                     (speeds, feedforwards) -> runVelcAuto(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
                     new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
                             new PIDConstants(2.8, 0.0, 0.0), // Translation PID constants
-                            new PIDConstants(3.387, 0.0, 0.002) // Rotation PID constants
+                            new PIDConstants(0.1, 0.0, 0.0) // Rotation PID constants
                     ), //3.032
                     config, // The robot configuration
                     () -> {
@@ -189,7 +189,7 @@ public class Swerve extends SubsystemBase {
 
                     var alliance = DriverStation.getAlliance();
                     if (alliance.isPresent()) {
-                        return alliance.get() == DriverStation.Alliance.Red;
+                        return alliance.get() == DriverStation.Alliance.Blue;
                     }
                     return false;
                     },
@@ -218,6 +218,7 @@ public class Swerve extends SubsystemBase {
         LimelightHelpers.SetRobotOrientation("limelight-front", getAngle(), 0, 0, 0, 0, 0);
         LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-front");
 
+        /*
         if(Math.abs(gyro.getRate()) > 360 || mt2.tagCount == 0) {
             poseEstimator.update(getRotation2d(), positions);
             odometry.update(getRotation2d(), positions);
@@ -229,8 +230,10 @@ public class Swerve extends SubsystemBase {
             mt2.timestampSeconds);
 
         odometry.update(getRotation2d(), positions);
-        }
+        }*/
 
+        poseEstimator.update(getRotation2d(), positions);
+        odometry.update(getRotation2d(), positions);
         field.setRobotPose(poseEstimator.getEstimatedPosition());
         
         SmartDashboard.putNumber("TurnMotor frontLeft angle", this.frontLeft.getTurnEncoder());

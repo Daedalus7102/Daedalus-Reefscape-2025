@@ -172,7 +172,7 @@ public class Constants {
             // Coral pivot setpoints
             public static final double HOMEPosition = 59.60;
             public static final double INTAKE_PICKUPPosition = 34.83; 
-            public static final double L1Position = -28; 
+            public static final double L1Position = -10; 
             public static final double L2_and_L3Position = -25;
             public static final double L4Position = -40;
             // public static final double GeneralEJECTPosition = 0;
