@@ -27,6 +27,10 @@ import frc.robot.Constants.SwerveConstants;
 public class Swerve extends SubsystemBase {
 
     private final Field2d field = new Field2d();
+        private double lastx = 0;
+        private double lasty = 0;
+        private double lastz = 0;
+
         // Specific and fixed values ​​that each module will have, such as the ID of its motors, its PID value, etc. The data is stored in the
         // class "Constants" and are being accessed from the nomenclature Constants.'variable name'
         private Module frontLeft = new Module(SwerveConstants.driveMotorIDfrontLeft, 
@@ -179,7 +183,7 @@ public class Swerve extends SubsystemBase {
                     (speeds, feedforwards) -> runVelcAuto(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
                     new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
                             new PIDConstants(2.8, 0.0, 0.0), // Translation PID constants
-                            new PIDConstants(0.1, 0.0, 0.0) // Rotation PID constants
+                            new PIDConstants(3.387, 0.0, 0.002) // Rotation PID constants
                     ), //3.032
                     config, // The robot configuration
                     () -> {
@@ -189,7 +193,7 @@ public class Swerve extends SubsystemBase {
 
                     var alliance = DriverStation.getAlliance();
                     if (alliance.isPresent()) {
-                        return alliance.get() == DriverStation.Alliance.Blue;
+                        return alliance.get() == DriverStation.Alliance.Red;
                     }
                     return false;
                     },
@@ -218,7 +222,6 @@ public class Swerve extends SubsystemBase {
         LimelightHelpers.SetRobotOrientation("limelight-front", getAngle(), 0, 0, 0, 0, 0);
         LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-front");
 
-        /*
         if(Math.abs(gyro.getRate()) > 360 || mt2.tagCount == 0) {
             poseEstimator.update(getRotation2d(), positions);
             odometry.update(getRotation2d(), positions);
@@ -230,10 +233,8 @@ public class Swerve extends SubsystemBase {
             mt2.timestampSeconds);
 
         odometry.update(getRotation2d(), positions);
-        }*/
+        }
 
-        poseEstimator.update(getRotation2d(), positions);
-        odometry.update(getRotation2d(), positions);
         field.setRobotPose(poseEstimator.getEstimatedPosition());
         
         SmartDashboard.putNumber("TurnMotor frontLeft angle", this.frontLeft.getTurnEncoder());
@@ -246,6 +247,19 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("DriveMotor backLeft output", this.backLeft.getDriveVelocity());
         SmartDashboard.putNumber("DriveMotor backright output", this.backRight.getDriveVelocity());
         SmartDashboard.putNumber("Gyro value", getAngle());
+        
+        double currentX = gyro.getAccelerationX().getValueAsDouble();
+        double currentY = gyro.getAccelerationY().getValueAsDouble();
+        double currentZ = gyro.getAccelerationZ().getValueAsDouble();
+
+        if (currentX > lastx) {lastx = currentX;}
+        if (currentY > lasty) {lasty = currentY;}
+        if (currentZ > lastz) {lastz = currentZ;}
+
+        SmartDashboard.putNumber("max X acceleration", lastx);
+        SmartDashboard.putNumber("max Y acceleration", lasty);
+        SmartDashboard.putNumber("max Z acceleration", lastz);
+        SmartDashboard.putNumber("Angular acceleration", gyro.getAngularVelocityZWorld().getValueAsDouble());
 
         DataLogManager.start();
         DriverStation.startDataLog(DataLogManager.getLog());
