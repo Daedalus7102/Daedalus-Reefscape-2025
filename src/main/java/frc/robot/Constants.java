@@ -131,12 +131,12 @@ public class Constants {
             public static final double FLOOR_INTAKEPosition = 167;
             public static final double PROCCESOR_EJECTPosition = 145;
             public static final double BETWEEN_L2_AND_L3_OR_L3_AND_L4_Position = 167;
-            public static final double HOMEPosition = 90.69;
+            public static final double HOMEPosition = 88.69;
             public static final double HOME_WITH_ALGAEPosition = 130;
             public static final double NET_EJECTPosition = 130;    
             // public static final double GeneralAlgaeEjectGaolPosition = 0;  
             public static final double pivotMaxAngle = 257.10;
-            public static final double pivotMinAngle = 93.69;
+            public static final double pivotMinAngle = 88.69;
 
             public enum MergedAlgaeScorePositions {
                 FLOOR_INTAKE,
@@ -198,9 +198,9 @@ public class Constants {
         public static final double climberMaxPositiveOutput = 0.8;
         public static final double climberMaxNegativeOutput = -0.8;
 
-        public static final double HOMEPosition = 0;
-        public static final double CLIMBPosition = 20;
-        public static final double climberMaxExtension = 20;
+        public static final double HOMEPosition = -20;
+        public static final double CLIMBPosition = 15;
+        public static final double climberMaxExtension = 15;
     }
 
     public enum ClimberMode {

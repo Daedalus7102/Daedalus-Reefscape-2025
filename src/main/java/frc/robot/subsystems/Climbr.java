@@ -99,7 +99,7 @@ public class Climbr extends SubsystemBase {
 
     @Override
     public void periodic() {
-        goal = (goal > 0) ? goal : 0;
+        // goal = (goal > 0) ? goal : 0;
         goal = (goal < ClimberConstants.climberMaxExtension) ? goal : ClimberConstants.climberMaxExtension;
 
         PIDvalue = climberPID.calculate(getClimberPosition(), goal);

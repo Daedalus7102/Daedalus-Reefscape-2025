@@ -13,20 +13,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
-import frc.robot.Constants.ClimberMode;
 import frc.robot.Constants.Intakes.AlgaeIntakeConstants;
 import frc.robot.Constants.Intakes.CoralIntakeConstants;
 import frc.robot.Constants.Intakes.AlgaeIntakeConstants.MergedAlgaeScorePositions;
 import frc.robot.Constants.Intakes.CoralIntakeConstants.MergedCoralScorePositions;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.commands.AutoPositionCoralCommand;
-import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.MoveAlgaeCommand;
 import frc.robot.commands.ScoreCoralCommand;
-import frc.robot.subsystems.Climbr;
-//import frc.robot.subsystems.c.Climber;
-//import frc.robot.subsystems.Climber.cS;
 import frc.robot.subsystems.Drive.Swerve;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Intakes.AlgaeIntake;
@@ -36,7 +31,6 @@ public class RobotContainer {
   // Subsystems
   public Swerve swerve = new Swerve();
   public Elevator elevator = new Elevator();
-  public Climbr climber = new Climbr();
   private CoralIntake coralIntake = new CoralIntake();
   private AlgaeIntake algaeIntake = new AlgaeIntake();
 
@@ -102,9 +96,6 @@ public class RobotContainer {
     operatorController.R2().whileTrue(new InstantCommand(() -> coralIntake.moveCoralIntakeMotors(CoralIntakeConstants.coralIntakeEjectVelocity, false))).whileFalse(new InstantCommand(() -> coralIntake.stopIntakeMotors()));
     operatorController.R1().whileTrue(new InstantCommand(() -> coralIntake.moveCoralIntakeMotorsForL1())).whileFalse(new InstantCommand(() -> coralIntake.stopIntakeMotors()));
     operatorController.L2().whileTrue(new InstantCommand(() -> algaeIntake.moveAlgaeIntakeMotors(AlgaeIntakeConstants.algaeIntakeEjectVelocity, false))).whileFalse(new InstantCommand(() -> algaeIntake.stopIntakeMotors()));
-
-    operatorController.options().whileTrue(new ClimbCommand(climber, ClimberMode.HOME));
-    operatorController.create().whileTrue(new ClimbCommand(climber, ClimberMode.CLIMB));
   }
 
   public Command getAutonomousCommand() {
