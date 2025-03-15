@@ -199,8 +199,8 @@ public class Constants {
         public static final double climberMaxNegativeOutput = -0.8;
 
         public static final double HOMEPosition = 0;
-        public static final double CLIMBPosition = 50;
-        public static final double climberMaxExtension = 50;
+        public static final double CLIMBPosition = 20;
+        public static final double climberMaxExtension = 20;
     }
 
     public enum ClimberMode {
