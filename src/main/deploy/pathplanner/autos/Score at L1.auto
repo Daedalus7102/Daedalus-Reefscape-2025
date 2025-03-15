@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "SCORE_L1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Leave zone path"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "EJECT_FOR_L1"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

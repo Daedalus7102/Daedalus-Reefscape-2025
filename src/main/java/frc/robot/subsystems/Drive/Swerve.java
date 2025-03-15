@@ -27,9 +27,6 @@ import frc.robot.Constants.SwerveConstants;
 public class Swerve extends SubsystemBase {
 
     private final Field2d field = new Field2d();
-        private double lastx = 0;
-        private double lasty = 0;
-        private double lastz = 0;
 
         // Specific and fixed values ​​that each module will have, such as the ID of its motors, its PID value, etc. The data is stored in the
         // class "Constants" and are being accessed from the nomenclature Constants.'variable name'
@@ -182,8 +179,8 @@ public class Swerve extends SubsystemBase {
                     this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                     (speeds, feedforwards) -> runVelcAuto(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
                     new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                            new PIDConstants(2.8, 0.0, 0.0), // Translation PID constants
-                            new PIDConstants(3.387, 0.0, 0.002) // Rotation PID constants
+                            new PIDConstants(2.59, 0.0, 0.0), // Translation PID constants
+                            new PIDConstants(0.0, 0.0, 0.0) // Rotation PID constants
                     ), //3.032
                     config, // The robot configuration
                     () -> {
@@ -219,21 +216,21 @@ public class Swerve extends SubsystemBase {
     @Override
     // The periodic works to see minimal things within the subsystem (It works even when it is disabled)
     public void periodic() {
-        LimelightHelpers.SetRobotOrientation("limelight-front", getAngle(), 0, 0, 0, 0, 0);
-        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-front");
+        //LimelightHelpers.SetRobotOrientation("limelight-front", getAngle(), 0, 0, 0, 0, 0);
+        //LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-front");
 
-        if(Math.abs(gyro.getRate()) > 360 || mt2.tagCount == 0) {
+        //if(Math.abs(gyro.getRate()) > 360 || mt2.tagCount == 0) {
             poseEstimator.update(getRotation2d(), positions);
             odometry.update(getRotation2d(), positions);
-        }
-        else {
-        poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
-        poseEstimator.addVisionMeasurement(
-            mt2.pose,
-            mt2.timestampSeconds);
+        //}
+        //else {
+        //poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
+        //poseEstimator.addVisionMeasurement(
+        //    mt2.pose,
+        //    mt2.timestampSeconds);
 
-        odometry.update(getRotation2d(), positions);
-        }
+        //odometry.update(getRotation2d(), positions);
+        //}
 
         field.setRobotPose(poseEstimator.getEstimatedPosition());
         
@@ -248,19 +245,6 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("DriveMotor backright output", this.backRight.getDriveVelocity());
         SmartDashboard.putNumber("Gyro value", getAngle());
         
-        double currentX = gyro.getAccelerationX().getValueAsDouble();
-        double currentY = gyro.getAccelerationY().getValueAsDouble();
-        double currentZ = gyro.getAccelerationZ().getValueAsDouble();
-
-        if (currentX > lastx) {lastx = currentX;}
-        if (currentY > lasty) {lasty = currentY;}
-        if (currentZ > lastz) {lastz = currentZ;}
-
-        SmartDashboard.putNumber("max X acceleration", lastx);
-        SmartDashboard.putNumber("max Y acceleration", lasty);
-        SmartDashboard.putNumber("max Z acceleration", lastz);
-        SmartDashboard.putNumber("Angular acceleration", gyro.getAngularVelocityZWorld().getValueAsDouble());
-
         DataLogManager.start();
         DriverStation.startDataLog(DataLogManager.getLog());
         updateShuffle();

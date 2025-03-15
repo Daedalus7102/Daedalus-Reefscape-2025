@@ -12,7 +12,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
-import frc.robot.Constants.SwerveConstants;
 
 public class Elevator extends SubsystemBase{
     // Left motor MUST be inverted because of how the robot is configured
@@ -43,8 +42,8 @@ public class Elevator extends SubsystemBase{
         kCoastGeneralConfig
             .idleMode(IdleMode.kCoast);
         kCoastGeneralConfig.encoder
-            .positionConversionFactor(0)
-            .velocityConversionFactor(0);
+            .positionConversionFactor(1.382488846)
+            .velocityConversionFactor(1.382488846);
         kCoastGeneralConfig.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
         kCoastGeneralConfig.signals
@@ -202,7 +201,7 @@ public class Elevator extends SubsystemBase{
     }
 
     @Override
-    public void periodic(){
+    public void periodic() {
         goal = (goal > 0) ? goal : 0;
         goal = (goal < ElevatorConstants.elevatorMaxHeight) ? goal : ElevatorConstants.elevatorMaxHeight;
 
@@ -215,11 +214,12 @@ public class Elevator extends SubsystemBase{
         PIDvalue = desaturatePidValue(PIDvalue);
         moveELevatorMotors(PIDvalue);
 
-        if (getElevatorPosition() > 70) {
+        /*
+        if (getElevatorPosition() > 50) {
             SwerveConstants.chassisHighMaxOutput = SwerveConstants.chassisLowMaxOutput;
         } else {
             SwerveConstants.chassisHighMaxOutput = 0.9;
-        }
+        }*/
 
         SmartDashboard.putBoolean("Get elevator boolean", getElevatorPosition() > 20 && PIDvalue < 0);
 

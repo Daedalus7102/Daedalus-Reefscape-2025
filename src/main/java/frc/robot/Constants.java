@@ -81,9 +81,9 @@ public class Constants {
         public static final double elevatorkI = 0;
         public static final double elevatorkD = 0;
 
-        public static final double elevatorMotorsRiseMaxOutput = 0.8;// 0.8;
+        public static final double elevatorMotorsRiseMaxOutput = 0.6;// 0.8;
         //  Lower output MUST be negative
-        public static final double elevatorMotorsLowerMaxOutput = -0.8;// -0.7;
+        public static final double elevatorMotorsLowerMaxOutput = -0.6;// -0.8;
 
         public static final double elevatorkDeadBand = 3;
 
@@ -94,7 +94,7 @@ public class Constants {
         public static final double L2Position = 35;
         public static final double L3Position = 78;
         public static final double L4Position = 155;
-        public static final double PICKUPPosition = 29;
+        public static final double PICKUPPosition = 27;
         public static final double elevatorMaxHeight = 215;// 215; //
 
         // Elevator setpoints for algae
@@ -113,7 +113,7 @@ public class Constants {
 
             public static final int algaePivotCancoderID = 5;
 
-            public static final double algaePivotkP = 0.03;
+            public static final double algaePivotkP = 0.02;
             public static final double algaePivotkI = 0;
             public static final double algaePivotkD = 0;    
 
@@ -189,5 +189,22 @@ public class Constants {
                 L4
             }
         }
+    }
+
+    public static final class ClimberConstants {
+        public static final int leftMotorID = 17;
+        public static final int rightMotorID = 18;
+
+        public static final double climberMaxPositiveOutput = 0.8;
+        public static final double climberMaxNegativeOutput = -0.8;
+
+        public static final double HOMEPosition = 0;
+        public static final double CLIMBPosition = 50;
+        public static final double climberMaxExtension = 50;
+    }
+
+    public enum ClimberMode {
+        HOME,
+        CLIMB
     }
 }

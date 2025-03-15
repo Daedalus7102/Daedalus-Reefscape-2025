@@ -47,15 +47,15 @@ public class MoveAlgaeCommand extends Command{
       case BETWEEN_L2_AND_L3Position:
         elevator.moveElevator(ElevatorHeights.BETWEEN_L2_AND_L3);
         algaeIntake.moveAlgaeIntake(AlgaeIntakeMode.BETWEEN_L2_AND_L3_OR_L3_AND_L4_Position);
-        algaeIntake.moveAlgaeIntakeMotors(AlgaeIntakeConstants.algaeIntakeIntakeVelocity, true);
+        algaeIntake.moveAlgaeIntakeMotors(AlgaeIntakeConstants.algaeIntakeIntakeVelocity, false);
         break;
       case BETWEEN_L3_AND_L4Position:
         elevator.moveElevator(ElevatorHeights.BETWEEN_L3_AND_L4);
         algaeIntake.moveAlgaeIntake(AlgaeIntakeMode.BETWEEN_L2_AND_L3_OR_L3_AND_L4_Position);
-        algaeIntake.moveAlgaeIntakeMotors(AlgaeIntakeConstants.algaeIntakeIntakeVelocity, true);
+        algaeIntake.moveAlgaeIntakeMotors(AlgaeIntakeConstants.algaeIntakeIntakeVelocity, false);
         break;
       case HOME:
-        algaeIntake.moveAlgaeIntakeMotors(-0.05, true);
+        algaeIntake.moveAlgaeIntakeMotors(-0.05, false);
         elevator.moveElevator(ElevatorHeights.HOME);
         algaeIntake.moveAlgaeIntake(AlgaeIntakeMode.HOME_WITH_ALGAE);
         break;

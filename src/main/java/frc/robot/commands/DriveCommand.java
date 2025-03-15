@@ -35,6 +35,18 @@ public class DriveCommand extends Command{
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+        /*
+        if(elevator.getElevatorPosition() > 30) {
+            xPID.setP(0.4);
+            yPID.setP(0.4);
+            zPID.setP(1);
+        }
+        else {
+            xPID.setP(SwerveConstants.chassisXYAccelerationkP);
+            yPID.setP(SwerveConstants.chassisXYAccelerationkP);
+            zPID.setP(SwerveConstants.chassisZAccelerationkP);
+        }*/
+
         // 1. Get real-time joystick inputs
         double xNeed = this.xSpeed.get();
         double yNeed = this.ySpeed.get();
